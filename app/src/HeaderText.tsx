@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import GameView from '@gamepark/board-game-template/GameView'
+import GameView from '@gamepark/brigands/GameView'
 import {useTranslation} from 'react-i18next'
 
 type Props = {

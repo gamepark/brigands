@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import GameView from '@gamepark/board-game-template/GameView'
+import GameView from '@gamepark/brigands/GameView'
 import {FailuresDialog, FullscreenDialog, Menu, useGame} from '@gamepark/react-client'
 import {Header, LoadingScreen} from '@gamepark/react-components'
 import {useEffect, useState} from 'react'
