@@ -1,12 +1,15 @@
 import PlayerState from './PlayerState'
+import District from './types/District'
+import Phase from './types/Phase'
 
-/**
- * In here, you describe what a GameState will look like at any time during a game.
- */
 type GameState = {
   players: PlayerState[]
-  round: number
-  deck: number[]
+  city: number[]
+  dice:number[]
+  phase?:Phase
+  eventDeck:number[]
+  event?:number
+  districtResolved?:number
 }
 
 export default GameState

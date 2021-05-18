@@ -1,4 +1,4 @@
-import {SecretInformation, SequentialGame} from '@gamepark/rules-api'
+import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import GameState from './GameState'
 import GameView from './GameView'
 import {drawCard} from './moves/DrawCard'
@@ -6,8 +6,18 @@ import Move from './moves/Move'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
 import {spendGold} from './moves/SpendGold'
-import {isGameOptions, BrigandsOptions} from './BrigandsOptions'
+import {isGameOptions, BrigandsOptions, BrigandsPlayerOptions} from './BrigandsOptions'
 import PlayerColor from './PlayerColor'
+import Phase from './types/Phase'
+import PlayerState from './PlayerState'
+import DistrictName from './types/DistrictName'
+import Token from './types/Token'
+import Card from './types/Card'
+import TokenAction from './types/TokenAction'
+import District from './types/District'
+import { shuffle } from 'lodash'
+import { EventArray } from './material/Events'
+import { DistrictArray } from './material/Districts'
 
 /**
  * Your Board Game rules must extend either "SequentialGame" or "SimultaneousGame".
@@ -16,25 +26,25 @@ import PlayerColor from './PlayerColor'
  * If the game contains information that some players know, but the other players does not, it must implement "SecretInformation" instead.
  * Later on, you can also implement "Competitive", "Undo", "TimeLimit" and "Eliminations" to add further features to the game.
  */
-export default class Brigands extends SequentialGame<GameState, Move, PlayerColor>
+export default class Brigands extends SimultaneousGame<GameState, Move, PlayerColor>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerColor> {
-  /**
-   * This constructor is called when the game "restarts" from a previously saved state.
-   * @param state The state of the game
-   */
+
   constructor(state: GameState)
-  /**
-   * This constructor is called when a new game is created. If your game has options, or a variable number of players, it will be provided here.
-   * @param options The options of the new game
-   */
   constructor(options: BrigandsOptions)
-  /**
-   * In here you must code the construction of your class. Use a "typeguard" to distinguish a new game from a restored game.
-   * @param arg The state of the game, or the options when starting a new game
-   */
   constructor(arg: GameState | BrigandsOptions) {
     if (isGameOptions(arg)) {
-      super({players: arg.players.map(player => ({color: player.id})), round: 1, deck: []})
+
+      const game:GameState = {
+        players: setupPlayers(arg.players),
+        city: setupCity(),
+        dice:[],
+        phase:Phase.NewDay,
+        eventDeck:setupEventDeck(),
+        event:undefined,
+        districtResolved:undefined
+      }
+
+      super(game)
     } else {
       super(arg)
     }
@@ -117,7 +127,7 @@ export default class Brigands extends SequentialGame<GameState, Move, PlayerColo
    * @return What a person can see from the game state
    */
   getView(): GameView {
-    return {...this.state, deck: this.state.deck.length}
+    return {...this.state, eventDeck: this.state.eventDeck.length}
   }
 
   /**
@@ -128,7 +138,7 @@ export default class Brigands extends SequentialGame<GameState, Move, PlayerColo
   getPlayerView(playerId: PlayerColor): GameView {
     console.log(playerId)
     // Here we could, for example, return a "playerView" with only the number of cards in hand for the other player only.
-    return {...this.state, deck: this.state.deck.length}
+    return {...this.state, eventDeck: this.state.eventDeck.length}
   }
 
   /**
@@ -153,10 +163,46 @@ export default class Brigands extends SequentialGame<GameState, Move, PlayerColo
    * @return What a person should know about the move that was played
    */
   getPlayerMoveView(move: Move, playerId: PlayerColor): MoveView {
-    console.log(playerId)
-    if (move.type === MoveType.DrawCard && move.playerId === playerId) {
-      return {...move, card: this.state.deck[0]}
-    }
     return move
   }
+}
+
+function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
+
+  return players.map((options) => ({
+    color:options.id, 
+    role:options.id === PlayerColor.Prince 
+    ? {victoryPoints:0,
+      patrols:[DistrictName.Hand, DistrictName.Hand],
+      gold:0,
+      goldInTreasure:0} 
+    : {gold:3,
+      partner:[{color:options.id,position:DistrictName.Hand},{color:options.id,position:DistrictName.Hand}],
+      deck:setupDeck(options.id),
+      played:[], 
+      tokens:setupTokens(options.id)}
+
+  }))
+
+}
+
+function setupDeck(color:PlayerColor):Card[]{
+  return [{color,district:DistrictName.CityHall},{color,district:DistrictName.Harbor},{color,district:DistrictName.Jail},{color,district:DistrictName.Market},{color,district:DistrictName.Palace},{color,district:DistrictName.Tavern},{color,district:DistrictName.Treasure}]
+
+}
+
+function setupTokens(color:PlayerColor):Token[]{
+  return [{color,action:TokenAction.Stealing,position:DistrictName.Hand},{color,action:TokenAction.Kicking,position:DistrictName.Hand},{color,action:TokenAction.Fleeing,position:DistrictName.Hand}]
+
+}
+
+function setupCity():number[]{
+  const result:number[] = Array.from(DistrictArray.keys())
+  const jail:number = result.shift()!;
+  shuffle(result).unshift(jail)
+  return result
+}
+
+function setupEventDeck():number[]{
+  return shuffle(Array.from(EventArray.keys()))
 }
