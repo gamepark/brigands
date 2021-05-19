@@ -9,15 +9,15 @@ import {spendGold} from './moves/SpendGold'
 import {isGameOptions, BrigandsOptions, BrigandsPlayerOptions} from './BrigandsOptions'
 import PlayerColor from './PlayerColor'
 import Phase from './types/Phase'
-import PlayerState from './PlayerState'
+import PlayerState, { isPrinceState } from './PlayerState'
 import DistrictName from './types/DistrictName'
 import Token from './types/Token'
-import Card from './types/Card'
 import TokenAction from './types/TokenAction'
 import District from './types/District'
 import { shuffle } from 'lodash'
 import { EventArray } from './material/Events'
 import { DistrictArray } from './material/Districts'
+import PlayerRole from './types/PlayerRole'
 
 /**
  * Your Board Game rules must extend either "SequentialGame" or "SimultaneousGame".
@@ -37,7 +37,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        dice:[],
         phase:Phase.NewDay,
         eventDeck:setupEventDeck(),
         event:undefined,
@@ -169,27 +168,31 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
 
 function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
 
-  return players.map((options) => ({
-    color:options.id, 
-    role:options.id === PlayerColor.Prince 
-    ? {victoryPoints:0,
-      patrols:[DistrictName.Hand, DistrictName.Hand],
-      gold:0,
-      goldInTreasure:0} 
-    : {gold:3,
-      partner:[{position:DistrictName.Hand},{position:DistrictName.Hand},{position:DistrictName.Hand}],
-      tokens:setupTokens()}
+  if (players.every(p => p.id !== PlayerRole.Prince)){
+    throw 'ERROR : No Prince in the composition !';       // Renvoyer une erreur
+  } else {
+    return players.map((options) => (
+    
+      options.id === PlayerRole.Prince 
+      ? {
+          role:options.id,
+          gold:0,
+          isReady:false,
+          victoryPoints : 0,
+          patrols : [-1,-1],
+          abilities : [false,false,false]
+        } 
+      : {
+          role:options.id,
+          gold:2,
+          isReady:false,
+          partner:[-1,-1,-1],
+          tokens:{steal:[-1,-1],kick:[-1,-1],move:[-1,-1]},
+        }
+    
+    )) 
+  }
 
-  }))
-
-}
-
-// function setupDeck(color:PlayerColor):Card[]{
-//   return [{color,district:DistrictName.CityHall},{color,district:DistrictName.Harbor},{color,district:DistrictName.Jail},{color,district:DistrictName.Market},{color,district:DistrictName.Palace},{color,district:DistrictName.Tavern},{color,district:DistrictName.Treasure}]
-// }
-
-function setupTokens():Token[]{
-  return [{action:TokenAction.Stealing, isOwned:false},{action:TokenAction.Stealing, isOwned:false},{action:TokenAction.Kicking, isOwned:false},{action:TokenAction.Kicking, isOwned:false},{action:TokenAction.Fleeing, isOwned:false},{action:TokenAction.Fleeing, isOwned:false}]
 }
 
 function setupCity():number[]{
@@ -202,5 +205,6 @@ function setupCity():number[]{
 }
 
 function setupEventDeck():number[]{
-  return shuffle(Array.from(EventArray.keys()))
+  const result = shuffle(Array.from(EventArray.keys()))
+  return result.slice(0,6)
 }

@@ -1,5 +1,5 @@
 enum DistrictName {
-    Jail=1, Tavern, Market, Harbor, CityHall, Treasure, Palace, Hand
+    Jail=1, Tavern, Market, Harbor, CityHall, Treasure, Palace
 }
 
 export default DistrictName

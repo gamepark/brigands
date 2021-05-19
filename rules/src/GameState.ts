@@ -5,7 +5,6 @@ import Phase from './types/Phase'
 type GameState = {
   players: PlayerState[]
   city: number[]
-  dice:number[]
   phase?:Phase
   eventDeck:number[]
   event?:number

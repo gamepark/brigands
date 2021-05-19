@@ -2,11 +2,12 @@ import {GameOptions, OptionsDescription, OptionType} from '@gamepark/rules-api'
 import {TFunction} from 'i18next'
 import GameState from './GameState'
 import PlayerColor, {playerColors} from './PlayerColor'
+import PlayerRole, { playerRoles } from './types/PlayerRole'
 
 /**
  * This is the options for each players in the game.
  */
-export type BrigandsPlayerOptions = { id: PlayerColor }
+export type BrigandsPlayerOptions = { id: PlayerRole }
 
 /**
  * This is the type of object that the game receives when a new game is started.
@@ -32,25 +33,25 @@ export const BrigandsOptionsDescription: OptionsDescription<{}, BrigandsPlayerOp
     id: {
       type: OptionType.LIST,
       getLabel: (t: TFunction) => t('Color'),
-      values: playerColors,
+      values: playerRoles,
       getValueLabel: getPlayerName
     }
   }
 }
 
-export function getPlayerName(playerId: PlayerColor, t: TFunction) {
+export function getPlayerName(playerId: PlayerRole, t: TFunction) {
   switch (playerId) {
-    case PlayerColor.Blue:
+    case PlayerRole.BlueThief:
       return t('Blue player')
-    case PlayerColor.Green:
+    case PlayerRole.GreenThief:
       return t('Green player')
-    case PlayerColor.Purple:
+    case PlayerRole.PurpleThief:
       return t('Purple player')
-    case PlayerColor.Red:
+    case PlayerRole.RedThief:
       return t('Red player')
-    case PlayerColor.Yellow:
+    case PlayerRole.YellowThief:
       return t('Yellow player')
-    case PlayerColor.Prince:
+    case PlayerRole.Prince:
       return t('Prince player')
   }
 }

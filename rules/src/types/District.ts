@@ -2,7 +2,8 @@ import DistrictName from "./DistrictName";
 
 type District = {
     name : DistrictName
-    // Add action later here
+    gold?:number
+    dice?:number[]
 }
 
 export default District

@@ -3,8 +3,7 @@ import DistrictName from "./DistrictName"
 type Prince = {
     victoryPoints : number 
     patrols : DistrictName[]
-    gold : number
-    goldInTreasure:number
+    abilities : [boolean, false | [[DistrictName, DistrictName][]] ,boolean]
 }
 
 export default Prince
