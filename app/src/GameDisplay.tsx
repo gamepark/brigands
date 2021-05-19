@@ -14,7 +14,7 @@ export default function GameDisplay({game}: Props) {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 3rem;`}>
+        font-size: 3em;`}>
         {JSON.stringify(game)}
       </div>
     </Letterbox>

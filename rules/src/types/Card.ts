@@ -1,11 +1,11 @@
 import DistrictName from "./DistrictName";
+import Partner from "./Partner";
 import Token from "./Token";
 
 type Card = {
-    color:number
     district:DistrictName
-    partner?:number
-    token?:Token
+    partner?:Partner[]
+
 }
 
 export default Card

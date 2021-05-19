@@ -177,30 +177,28 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
       gold:0,
       goldInTreasure:0} 
     : {gold:3,
-      partner:[{color:options.id,position:DistrictName.Hand},{color:options.id,position:DistrictName.Hand}],
-      deck:setupDeck(options.id),
-      played:[], 
-      tokens:setupTokens(options.id)}
+      partner:[{position:DistrictName.Hand},{position:DistrictName.Hand},{position:DistrictName.Hand}],
+      tokens:setupTokens()}
 
   }))
 
 }
 
-function setupDeck(color:PlayerColor):Card[]{
-  return [{color,district:DistrictName.CityHall},{color,district:DistrictName.Harbor},{color,district:DistrictName.Jail},{color,district:DistrictName.Market},{color,district:DistrictName.Palace},{color,district:DistrictName.Tavern},{color,district:DistrictName.Treasure}]
+// function setupDeck(color:PlayerColor):Card[]{
+//   return [{color,district:DistrictName.CityHall},{color,district:DistrictName.Harbor},{color,district:DistrictName.Jail},{color,district:DistrictName.Market},{color,district:DistrictName.Palace},{color,district:DistrictName.Tavern},{color,district:DistrictName.Treasure}]
+// }
 
-}
-
-function setupTokens(color:PlayerColor):Token[]{
-  return [{color,action:TokenAction.Stealing,position:DistrictName.Hand},{color,action:TokenAction.Kicking,position:DistrictName.Hand},{color,action:TokenAction.Fleeing,position:DistrictName.Hand}]
-
+function setupTokens():Token[]{
+  return [{action:TokenAction.Stealing, isOwned:false},{action:TokenAction.Stealing, isOwned:false},{action:TokenAction.Kicking, isOwned:false},{action:TokenAction.Kicking, isOwned:false},{action:TokenAction.Fleeing, isOwned:false},{action:TokenAction.Fleeing, isOwned:false}]
 }
 
 function setupCity():number[]{
-  const result:number[] = Array.from(DistrictArray.keys())
-  const jail:number = result.shift()!;
-  shuffle(result).unshift(jail)
+  const districtArray = Array.from(DistrictArray.keys())
+  const jail:number = districtArray.shift()!
+  const result:number[] = shuffle(districtArray)
+  result.unshift(jail)
   return result
+
 }
 
 function setupEventDeck():number[]{

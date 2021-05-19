@@ -1,9 +1,10 @@
 import PlayerColor from "../PlayerColor"
 import DistrictName from "./DistrictName"
+import Token from "./Token"
 
 type Partner = {
-    color:PlayerColor
     position: DistrictName
+    token?:Token
 }
 
 export default Partner
