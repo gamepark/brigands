@@ -7,7 +7,7 @@ type GameState = {
   city: number[]
   phase?:Phase
   eventDeck:number[]
-  event?:number
+  event:number
   districtResolved?:number
 }
 

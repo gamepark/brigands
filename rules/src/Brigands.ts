@@ -39,9 +39,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
         city: setupCity(),
         phase:Phase.NewDay,
         eventDeck:setupEventDeck(),
-        event:undefined,
+        event:-1,
         districtResolved:undefined
       }
+      game.event = game.eventDeck.pop()!
 
       super(game)
     } else {
@@ -187,7 +188,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[-1,-1,-1],
-          tokens:{steal:[-1,-1],kick:[-1,-1],move:[-1,-1]},
+          tokens:{steal:[],kick:[],move:[]},
         }
     
     )) 
