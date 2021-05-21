@@ -1,13 +1,6 @@
 import { css } from "@emotion/react"
 import { FC, HTMLAttributes } from "react"
-
-import JailBG from '../images/DistrictJail.jpg'
-import CityHallBG from '../images/DistrictCityHall.jpg'
-import HarborBG from '../images/DistrictHarbor.jpg'
-import MarketBG from '../images/DistrictMarket.jpg'
-import PalaceBG from '../images/DistrictPalace.jpg'
-import TavernBG from '../images/DistrictTavern.jpg'
-import TreasureBG from '../images/DistrictTreasure.jpg'
+import Images from "../utils/Images"
 
 /** @jsxImportSource @emotion/react */
 
@@ -35,19 +28,19 @@ const districtStyle = (image:string) => css`
 function getDistrictImage(district:number):string{
     switch (district){
         case 0 :
-            return JailBG
+            return Images.districtJail
         case 1 : 
-            return TavernBG
+            return Images.districtTavern
         case 2 :
-            return MarketBG
+            return Images.districtMarket
         case 3 :
-            return HarborBG
+            return Images.districtHarbor
         case 4 : 
-            return CityHallBG
+            return Images.districtCityHall
         case 5 : 
-            return TreasureBG
+            return Images.districtTreasure
         case 6 : 
-            return PalaceBG
+            return Images.districtPalace
         default :
             return 'error : no BG'
     }

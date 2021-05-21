@@ -2,8 +2,7 @@
 import { css } from "@emotion/react";
 import PlayerState from "@gamepark/brigands/PlayerState";
 import { FC, HTMLAttributes } from "react";
-
-import PrincePanelBG from '../images/PrincePanel.png'
+import Images from "../utils/Images";
 
 type Props = {
     player:PlayerState
@@ -22,7 +21,7 @@ const PrincePanel : FC<Props> = ({player, ...props}) => {
 }
 
 const princePanelStyle = css`
-background-image: url(${PrincePanelBG});
+background-image: url(${Images.princePanel});
 background-size: contain;
 background-repeat: no-repeat;
 background-position: top;
