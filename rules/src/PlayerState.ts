@@ -12,10 +12,10 @@ export type PrinceState = PlayerState & Prince
 
 export type ThiefState = PlayerState & Thief
 
-export function isPrinceState(state:PlayerState):state is PlayerState{
-  return state.role === PlayerRole.Prince
+export function isPrinceState(state:PlayerState):state is PrinceState{
+  return (state.role === PlayerRole.Prince)
 }
 
-export function isThiefState(state:PlayerState):state is PlayerState{
-  return state.role === (PlayerRole.GreenThief || PlayerRole.BlueThief || PlayerRole.PurpleThief || PlayerRole.RedThief || PlayerRole.YellowThief)
+export function isThiefState(state:PlayerState):state is ThiefState{
+  return (state.role === PlayerRole.GreenThief || state.role === PlayerRole.BlueThief || state.role === PlayerRole.PurpleThief || state.role === PlayerRole.RedThief || state.role === PlayerRole.YellowThief)
 }

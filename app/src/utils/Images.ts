@@ -49,6 +49,14 @@ import districtTavern from '../images/DistrictTavern.jpg'
 import districtTreasure from '../images/DistrictTreasure.jpg'
 
 import princePanel from '../images/PrincePanel.png'
+import patrol from '../images/Patrol.png'
+import mercenary from '../images/Mercenary.png'
+
+import partnerBlue from '../images/PartnerBlue.png'
+import partnerGreen from '../images/PartnerGreen.png'
+import partnerPurple from '../images/PartnerPurple.png'
+import partnerRed from '../images/PartnerRed.png'
+import partnerYellow from '../images/PartnerYellow.png'
 
 import tokenKickBlue from '../images/TokenKickBlue.png'
 import tokenKickGreen from '../images/TokenKickGreen.png'
@@ -91,6 +99,8 @@ const Images = {
     cardTreasureBlue, cardTreasureGreen, cardTreasurePurple, cardTreasureRed, cardTreasureYellow,
     districtCityHall, districtHarbor, districtJail, districtMarket, districtPalace, districtTavern, districtTreasure,
     princePanel,
+    patrol, mercenary,
+    partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
     tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
     tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,
     tokenStealBlue, tokenStealGreen, tokenStealPurple, tokenStealRed, tokenStealYellow,

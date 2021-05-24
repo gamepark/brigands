@@ -187,8 +187,8 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[-1,-1,-1],
-          tokens:{steal:[],kick:[],move:[]},
+          partner:[{position:-1},{position:-1},{position:-1}],
+          tokens:{steal:[0,0],kick:[0,0],move:[0]},
         }
     
     )) 

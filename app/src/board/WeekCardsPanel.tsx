@@ -28,8 +28,8 @@ const revealedCardPosition = css`
 position:absolute;
 bottom:0%;
 right:2%;
-width:45%;
-height:80%;
+width:40%;
+height:100%;
 `
 
 const revealedCardStyle = (image:string) => css`
@@ -44,9 +44,9 @@ border-radius:15% / 10%;
 const hiddenCardPosition = css`
 position:absolute;
 bottom:0%;
-left:2%;
-width:45%;
-height:80%;
+right:45%;
+width:40%;
+height:100%;
 `
 
 const hiddenCardStyle = css`
@@ -54,6 +54,8 @@ background-image: url(${Images.weekCardBack});
 background-size: contain;
 background-repeat: no-repeat;
 background-position: top;
+
+border-radius:15% / 10%;
 `
 
 const weekCardsPanelStyle = css`

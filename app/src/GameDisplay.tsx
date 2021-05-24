@@ -1,12 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
 import GameView from '@gamepark/brigands/GameView'
-import { isPrinceState } from '@gamepark/brigands/PlayerState'
+import { isPrinceState, isThiefState } from '@gamepark/brigands/PlayerState'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import { usePlayerId } from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
 import { useMemo } from 'react'
 import City from './board/City'
+import PanelPlayer from './board/PanelPlayer'
 import PrincePanel from './board/PrincePanel'
 import WeekCardsPanel from './board/WeekCardsPanel'
 
@@ -22,10 +23,11 @@ export default function GameDisplay({game}: Props) {
   return (
     <Letterbox css={letterBoxStyle} top={0}>
       <div css={css`position: absolute;
-                    top:0;left:0;width:100%;height:100%; font-size: 3em;`}>
+                    top:0;left:0;width:100%;height:100%;`}>
         
-        <PrincePanel  css = {princePanelPosition}
-                      player = {game.players.find(p => isPrinceState(p))!}/>
+          <PrincePanel css = {princePanelPosition}
+          player = {players.find(isPrinceState)!}/>
+
 
         <WeekCardsPanel css = {weekCardsPanelPosition}
                         event = {game.event} 
@@ -35,17 +37,45 @@ export default function GameDisplay({game}: Props) {
         <City css = {cityPosition}
               city = {game.city}/>
 
+          <div css={panelPlayerPosition}>
+
+            {players.filter(isThiefState).map((p, index) => 
+            
+              <PanelPlayer key = {index}
+              css = {panelPlayerSize} 
+              player = {p} />
+
+            )}
+
+          </div>
+
       </div>
     </Letterbox>
   )
 }
 
+const panelPlayerPosition = css`
+position:absolute;
+top:8%;
+left:5%;
+display:flex;
+flex-direction:row;
+justify-content:space-around;
+width:90%;
+height:25%;
+`
+
+const panelPlayerSize = css`
+width:18%;
+height:100%;
+`
+
 const weekCardsPanelPosition = css`
   position:absolute;
-  top:65%;
-  left:10%;
-  width:20%;
-  height:30%;
+  top:72%;
+  left:5%;
+  width:25%;
+  height:25%;
 `
 
 const cityPosition = css`
@@ -58,10 +88,10 @@ const cityPosition = css`
 
 const princePanelPosition = css`
   position:absolute;
-  top:65%;
+  top:62%;
   left:30%;
   width:35%;
-  height:30%;
+  height:35%;
 `
 
 export const getPlayersStartingWith = (game: GameView, playerId?: PlayerRole) => {
