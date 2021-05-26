@@ -1,14 +1,23 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from "@emotion/react";
+import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
+import District from "@gamepark/brigands/types/District";
+import DistrictName from "@gamepark/brigands/types/DistrictName";
+import Phase from "@gamepark/brigands/types/Phase";
 import { FC, HTMLAttributes } from "react";
-import District from "./District";
+import DistrictTile from "./DistrictTile";
+
 
 type Props = {
-    city:number[]
+    city:District[]
+    phase:Phase | undefined
+    prince:PrinceState
+    thieves:ThiefState[]
+
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, thieves, ...props}) => {
 
     return(
 
@@ -16,9 +25,14 @@ const City : FC<Props> = ({city, ...props}) => {
 
             {city.map((district, index) => 
             
-                <District key={index}
-                          css={districtSize(district === 0)}
-                          district={district}/>
+                <DistrictTile key={index}
+                              css={districtSize(district.name === DistrictName.Jail)}
+                              district={district}
+                              phase={phase}
+                              prince={prince}
+                              thieves={thieves}
+                          
+                          />
             
             )}
 

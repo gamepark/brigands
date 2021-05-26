@@ -40,7 +40,11 @@ export default function GameDisplay({game}: Props) {
                         
 
         <City css = {cityPosition}
-              city = {game.city}/>
+              city = {game.city}
+              phase = {game.phase}
+              prince = {players.find(isPrinceState)!}
+              thieves = {players.filter(isThiefState)}
+              />
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 

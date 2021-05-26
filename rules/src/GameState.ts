@@ -4,7 +4,7 @@ import Phase from './types/Phase'
 
 type GameState = {
   players: PlayerState[]
-  city: number[]
+  city: District[]
   phase?:Phase
   eventDeck:number[]
   event:number

@@ -37,12 +37,13 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        phase:Phase.Planning,
+        phase:Phase.ThiefArrival,
         eventDeck:setupEventDeck(),
         event:-1,
         districtResolved:undefined
       }
       game.event = game.eventDeck.pop()!
+      game.city.find(d => d.name === DistrictName.Treasure)!.gold = 18
 
       super(game)
     } else {
@@ -180,7 +181,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:18,
           isReady:false,
           victoryPoints : 45,
-          patrols : [-1,-1],
+          patrols : [2,-1],
           abilities : [false,false,false]
         } 
       : {
@@ -188,7 +189,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{position:5},{position:5},{position:5}],
-          tokens:{steal:[5,-1],kick:[0,0],move:[-1,-1]},
+          tokens:{steal:[5],kick:[0,0],move:[]},
         }
     
     )) 
@@ -196,12 +197,12 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
 
 }
 
-function setupCity():number[]{
+function setupCity():District[]{
   const districtArray = Array.from(DistrictArray.keys())
   const jail:number = districtArray.shift()!
   const result:number[] = shuffle(districtArray)
   result.unshift(jail)
-  return result
+  return result.map((districtKey) => ({name:DistrictArray[districtKey].name}))
 
 }
 

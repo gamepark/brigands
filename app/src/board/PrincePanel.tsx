@@ -35,9 +35,9 @@ const PrincePanel : FC<Props> = ({player, ...props}) => {
             <div css={patrolsPosition}>
 
                 {player.patrols.map((patrol,index) => 
-                    <PatrolToken key={index}
-                                 css={patrolTokenSize}
-                                 isMercenary={index===2}/>
+                    patrol !==-1 &&  <PatrolToken key={index}
+                                                  css={patrolTokenSize}
+                                                  isMercenary={index===2}/>
                 )}
 
             </div>
@@ -136,7 +136,7 @@ background-repeat: no-repeat;
 background-position: bottom;
 `
 
-function decomposeGold(gold:number):number[]{
+export function decomposeGold(gold:number):number[]{
     let quotient:number = 0;
     let rest:number = 0;
     const result = []
@@ -162,7 +162,7 @@ function decomposeGold(gold:number):number[]{
 
 }
 
-function getCoin(type:number):string{
+export function getCoin(type:number):string{
     switch(type){
         case 0:
             return Images.coin5
