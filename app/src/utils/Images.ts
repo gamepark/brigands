@@ -51,6 +51,12 @@ import districtTreasure from '../images/DistrictTreasure.jpg'
 import princePanel from '../images/PrincePanel.png'
 import patrol from '../images/Patrol.png'
 import mercenary from '../images/Mercenary.png'
+import victoryToken from '../images/VictoryToken.png'
+
+import coin1 from '../images/Coin1.png'
+import coin2 from '../images/Coin2.png'
+import coin5 from '../images/Coin5.png'
+
 
 import partnerBlue from '../images/PartnerBlue.png'
 import partnerGreen from '../images/PartnerGreen.png'
@@ -99,7 +105,8 @@ const Images = {
     cardTreasureBlue, cardTreasureGreen, cardTreasurePurple, cardTreasureRed, cardTreasureYellow,
     districtCityHall, districtHarbor, districtJail, districtMarket, districtPalace, districtTavern, districtTreasure,
     princePanel,
-    patrol, mercenary,
+    patrol, mercenary, victoryToken,
+    coin1,coin2,coin5,
     partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
     tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
     tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,

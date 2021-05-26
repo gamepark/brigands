@@ -9,6 +9,7 @@ import { useMemo } from 'react'
 import City from './board/City'
 import PanelPlayer from './board/PanelPlayer'
 import PrincePanel from './board/PrincePanel'
+import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 
 type Props = {
@@ -25,44 +26,92 @@ export default function GameDisplay({game}: Props) {
       <div css={css`position: absolute;
                     top:0;left:0;width:100%;height:100%;`}>
         
-          <PrincePanel css = {princePanelPosition}
-          player = {players.find(isPrinceState)!}/>
+        <PrincePanel css = {[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
+                     player = {players.find(isPrinceState)!}/>
 
 
-        <WeekCardsPanel css = {weekCardsPanelPosition}
+        <WeekCardsPanel css = {[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}
                         event = {game.event} 
                         eventDeck = {game.eventDeck} />
+
+        <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank ]}
+                           players = {players.filter(isThiefState)}  
+        />
                         
 
         <City css = {cityPosition}
               city = {game.city}/>
 
-          <div css={panelPlayerPosition}>
+        <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 
-            {players.filter(isThiefState).map((p, index) => 
+          {players.filter(isThiefState).map((p, index) => 
             
-              <PanelPlayer key = {index}
-              css = {panelPlayerSize} 
-              player = {p} />
+            <PanelPlayer key = {index}
+            css = {panelPlayerSize} 
+            player = {p} 
+            phase = {game.phase} />
 
-            )}
+          )}
 
-          </div>
+        </div>
 
       </div>
     </Letterbox>
   )
 }
 
+const thiefTokensInBankPosition = css`
+position:absolute;
+width:25%;
+height:30%;
+`
+
 const panelPlayerPosition = css`
 position:absolute;
-top:8%;
 left:5%;
 display:flex;
 flex-direction:row;
 justify-content:space-around;
 width:90%;
 height:25%;
+`
+
+const displayBottomBank = css`
+left:70%;
+top:62%;
+`
+
+const displayTopBank = css`
+left:65%;
+top:10%;
+`
+
+const displayBottomWeekCard = css`
+top:72%;
+left:5%;
+`
+
+const displayTopWeekCard = css`
+top:16%;
+left:6.5%;
+transform:scale(0.9,0.9);
+`
+
+const displayBottomThieves = css`
+top:65%;
+`
+
+const displayTopThieves = css`
+top:8%;
+`
+
+const displayBottomPrince = css`
+top:62%;
+`
+
+const displayTopPrince = css`
+top:7%;
+transform:scale(0.95,0.95);
 `
 
 const panelPlayerSize = css`
@@ -72,15 +121,13 @@ height:100%;
 
 const weekCardsPanelPosition = css`
   position:absolute;
-  top:72%;
-  left:5%;
   width:25%;
   height:25%;
 `
 
 const cityPosition = css`
   position:absolute;
-  top:40%;
+  top:41.5%;
   left:5%;
   width:90%;
   height:20%;
@@ -88,7 +135,6 @@ const cityPosition = css`
 
 const princePanelPosition = css`
   position:absolute;
-  top:62%;
   left:30%;
   width:35%;
   height:35%;

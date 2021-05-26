@@ -2,24 +2,31 @@
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import PlayerState, {ThiefState} from "@gamepark/brigands/PlayerState";
+import DistrictName from "@gamepark/brigands/types/DistrictName";
+import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { Player, PlayerTimer, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import AvatarPanel from "./AvatarPanel";
+import DistrictCard from "./DistrictCard";
 import PartnerComponent from "./PartnerComponent";
 import ThiefToken from "./ThiefToken";
 
 type Props = {
     player:ThiefState
+    phase:Phase | undefined
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
+
+    console.log("Phase :", phase)
 
     return(
 
@@ -31,10 +38,10 @@ const PanelPlayer : FC<Props> = ({player, ...props}) => {
             <div css={tempoTimer}> 00:00 </div>            {/*<PlayerTimer playerId={player.role} css={[timerStyle]}/>*/}
             <div css={partnerZonePosition}>
 
-    <div css={goldPanel}><p>Gold : {player.gold}</p></div>
+                <div css={goldPanel}><p>Gold : {player.gold}</p></div>
 
                 {player.partner.map((partner,index) => 
-                    <div css={partnerSize}>
+                    <div css={partnerSize} key={index}>
                         {partner.position === -1 && <PartnerComponent key={index}
                                                                       role={player.role} />}
                     </div>
@@ -67,11 +74,70 @@ const PanelPlayer : FC<Props> = ({player, ...props}) => {
                 )}
             </div>
 
+            {(phase === Phase.Planning || phase === Phase.Patrolling) && <div css={cardsPanelPosition}>
+
+                {player.partner.some(p => p.position === DistrictName.CityHall) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.CityHall}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.CityHall).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.CityHall)}
+                />}
+
+                {player.partner.some(p => p.position === DistrictName.Harbor) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.Harbor}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Harbor).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.Harbor)}
+                />}
+
+                {player.partner.some(p => p.position === DistrictName.Market) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.Market}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Market).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.Market)}
+                />}
+
+                {player.partner.some(p => p.position === DistrictName.Palace) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.Palace}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Palace).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.Palace)}
+                />}
+
+                {player.partner.some(p => p.position === DistrictName.Treasure) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.Treasure}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Treasure).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.Treasure)}
+                />}
+
+                {player.partner.some(p => p.position === DistrictName.Tavern) 
+                && <DistrictCard color={player.role}
+                                 district={DistrictName.Tavern}
+                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Tavern).length}
+                                 tokens={getTokenActionArray(player.tokens, DistrictName.Tavern)}
+                />}
+
+            </div>}
+
         </div>
 
     )
 
 }
+
+const cardsPanelPosition = css`
+position:relative;
+top:0%;
+left:5%;
+width:90%;
+height:50%;
+display:flex;
+flex-direction:row;
+justify-content:space-evenly;
+
+`
+
 const goldPanel = css`
 height:100%;
 width:40%;
@@ -132,6 +198,20 @@ const panelPlayerStyle = (color:string) => css`
 border:0.5em solid ${color};
 border-radius:10%;
 `
+
+function getTokenActionArray(tokens:Token, district:DistrictName):TokenAction[]{
+    const result:TokenAction[] = []
+    tokens.steal.forEach(token => {
+        if (token === district){result.push(TokenAction.Stealing)}
+    })
+    tokens.kick.forEach(token => {
+        if (token === district){result.push(TokenAction.Kicking)}
+    })
+    tokens.move.forEach(token => {
+        if (token === district){result.push(TokenAction.Fleeing)}
+    })
+    return result
+}
 
 export function getPlayerColor(role:PlayerRole):string{
     switch(role){
