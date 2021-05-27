@@ -3,17 +3,17 @@
 import { css } from "@emotion/react";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { FC } from "react";
+import { FC, HTMLAttributes } from "react";
 import Images from "../utils/Images";
 
 type Props = {
     action:TokenAction
     role:PlayerRole
-}
+} & Omit<HTMLAttributes<HTMLDivElement>, 'role'>
 
-const ThiefToken : FC<Props> = ({action, role}) => {
+const ThiefToken : FC<Props> = ({action, role, ...props}) => {
     return(
-        <div css={thiefTokenStyle(getTokenBackground(action, role))}>
+        <div {...props} css={thiefTokenStyle(getTokenBackground(action, role))}>
 
         </div>
     )

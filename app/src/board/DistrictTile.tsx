@@ -1,7 +1,9 @@
 import { css } from "@emotion/react"
 import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState"
 import District from "@gamepark/brigands/types/District"
+import DistrictName from "@gamepark/brigands/types/DistrictName"
 import Phase from "@gamepark/brigands/types/Phase"
+import TokenAction from "@gamepark/brigands/types/TokenAction"
 import { FC, HTMLAttributes } from "react"
 import { useTranslation } from "react-i18next"
 import Images from "../utils/Images"
@@ -58,24 +60,79 @@ const DistrictTile : FC<Props> = ({district, prince, thieves, phase, ...props}) 
                     </div>
             }
 
+            {(phase === Phase.ThiefArrival || phase === Phase.Solving) && district.name !== DistrictName.Jail
+                && <div css={thiefTokensDisplay}>
+                    
+                    {thieves.map((thief, indexTh) => 
+                        thief.tokens.steal.map((token, indexTo) => 
+                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
+                                                        css={tokenSize}
+                                                        action = {TokenAction.Stealing}
+                                                        role = {thief.role}     
+                            />
+                        )
+                    )}
+
+                    {thieves.map((thief, indexTh) => 
+                        thief.tokens.kick.map((token, indexTo) => 
+                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
+                                                        css={tokenSize}
+                                                        action = {TokenAction.Kicking}
+                                                        role = {thief.role}     
+                            />
+                        )
+                    )}
+
+                    {thieves.map((thief, indexTh) => 
+                        thief.tokens.move.map((token, indexTo) => 
+                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
+                                                        css={tokenSize}
+                                                        action = {TokenAction.Fleeing}
+                                                        role = {thief.role}     
+                            />
+                        )
+                    )}
+                    
+                    </div>
+            }
+
+            
+
         </div>
 
     )
 
 }
 
+const tokenSize = css`
+width:50%;
+height:100%;
+margin:0em -1.8em;
+`
+
+const thiefTokensDisplay = css`
+position:absolute;
+width:55%;
+height:20%;
+top:75%;
+left:40%;
+
+display:flex;
+flex-direction:row;
+justify-content:center;
+`
+
 const partnerDisplay = css`
 position:relative;
 width:90%;
 height:60%;
-top:20%;
+top:15%;
 left:5%;
 
 display:flex;
 flex-direction:row;
 justify-content:center;
 flex-wrap:wrap;
-
 `
 
 const partnerSize = css`
@@ -108,6 +165,8 @@ height:${55-firstI*5}%;
 `
 
 const districtStyle = (image:string) => css`
+    position:relative;
+
     background-image: url(${image});
     background-size: contain;
     background-repeat: no-repeat;

@@ -52,21 +52,21 @@ const PanelPlayer : FC<Props> = ({player, phase, ...props}) => {
 
             <div css={tokenDivPosition}>
                 {player.tokens.kick.map((token, index) => 
-                    <div key={index} css={tokenSize}> 
+                    token === 0 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
                         />
                     </div>
                 )}
                 {player.tokens.move.map((token, index) => 
-                    <div key={index} css={tokenSize}> 
+                    token === 0 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
                         />
                     </div>
                 )}
                 {player.tokens.steal.map((token, index) => 
-                    <div key={index} css={tokenSize}> 
+                    token === 0 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
                         />
