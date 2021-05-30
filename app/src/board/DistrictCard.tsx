@@ -11,30 +11,14 @@ import PartnerComponent from "./PartnerComponent";
 import ThiefToken from "./ThiefToken";
 
 type Props = {
-    district:DistrictName
+    district?:DistrictName
     color:PlayerRole
-    nbPartner:number
-    tokens:TokenAction[]
 }
 
-const DistrictCard : FC<Props> = ({district, color, nbPartner, tokens}) => {
-
-    const playerId = usePlayerId<PlayerRole>()
+const DistrictCard : FC<Props> = ({district, color}) => {
 
     return(
-        <div css = {districtCardStyle(getCardBG(color, district, playerId))}>
-
-            <div css={partnerDisplay}>
-                {[...Array(nbPartner)].map((p, i) => <PartnerComponent key={i} role={color} />)}
-            </div>
-            <div css={tokensDisplay}>
-                {tokens.map((token, index) => 
-                    <ThiefToken key={index}
-                                action={token}
-                                role={color}
-                    />
-                )}
-            </div>
+        <div css = {districtCardStyle(getCardBG(color, district))}>
 
         </div>
     )
@@ -68,9 +52,9 @@ flex-direction:row;
 justify-content:space-evenly;
 `
 
-function getCardBG(color:PlayerRole, district:DistrictName, playerId:PlayerRole|undefined):string{
+function getCardBG(color:PlayerRole, district?:DistrictName):string{
 
-    if (playerId !== color){
+    if (district === undefined){
         switch(color){
             case PlayerRole.BlueThief :
                 return Images.cardBackBlue

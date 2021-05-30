@@ -17,11 +17,10 @@ import ThiefToken from "./ThiefToken"
 type Props = {
     district:District
     prince:PrinceState
-    thieves:ThiefState[]
     phase:Phase | undefined
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, thieves, phase, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
 
     const {t} = useTranslation()
 
@@ -34,7 +33,7 @@ const DistrictTile : FC<Props> = ({district, prince, thieves, phase, ...props}) 
                 
                     {            
                         decomposeGold(district.gold).map((coin, index) =>
-                        [...Array(coin)].map((c, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} draggable={false} />)
+                        [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} draggable={false} />)
                     )}
 
                </div>
@@ -47,54 +46,11 @@ const DistrictTile : FC<Props> = ({district, prince, thieves, phase, ...props}) 
             {(phase === Phase.ThiefArrival || phase === Phase.Solving) 
                 && <div css={partnerDisplay}>
                     
-                    {thieves.map((thief, indexT) => 
-                        thief.partner.map((partner, indexP) =>
-                            partner.position === district.name && 
-                                <PartnerComponent key={indexT+'_'+indexP}
-                                                css = {partnerSize}
-                                                role={thief.role}
-                                />
-                        )    
-                    )}
                     
                     </div>
             }
 
-            {(phase === Phase.ThiefArrival || phase === Phase.Solving) && district.name !== DistrictName.Jail
-                && <div css={thiefTokensDisplay}>
-                    
-                    {thieves.map((thief, indexTh) => 
-                        thief.tokens.steal.map((token, indexTo) => 
-                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
-                                                        css={tokenSize}
-                                                        action = {TokenAction.Stealing}
-                                                        role = {thief.role}     
-                            />
-                        )
-                    )}
-
-                    {thieves.map((thief, indexTh) => 
-                        thief.tokens.kick.map((token, indexTo) => 
-                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
-                                                        css={tokenSize}
-                                                        action = {TokenAction.Kicking}
-                                                        role = {thief.role}     
-                            />
-                        )
-                    )}
-
-                    {thieves.map((thief, indexTh) => 
-                        thief.tokens.move.map((token, indexTo) => 
-                            token === district.name && <ThiefToken key={indexTh+'_'+indexTo} 
-                                                        css={tokenSize}
-                                                        action = {TokenAction.Fleeing}
-                                                        role = {thief.role}     
-                            />
-                        )
-                    )}
-                    
-                    </div>
-            }
+            
 
             
 

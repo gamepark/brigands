@@ -43,7 +43,6 @@ export default function GameDisplay({game}: Props) {
               city = {game.city}
               phase = {game.phase}
               prince = {players.find(isPrinceState)!}
-              thieves = {players.filter(isThiefState)}
               />
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
@@ -51,6 +50,7 @@ export default function GameDisplay({game}: Props) {
           {players.filter(isThiefState).map((p, index) => 
             
             <PanelPlayer key = {index}
+            positionForPartners = {index}
             css = {panelPlayerSize} 
             player = {p} 
             phase = {game.phase} />

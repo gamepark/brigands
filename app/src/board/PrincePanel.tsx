@@ -18,8 +18,6 @@ const PrincePanel : FC<Props> = ({player, ...props}) => {
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
-    console.log(decomposeGold(player.gold))
-
     return(
 
         <div {...props} css={princePanelStyle}>

@@ -13,11 +13,10 @@ type Props = {
     city:District[]
     phase:Phase | undefined
     prince:PrinceState
-    thieves:ThiefState[]
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, thieves, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, ...props}) => {
 
     return(
 
@@ -30,7 +29,6 @@ const City : FC<Props> = ({city, phase, prince, thieves, ...props}) => {
                               district={district}
                               phase={phase}
                               prince={prince}
-                              thieves={thieves}
                           
                           />
             

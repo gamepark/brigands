@@ -2,13 +2,14 @@
 import { css } from "@emotion/react";
 import { ThiefState } from "@gamepark/brigands/PlayerState";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { ThiefView } from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import ThiefToken from "./ThiefToken";
 
 type Props = {
-    players:ThiefState[]
+    players:(ThiefState | ThiefView)[]
 } & HTMLAttributes<HTMLDivElement>
 
 const ThiefTokensInBank : FC<Props> = ({players, ...props}) => {

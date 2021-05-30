@@ -3,8 +3,10 @@ import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import PlayerState, {ThiefState} from "@gamepark/brigands/PlayerState";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
+import Partner, { getPartnersView, isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
 import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { Player, PlayerTimer, usePlayer, usePlayerId } from "@gamepark/react-client";
@@ -16,19 +18,26 @@ import PartnerComponent from "./PartnerComponent";
 import ThiefToken from "./ThiefToken";
 
 type Props = {
-    player:ThiefState
+    player:ThiefState | ThiefView
     phase:Phase | undefined
+    positionForPartners:number
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
     console.log("Phase :", phase)
+    console.log('getPartnerView de', player.role, " : ", player.partner)
+
+    const partnersView = isNotThiefView(player) ? getPartnersView(player.partner) : player.partner 
+    const cardsPlayed = Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
 
     return(
+
+        <>
 
         <div {...props} css={[panelPlayerStyle(getPlayerColor(player.role))]}>
 
@@ -38,35 +47,27 @@ const PanelPlayer : FC<Props> = ({player, phase, ...props}) => {
             <div css={tempoTimer}> 00:00 </div>            {/*<PlayerTimer playerId={player.role} css={[timerStyle]}/>*/}
             <div css={partnerZonePosition}>
 
-                <div css={goldPanel}><p>Gold : {player.gold}</p></div>
-
-                {player.partner.map((partner,index) => 
-                    <div css={partnerSize} key={index}>
-                        {partner.position === -1 && <PartnerComponent key={index}
-                                                                      role={player.role} />}
-                    </div>
-                )}
-                
+                {isNotThiefView(player) && <div css={goldPanel}><p> Gold : {player.gold}</p></div>}
 
             </div>
 
             <div css={tokenDivPosition}>
                 {player.tokens.kick.map((token, index) => 
-                    token === 0 && <div key={index} css={tokenSize}> 
+                    token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
                         />
                     </div>
                 )}
                 {player.tokens.move.map((token, index) => 
-                    token === 0 && <div key={index} css={tokenSize}> 
+                    token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
                         />
                     </div>
                 )}
                 {player.tokens.steal.map((token, index) => 
-                    token === 0 && <div key={index} css={tokenSize}> 
+                    token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
                         />
@@ -76,55 +77,61 @@ const PanelPlayer : FC<Props> = ({player, phase, ...props}) => {
 
             {(phase === Phase.Planning || phase === Phase.Patrolling) && <div css={cardsPanelPosition}>
 
-                {player.partner.some(p => p.position === DistrictName.CityHall) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.CityHall}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.CityHall).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.CityHall)}
-                />}
+                {[...Array(cardsPlayed)].map((_,index) => <DistrictCard key={index}
+                                                                        color={player.role}
+                />)}
 
-                {player.partner.some(p => p.position === DistrictName.Harbor) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.Harbor}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Harbor).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.Harbor)}
-                />}
-
-                {player.partner.some(p => p.position === DistrictName.Market) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.Market}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Market).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.Market)}
-                />}
-
-                {player.partner.some(p => p.position === DistrictName.Palace) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.Palace}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Palace).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.Palace)}
-                />}
-
-                {player.partner.some(p => p.position === DistrictName.Treasure) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.Treasure}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Treasure).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.Treasure)}
-                />}
-
-                {player.partner.some(p => p.position === DistrictName.Tavern) 
-                && <DistrictCard color={player.role}
-                                 district={DistrictName.Tavern}
-                                 nbPartner={player.partner.filter(p => p.position === DistrictName.Tavern).length}
-                                 tokens={getTokenActionArray(player.tokens, DistrictName.Tavern)}
-                />}
+              
 
             </div>}
 
         </div>
 
+        {partnersView.map((partner, index) => 
+            <PartnerComponent key={index}
+                              css={[partnerSize, 
+                                    isPartnerView(partner) 
+                                        ? cardsPlayed === 1 
+                                            ? partnerOnOnlyCard(positionForPartners, index)
+                                            : cardsPlayed === 2
+                                                ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card)
+                                                : partnerOnOneOfThreeCards(positionForPartners, index, partner.card)
+                                        : partnerHandPosition(positionForPartners, index)           // Precise if Jail or Hand with partner.district
+                                  ]}
+                              role={player.role}
+                              
+            />
+        )}   
+                
+        </>
+
+        
+
     )
 
 }
+
+const test = css``
+
+const partnerOnOneOfThreeCards = (positionForPartners:number, index:number, card:number) => css`
+top:${76+index*15}%;
+left:${2.5+card*5.2+positionForPartners*20}%;
+`
+
+const partnerOnOneOfTwoCards = (positionForPartners:number, index:number, card:number) => css`
+top:${76+index*15}%;
+left:${4.2+card*7+positionForPartners*20}%;
+`
+
+const partnerOnOnlyCard = (positionForPartners:number, index:number) => css`
+top:${76+index*15}%;
+left:${7.8+positionForPartners*20}%;
+`
+
+const partnerHandPosition = (positionForPartners:number, index:number) => css`
+    top:${10+index*5}%;
+    left:${positionForPartners*20+index*7.5}%;
+`
 
 const cardsPanelPosition = css`
 position:relative;
@@ -158,8 +165,9 @@ justify-content:center;
 `
 
 const partnerSize = css`
-width:20%;
-height:100%;
+position:absolute;
+width:3.5em;
+height:3.5em;
 `
 
 const nameStyle = css`

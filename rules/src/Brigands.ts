@@ -1,4 +1,4 @@
-import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
+import {GameSpeed, SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import GameState from './GameState'
 import GameView from './GameView'
 import {drawCard} from './moves/DrawCard'
@@ -18,16 +18,10 @@ import { shuffle } from 'lodash'
 import { EventArray } from './material/Events'
 import { DistrictArray } from './material/Districts'
 import PlayerRole from './types/PlayerRole'
+import { getPartnersView } from './types/Partner'
 
-/**
- * Your Board Game rules must extend either "SequentialGame" or "SimultaneousGame".
- * When there is at least on situation during the game where multiple players can act at the same time, it is a "SimultaneousGame"
- * If the game contains information that players does not know (dices, hidden cards...), it must implement "IncompleteInformation".
- * If the game contains information that some players know, but the other players does not, it must implement "SecretInformation" instead.
- * Later on, you can also implement "Competitive", "Undo", "TimeLimit" and "Eliminations" to add further features to the game.
- */
-export default class Brigands extends SimultaneousGame<GameState, Move, PlayerColor>
-  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerColor> {
+export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
+  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
 
   constructor(state: GameState)
   constructor(options: BrigandsOptions)
@@ -37,7 +31,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        phase:Phase.ThiefArrival,
+        phase:Phase.Patrolling,
         eventDeck:setupEventDeck(),
         event:-1,
         districtResolved:undefined
@@ -55,16 +49,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
    * @return True when game is over
    */
   isOver(): boolean {
-    return false
-  }
-
-  /**
-   * Retrieves the player which must act. It is used to secure the game and prevent players from acting outside their turns.
-   * Only required in a SequentialGame.
-   * @return The identifier of the player whose turn it is
-   */
-  getActivePlayer(): PlayerColor | undefined {
-    return undefined // You must return undefined only when game is over, otherwise the game will be blocked.
+    return this.state.phase === undefined
   }
 
   /**
@@ -79,8 +64,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
    */
   getLegalMoves(): Move[] {
     return [
-      {type: MoveType.SpendGold, playerId: this.getActivePlayer()!, quantity: 5},
-      {type: MoveType.DrawCard, playerId: this.getActivePlayer()!}
+
     ]
   }
 
@@ -127,8 +111,21 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
    * If you game has incomplete information, you must hide some of the game's state to the players and spectators.
    * @return What a person can see from the game state
    */
-  getView(): GameView {
-    return {...this.state, eventDeck: this.state.eventDeck.length}
+  getView(playerId?: PlayerRole): GameView {
+    return {...this.state,
+       eventDeck: this.state.eventDeck.length, 
+       players: this.state.players.map(player => {
+         if (isPrinceState(player) || player.role === playerId){
+          return player
+         } else {
+           const {gold, partner, ...thiefView} = player
+           return {
+             ...thiefView, 
+             partner:this.state.phase === Phase.Solving ? partner : getPartnersView(partner)
+           }
+         }
+       })
+      }
   }
 
   /**
@@ -136,10 +133,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
    * @param playerId Identifier of the player
    * @return what the player can see
    */
-  getPlayerView(playerId: PlayerColor): GameView {
+  getPlayerView(playerId: PlayerRole): GameView {
     console.log(playerId)
     // Here we could, for example, return a "playerView" with only the number of cards in hand for the other player only.
-    return {...this.state, eventDeck: this.state.eventDeck.length}
+    return this.getView(playerId)
   }
 
   /**
@@ -163,7 +160,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerCo
    * @param playerId Identifier of the player seeing the move
    * @return What a person should know about the move that was played
    */
-  getPlayerMoveView(move: Move, playerId: PlayerColor): MoveView {
+  getPlayerMoveView(move: Move, playerId: PlayerRole): MoveView {
     return move
   }
 }
@@ -188,8 +185,8 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{position:5},{position:5},{position:5}],
-          tokens:{steal:[5],kick:[0,0],move:[]},
+          partner:[{district:DistrictName.Palace},{district:DistrictName.Tavern},{district:DistrictName.CityHall}],
+          tokens:{steal:[],kick:[-1,-1],move:[]},
         }
     
     )) 
