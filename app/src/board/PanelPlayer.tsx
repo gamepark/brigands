@@ -23,9 +23,10 @@ type Props = {
     phase:Phase | undefined
     positionForPartners:number
     city:District[]
+    numberOfThieves:number
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
@@ -96,14 +97,14 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, ...p
                                     phase !== Phase.Solving 
                                         ? isPartnerView(partner) 
                                             ? cardsPlayed === 1 
-                                                ? partnerOnOnlyCard(positionForPartners, index)
+                                                ? partnerOnOnlyCard(positionForPartners, index, numberOfThieves)
                                                 : cardsPlayed === 2
-                                                    ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card)
-                                                    : partnerOnOneOfThreeCards(positionForPartners, index, partner.card)
-                                            : partnerHandPosition(positionForPartners, index)           // Precise if Jail or Hand with partner.district
+                                                    ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
+                                                    : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
+                                            : partnerHandPosition(positionForPartners, index, numberOfThieves)           // Precise if Jail or Hand with partner.district
                                         : !isPartnerView(partner)
                                             ? partner.district === undefined
-                                                ? partnerHandPosition(positionForPartners, index)
+                                                ? partnerHandPosition(positionForPartners, index, numberOfThieves)
                                                 : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
                                             : test
                                 ]}
@@ -130,24 +131,36 @@ left:${9.5+district*12.6+positionForPartners*2}%;
 
 const test = css`top:-50%;`
 
-const partnerOnOneOfThreeCards = (positionForPartners:number, index:number, card:number) => css`
+const partnerOnOneOfThreeCards = (positionForPartners:number, index:number, card:number, nbThieves:number) => css`
 top:${76}%;
-left:${2.5+card*5.2+positionForPartners*20}%;
+${nbThieves === 5 && `left:${2.5+card*5.2+positionForPartners*20}%;`}
+${nbThieves === 4 && `left:${5.1+card*5.2+positionForPartners*25}%;`}
+${nbThieves === 3 && `left:${9.2+card*5.2+positionForPartners*33.4}%;`}
+${nbThieves === 2 && `left:${17.6+card*5.2+positionForPartners*50}%;`}
 `
 
-const partnerOnOneOfTwoCards = (positionForPartners:number, index:number, card:number) => css`
+const partnerOnOneOfTwoCards = (positionForPartners:number, index:number, card:number, nbThieves:number) => css`
 top:${76+index*15}%;
-left:${4.2+card*7+positionForPartners*20}%;
+${nbThieves === 5 && `left:${4.2+card*7+positionForPartners*20}%;`} 
+${nbThieves === 4 && `left:${6.7+card*7+positionForPartners*25}%;`} 
+${nbThieves === 3 && `left:${10.8+card*7+positionForPartners*33.4}%;`} 
+${nbThieves === 2 && `left:${19.3+card*7+positionForPartners*50}%;`} 
 `
 
-const partnerOnOnlyCard = (positionForPartners:number, index:number) => css`
+const partnerOnOnlyCard = (positionForPartners:number, index:number, nbThieves:number) => css`
 top:${76+index*15}%;
-left:${7.8+positionForPartners*20}%;
+${nbThieves === 5 && `left:${7.8+positionForPartners*20}%;`} 
+${nbThieves === 4 && `left:${10.3+positionForPartners*25}%;`} 
+${nbThieves === 3 && `left:${14.4+positionForPartners*33.4}%;`} 
+${nbThieves === 2 && `left:${22.8+positionForPartners*50}%;`} 
 `
 
-const partnerHandPosition = (positionForPartners:number, index:number) => css`
+const partnerHandPosition = (positionForPartners:number, index:number, nbThieves:number) => css`
     top:${18}%;
-    left:${10.5+positionForPartners*20+index*2.5}%;
+    ${nbThieves === 5 && `left:${10.5+positionForPartners*20+index*2.5}%;`}
+    ${nbThieves === 4 && `left:${12.5+positionForPartners*25+index*2.5}%;`}
+    ${nbThieves === 3 && `left:${16.5+positionForPartners*33.5+index*2.5}%;`}
+    ${nbThieves === 2 && `left:${25+positionForPartners*50+index*2.5}%;`}
 `
 
 const cardsPanelPosition = css`

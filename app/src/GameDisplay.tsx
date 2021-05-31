@@ -55,6 +55,7 @@ export default function GameDisplay({game}: Props) {
             player = {p} 
             phase = {game.phase}
             city={game.city}
+            numberOfThieves = {players.filter(isThiefState).length}
             />
 
           )}
