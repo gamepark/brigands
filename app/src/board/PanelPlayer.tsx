@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import PlayerState, {ThiefState} from "@gamepark/brigands/PlayerState";
+import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Partner, { getPartnersView, isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
@@ -21,19 +22,21 @@ type Props = {
     player:ThiefState | ThiefView
     phase:Phase | undefined
     positionForPartners:number
+    city:District[]
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
-    console.log("Phase :", phase)
     console.log('getPartnerView de', player.role, " : ", player.partner)
 
-    const partnersView = isNotThiefView(player) ? getPartnersView(player.partner) : player.partner 
-    const cardsPlayed = Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
+    const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
+    const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
+
+    console.log(cardsPlayed)
 
     return(
 
@@ -45,7 +48,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, ...props})
             <AvatarPanel playerInfo={playerInfo} role={player.role} />
             <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
             <div css={tempoTimer}> 00:00 </div>            {/*<PlayerTimer playerId={player.role} css={[timerStyle]}/>*/}
-            <div css={partnerZonePosition}>
+            <div css={goldZonePosition}>
 
                 {isNotThiefView(player) && <div css={goldPanel}><p> Gold : {player.gold}</p></div>}
 
@@ -89,16 +92,25 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, ...props})
 
         {partnersView.map((partner, index) => 
             <PartnerComponent key={index}
-                              css={[partnerSize, 
-                                    isPartnerView(partner) 
-                                        ? cardsPlayed === 1 
-                                            ? partnerOnOnlyCard(positionForPartners, index)
-                                            : cardsPlayed === 2
-                                                ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card)
-                                                : partnerOnOneOfThreeCards(positionForPartners, index, partner.card)
-                                        : partnerHandPosition(positionForPartners, index)           // Precise if Jail or Hand with partner.district
-                                  ]}
+                              css={[partnerSize,
+                                    phase !== Phase.Solving 
+                                        ? isPartnerView(partner) 
+                                            ? cardsPlayed === 1 
+                                                ? partnerOnOnlyCard(positionForPartners, index)
+                                                : cardsPlayed === 2
+                                                    ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card)
+                                                    : partnerOnOneOfThreeCards(positionForPartners, index, partner.card)
+                                            : partnerHandPosition(positionForPartners, index)           // Precise if Jail or Hand with partner.district
+                                    : !isPartnerView(partner)
+                                        ? partner.district === undefined
+                                            ? partnerHandPosition(positionForPartners, index)
+                                            : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district))
+                                        : test
+                                ]}
                               role={player.role}
+                              partnerNumber={index}
+                              tokens={player.tokens}
+                              phase={phase}
                               
             />
         )}   
@@ -111,10 +123,15 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, ...props})
 
 }
 
-const test = css``
+const onCity = (positionForPartners:number, index:number, district:number) => css`
+top:${-80+index*8}%;
+left:${9.5+district*12.6+positionForPartners*2}%;
+`
+
+const test = css`top:-50%;`
 
 const partnerOnOneOfThreeCards = (positionForPartners:number, index:number, card:number) => css`
-top:${76+index*15}%;
+top:${76}%;
 left:${2.5+card*5.2+positionForPartners*20}%;
 `
 
@@ -129,8 +146,8 @@ left:${7.8+positionForPartners*20}%;
 `
 
 const partnerHandPosition = (positionForPartners:number, index:number) => css`
-    top:${10+index*5}%;
-    left:${positionForPartners*20+index*7.5}%;
+    top:${18}%;
+    left:${10.5+positionForPartners*20+index*2.5}%;
 `
 
 const cardsPanelPosition = css`
@@ -147,16 +164,16 @@ justify-content:space-evenly;
 
 const goldPanel = css`
 height:100%;
-width:40%;
+width:50%;
 
 p{
     font-size:2.5em;
-    margin: 0.2em 0em;
+    margin: 0.2em 0.5em;
     text-align:center;
 }
 `
 
-const partnerZonePosition = css`
+const goldZonePosition = css`
 height:15%;
 margin: 1em 0.2em 0.2em 0.2em;
 display:flex;

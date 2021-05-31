@@ -53,7 +53,9 @@ export default function GameDisplay({game}: Props) {
             positionForPartners = {index}
             css = {panelPlayerSize} 
             player = {p} 
-            phase = {game.phase} />
+            phase = {game.phase}
+            city={game.city}
+            />
 
           )}
 
