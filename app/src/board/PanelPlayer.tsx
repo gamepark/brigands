@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
-import PlayerState, {ThiefState} from "@gamepark/brigands/PlayerState";
+import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
-import Partner, { getPartnersView, isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
+import { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
 import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { Player, PlayerTimer, usePlayer, usePlayerId } from "@gamepark/react-client";
+import { usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import AvatarPanel from "./AvatarPanel";
@@ -101,11 +101,11 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, ...p
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card)
                                             : partnerHandPosition(positionForPartners, index)           // Precise if Jail or Hand with partner.district
-                                    : !isPartnerView(partner)
-                                        ? partner.district === undefined
-                                            ? partnerHandPosition(positionForPartners, index)
-                                            : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district))
-                                        : test
+                                        : !isPartnerView(partner)
+                                            ? partner.district === undefined
+                                                ? partnerHandPosition(positionForPartners, index)
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
+                                            : test
                                 ]}
                               role={player.role}
                               partnerNumber={index}
@@ -123,8 +123,8 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, ...p
 
 }
 
-const onCity = (positionForPartners:number, index:number, district:number) => css`
-top:${-80+index*8}%;
+const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
+top:${prince*(-80)+index*8}%;
 left:${9.5+district*12.6+positionForPartners*2}%;
 `
 

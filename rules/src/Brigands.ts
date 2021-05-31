@@ -185,8 +185,8 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{district:DistrictName.CityHall},{district:DistrictName.CityHall},{district:DistrictName.CityHall}],
-          tokens:{steal:[],kick:[-1,0],move:[1,2]},
+          partner:[{district:DistrictName.CityHall},{district:DistrictName.Palace},{district:DistrictName.Palace}],
+          tokens:{steal:[],kick:[-1,-1],move:[1,-1]},
         }
     
     )) 
