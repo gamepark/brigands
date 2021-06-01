@@ -17,10 +17,10 @@ export type PrinceState = PlayerCommon & Prince
 
 export type ThiefState = PlayerCommon & Thief
 
-export function isPrinceState(state:PlayerState | PlayerView):state is PrinceState{
+export function isPrinceState(state:PrinceState | ThiefState | ThiefView):state is PrinceState{
   return (state.role === PlayerRole.Prince)
 }
 
-export function isThiefState(state:PlayerState | PlayerView):state is (ThiefState | ThiefView){
+export function isThiefState(state:PlayerState | PlayerView):state is (ThiefState |ThiefView){
   return (state.role !== PlayerRole.Prince)
 }

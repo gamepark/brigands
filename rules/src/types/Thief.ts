@@ -1,4 +1,4 @@
-import { ThiefState } from "../PlayerState"
+import { PrinceState, ThiefState } from "../PlayerState"
 import Partner, { PartnerView } from "./Partner"
 import Token from "./Token"
 

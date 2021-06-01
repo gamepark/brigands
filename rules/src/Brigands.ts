@@ -19,6 +19,7 @@ import { EventArray } from './material/Events'
 import { DistrictArray } from './material/Districts'
 import PlayerRole from './types/PlayerRole'
 import { getPartnersView } from './types/Partner'
+import { drawEvent } from './moves/DrawEvent'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -31,13 +32,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        phase:Phase.Planning,
+        phase:Phase.NewDay,
         eventDeck:setupEventDeck(),
         event:-1,
         districtResolved:undefined
       }
-      game.event = game.eventDeck.pop()!
-      game.city.find(d => d.name === DistrictName.Treasure)!.gold = 18
+      game.city.find(d => d.name === DistrictName.Treasure)!.gold = 0
 
       super(game)
     } else {
@@ -75,42 +75,24 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
    */
   play(move: Move): void {
     switch (move.type) {
-      case MoveType.SpendGold:
-        return spendGold(this.state, move)
-      case MoveType.DrawCard:
-        return drawCard(this.state, move)
+      case MoveType.DrawEvent:
+        return drawEvent(this.state)
     }
   }
 
-  /**
-   * Here you can return the moves that should be automatically played when the game is in a specific state.
-   * Here is an example from monopoly: you roll a dice, then move you pawn accordingly.
-   * A first solution would be to do both state updates at once, in a "complex move" (RollDiceAndMovePawn).
-   * However, this first solution won't allow you to animate step by step what happened: the roll, then the pawn movement.
-   * "getAutomaticMove" is the solution to trigger multiple moves in a single action, and still allow for step by step animations.
-   * => in that case, "RollDice" could set "pawnMovement = x" somewhere in the game state. Then getAutomaticMove will return "MovePawn" when
-   * "pawnMovement" is defined in the state.
-   * Of course, you must return nothing once all the consequences triggered by a decision are completed.
-   * VERY IMPORTANT: you should never change the game state in here. Indeed, getAutomaticMove will never be called in replays, for example.
-   *
-   * @return The next automatic consequence that should be played in current game state.
-   */
+  
+  // VERY IMPORTANT: you should never change the game state in here.
+  // Indeed, getAutomaticMove will never be called in replays, for example.
+
   getAutomaticMove(): void | Move {
-    /**
-     * Example:
-     * for (const player of this.state.players) {
-     *   if (player.mustDraw) {
-     *     return {type: MoveType.DrawCard, playerId: player.color}
-     *   }
-     * }
-     */
+
+      if (this.state.phase === Phase.NewDay){
+        return {type:MoveType.DrawEvent}
+      }
+
     return
   }
 
-  /**
-   * If you game has incomplete information, you must hide some of the game's state to the players and spectators.
-   * @return What a person can see from the game state
-   */
   getView(playerId?: PlayerRole): GameView {
     return {...this.state,
        eventDeck: this.state.eventDeck.length, 
@@ -128,14 +110,9 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       }
   }
 
-  /**
-   * If you game has "SecretInformation", you must also implement "getPlayerView", returning the information visible by a specific player.
-   * @param playerId Identifier of the player
-   * @return what the player can see
-   */
+
   getPlayerView(playerId: PlayerRole): GameView {
     console.log(playerId)
-    // Here we could, for example, return a "playerView" with only the number of cards in hand for the other player only.
     return this.getView(playerId)
   }
 
@@ -147,8 +124,13 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
    * @param move The move that has been played
    * @return What a person should know about the move that was played
    */
-  getMoveView(move: Move): MoveView {
-    return move
+  getMoveView(move: Move, playerId?: PlayerRole): MoveView {
+    switch (move.type) {
+      case MoveType.DrawEvent:
+        return {...move, event: this.state.event}
+      default:
+        return move
+    }
   }
 
   /**
@@ -161,7 +143,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
    * @return What a person should know about the move that was played
    */
   getPlayerMoveView(move: Move, playerId: PlayerRole): MoveView {
-    return move
+    return this.getMoveView(move, playerId)
   }
 }
 
@@ -199,7 +181,7 @@ function setupCity():District[]{
   const jail:number = districtArray.shift()!
   const result:number[] = shuffle(districtArray)
   result.unshift(jail)
-  return result.map((districtKey) => ({name:DistrictArray[districtKey].name}))
+  return result.map((districtKey) => ({name:DistrictArray[districtKey].name, gold:DistrictArray[districtKey].name === DistrictName.Treasure ? 0 : undefined}))
 
 }
 
