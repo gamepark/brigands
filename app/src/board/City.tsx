@@ -1,11 +1,14 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from "@emotion/react";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Phase from "@gamepark/brigands/types/Phase";
 import { FC, HTMLAttributes } from "react";
+import { useDrop } from "react-dnd";
+import PartnerInHand from "src/utils/PartnerInHand";
 import DistrictTile from "./DistrictTile";
 
 

@@ -1,8 +1,11 @@
 import GameView from '@gamepark/brigands/GameView'
 import {drawCardInPlayerView, drawCardInView, isDrawCardView} from '@gamepark/brigands/moves/DrawCard'
+import { drawEventInView } from '@gamepark/brigands/moves/DrawEvent'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
+import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import {spendGold} from '@gamepark/brigands/moves/SpendGold'
+import { tellYouAreReady } from '@gamepark/brigands/moves/TellYouAreReady'
 import {Game} from '@gamepark/rules-api'
 
 /**
@@ -35,14 +38,12 @@ export default class BrigandsView implements Game<GameView, MoveView> {
    */
   play(move: MoveView): void {
     switch (move.type) {
-      case MoveType.SpendGold:
-        return spendGold(this.state, move)
-      case MoveType.DrawCard:
-        if (isDrawCardView(move)) {
-          return drawCardInPlayerView(this.state, move)
-        } else {
-          return drawCardInView(this.state, move)
-        }
+      case MoveType.DrawEvent:
+        return drawEventInView(this.state, move)
+      case MoveType.PlacePartner:
+        return placePartnerInView(this.state,move)
+      case MoveType.TellYouAreReady:
+        return tellYouAreReady(this.state,move)
     }
   }
 

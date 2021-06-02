@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
+import Move from "@gamepark/brigands/moves/Move";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
@@ -10,9 +11,10 @@ import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
 import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { usePlayer, usePlayerId } from "@gamepark/react-client";
+import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
+import PartnerInHand from "src/utils/PartnerInHand";
 import AvatarPanel from "./AvatarPanel";
 import DistrictCard from "./DistrictCard";
 import PartnerComponent from "./PartnerComponent";
@@ -24,6 +26,9 @@ type Props = {
     positionForPartners:number
     city:District[]
     numberOfThieves:number
+    draggable?:boolean
+    type?:'PartnerInHand'
+    draggableItem?:PartnerInHand
 } & HTMLAttributes<HTMLDivElement>
 
 const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, ...props}) => {
@@ -38,6 +43,10 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
 
     console.log(cardsPlayed)
+
+    function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+        return phase === Phase.Planning && role === playerId
+    }
 
     return(
 
@@ -112,6 +121,10 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                               partnerNumber={index}
                               tokens={player.tokens}
                               phase={phase}
+
+                              draggable={isDraggable(phase,player.role)}
+                              type={"PartnerInHand"}
+                              draggableItem={{partnerNumber:index}}
                               
             />
         )}   

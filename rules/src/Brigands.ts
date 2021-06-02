@@ -9,7 +9,7 @@ import {spendGold} from './moves/SpendGold'
 import {isGameOptions, BrigandsOptions, BrigandsPlayerOptions} from './BrigandsOptions'
 import PlayerColor from './PlayerColor'
 import Phase from './types/Phase'
-import PlayerState, { isPrinceState } from './PlayerState'
+import PlayerState, { isPrinceState, isThiefState, ThiefState } from './PlayerState'
 import DistrictName from './types/DistrictName'
 import Token from './types/Token'
 import TokenAction from './types/TokenAction'
@@ -20,6 +20,8 @@ import { DistrictArray } from './material/Districts'
 import PlayerRole from './types/PlayerRole'
 import { getPartnersView } from './types/Partner'
 import { drawEvent } from './moves/DrawEvent'
+import PlacePartner, { placePartner } from './moves/PlacePartner'
+import { tellYouAreReady } from './moves/TellYouAreReady'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -52,20 +54,25 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.state.phase === undefined
   }
 
-  /**
-   * Return the exhaustive list of moves that can be played by the active player.
-   * This is used for 2 features:
-   * - security (preventing unauthorized moves from being played);
-   * - "Dummy players": when a player leaves a game, it is replaced by a "Dummy" that plays random moves, allowing the other players to finish the game.
-   * In a SimultaneousGame, as multiple players can be active you will be passed a playedId as an argument.
-   * If the game allows a very large (or infinite) number of moves, instead of implementing this method, you can implement instead:
-   * - isLegal(move: Move):boolean, for security; and
-   * - A class that implements "Dummy" to provide a custom Dummy player.
-   */
-  getLegalMoves(): Move[] {
-    return [
-
-    ]
+  getLegalMoves(role:PlayerRole): Move[] {
+    const player = this.state.players.find(p => p.role === role)
+    if (player === undefined || isPrinceState(player)){
+      return []
+    } else {
+      if (this.state.phase === Phase.Planning){
+        if(player.partner.some(part => part.district === undefined)){
+          const placePartnersMoves:PlacePartner[] = []
+          for (let i=2;i<7;i++){
+            player.partner.forEach((_, index) => placePartnersMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index}))
+          }
+          return placePartnersMoves
+        } else {
+          return [{type:MoveType.TellYouAreReady, playerId:player.role}]
+        }
+      } else {
+        return []
+      }
+    }
   }
 
   /**
@@ -77,6 +84,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     switch (move.type) {
       case MoveType.DrawEvent:
         return drawEvent(this.state)
+      case MoveType.PlacePartner:
+        return placePartner(this.state, move)
+      case MoveType.TellYouAreReady:
+        return tellYouAreReady(this.state, move)
     }
   }
 
@@ -89,6 +100,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.phase === Phase.NewDay){
         return {type:MoveType.DrawEvent}
       }
+      
 
     return
   }
@@ -128,6 +140,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     switch (move.type) {
       case MoveType.DrawEvent:
         return {...move, event: this.state.event}
+      case MoveType.PlacePartner :
+        if (playerId === move.playerId){
+          return move
+        } else {
+          return {type:MoveType.PlacePartner,playerId:move.playerId,partner:getPartnersView((this.state.players.find(p=>p.role === move.playerId) as ThiefState).partner) }
+        }
       default:
         return move
     }
@@ -157,17 +175,17 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
       options.id === PlayerRole.Prince 
       ? {
           role:options.id,
-          gold:18,
+          gold:0,
           isReady:false,
-          victoryPoints : 45,
-          patrols : [2,-1],
+          victoryPoints : 0,
+          patrols : [-1,-1],
           abilities : [false,false,false]
         } 
       : {
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{district:DistrictName.Treasure},{district:DistrictName.Harbor},{district:DistrictName.Palace}],
+          partner:[{},{},{}],
           tokens:{steal:[],kick:[-1,-1],move:[-1,-1]},
         }
     

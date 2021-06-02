@@ -4,7 +4,8 @@
  */
 enum MoveType {
   DrawEvent,
-  PlaceThief,
+  PlacePartner,
+  TellYouAreReady,
   PlaceToken,
   PlacePatrol,
   UseStealToken,

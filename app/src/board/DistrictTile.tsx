@@ -1,11 +1,16 @@
 import { css } from "@emotion/react"
+import MoveType from "@gamepark/brigands/moves/MoveType"
 import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState"
 import District from "@gamepark/brigands/types/District"
 import DistrictName from "@gamepark/brigands/types/DistrictName"
 import Phase from "@gamepark/brigands/types/Phase"
+import PlayerRole from "@gamepark/brigands/types/PlayerRole"
 import TokenAction from "@gamepark/brigands/types/TokenAction"
+import { usePlayerId } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
+import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
+import PartnerInHand from "src/utils/PartnerInHand"
 import Images from "../utils/Images"
 import PartnerComponent from "./PartnerComponent"
 import PatrolToken from "./PatrolToken"
@@ -22,11 +27,26 @@ type Props = {
 
 const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
 
+    const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
+
+    const [{canDrop, isOver}, dropRef] = useDrop({
+        accept: ["PartnerInHand"],
+        canDrop: (item: PartnerInHand) => {
+            return district.name !== DistrictName.Jail
+        },
+        collect: monitor => ({
+          canDrop: monitor.canDrop(),
+          isOver: monitor.isOver()
+        }),
+        drop: (item: PartnerInHand) => {
+            return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
+        }
+      })
 
     return(
 
-        <div {...props} css={districtStyle(getDistrictImage(district.name))}>
+        <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
             {district.gold !== undefined 
             && <div css={goldOnTreasureDisplay}>
@@ -59,6 +79,16 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
     )
 
 }
+
+const canDropStyle = css`
+border:0.5em gold solid;
+transition : border 0.5s linear;
+`
+
+const isOverStyle = css`
+border:1em gold solid;
+transition : border 0.5s linear;
+`
 
 const tokenSize = css`
 width:50%;

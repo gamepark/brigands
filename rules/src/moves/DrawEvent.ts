@@ -32,7 +32,4 @@ function applyEvent(state: GameState | GameView) {
     (state.players as PlayerView[]).find(isPrinceState)!.gold += EventArray[state.event].goldForPrince
     state.city.find(d => d.name === DistrictName.Treasure)!.gold! += EventArray[state.event].goldForTreasure
     state.phase = Phase.Planning
-
-    const p = (state).players.filter(isPrinceState)!
-    const padz = (state).players.find(isPrinceState)!
 }
