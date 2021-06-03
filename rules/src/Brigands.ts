@@ -13,12 +13,14 @@ import { shuffle } from 'lodash'
 import { EventArray } from './material/Events'
 import { DistrictArray } from './material/Districts'
 import PlayerRole from './types/PlayerRole'
-import { getPartnersView } from './types/Partner'
+import Partner, { getPartnersView } from './types/Partner'
 import { drawEvent } from './moves/DrawEvent'
 import PlacePartner, { placePartner } from './moves/PlacePartner'
 import { tellYouAreReady } from './moves/TellYouAreReady'
 import { moveOnNextPhase } from './moves/MoveOnNextPhase'
 import PlacePatrol, { placePatrol } from './moves/PlacePatrol'
+import { revealPartnersDistricts } from './moves/RevealPartnersDistricts'
+import { ThiefView } from './types/Thief'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -118,6 +120,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return moveOnNextPhase(this.state)
       case MoveType.PlacePatrol:
         return placePatrol(this.state, move)
+      case MoveType.RevealPartnersDistricts:
+        return revealPartnersDistricts(this.state)
     }
   }
 
@@ -134,7 +138,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return {type:MoveType.MoveOnNextPhase}
       }
       if (this.state.phase === Phase.Patrolling && this.state.players.find(isPrinceState)!.isReady === true){
-        return {type:MoveType.MoveOnNextPhase}
+        return {type:MoveType.RevealPartnersDistricts}
       }
       
 
@@ -182,6 +186,15 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         } else {
           return {type:MoveType.PlacePartner,playerId:move.playerId,partner:getPartnersView((this.state.players.find(p=>p.role === move.playerId) as ThiefState).partner) }
         }
+      case MoveType.RevealPartnersDistricts:
+        const partnersArray:Partner[][] = []
+        this.state.players.forEach(player => {
+          if (player.role !== PlayerRole.Prince){
+            partnersArray.push((player as ThiefState).partner)
+          }
+        })
+
+        return {type:MoveType.RevealPartnersDistricts, partnersArray}
       default:
         return move
     }

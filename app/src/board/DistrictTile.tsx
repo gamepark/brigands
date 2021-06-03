@@ -68,18 +68,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
 
                </div>
             }
-
-            {(phase === Phase.ThiefArrival || phase === Phase.Solving) 
-                && <div css={partnerDisplay}>
-                    
-                    
-                    </div>
-            }
-
             
-
-            
-
         </div>
 
     )

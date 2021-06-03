@@ -7,6 +7,7 @@ enum MoveType {
   PlacePartner,
   TellYouAreReady,
   MoveOnNextPhase,
+  RevealPartnersDistricts,
   PlaceToken,
   PlacePatrol,
   UseStealToken,

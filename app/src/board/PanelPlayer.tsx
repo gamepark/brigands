@@ -39,6 +39,8 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
+    console.log(player.partner)
+
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
 
@@ -94,8 +96,6 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                                         color={player.role}
                 />)}
 
-              
-
             </div>}
 
         </div>
@@ -111,12 +111,13 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
                                             : partnerHandPosition(positionForPartners, index, numberOfThieves)           // Precise if Jail or Hand with partner.district
-                                        : !isPartnerView(partner)
-                                            ? partner.district === undefined
+                                        : isPartnerView(partner)
+                                            ? test
+                                            : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
                                                 : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
-                                            : test
-                                ]}
+                                     
+                                            ]}
                               role={player.role}
                               partnerNumber={index}
                               tokens={player.tokens}
@@ -129,7 +130,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
             />
         )}
 
-        {phase === Phase.Planning && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
+        {player.role === playerId && phase === Phase.Planning && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
         && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
                 

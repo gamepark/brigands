@@ -1,13 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
+import Move from "@gamepark/brigands/moves/Move";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 import PlayerState, { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import { usePlayer, usePlayerId } from "@gamepark/react-client";
+import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
+import Button from "../utils/Button";
 import Images from "../utils/Images";
 import AvatarPanel from "./AvatarPanel";
 import PatrolToken from "./PatrolToken";
@@ -23,6 +26,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
+    const play = usePlay<Move>()
 
     function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
         return phase === Phase.Patrolling && role === playerId
@@ -65,12 +69,25 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
                          />
         )}
 
+        {player.role === playerId && phase === Phase.Patrolling && player.patrols.every(pat => pat !== -1) 
+        && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        }   
+
 
         </>
 
     )
 
 }
+
+const validationButtonPosition = css`
+position:absolute;
+width:15%;
+height:7%;
+top:88%;
+right:13.5%;
+font-size:4em;
+`
 
 const coinPosition = (firstI:number, secondI:number) => css`
 position:absolute;

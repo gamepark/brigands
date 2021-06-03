@@ -20,10 +20,8 @@ export function moveOnNextPhase(state:GameState|GameView){
             state.players.forEach(p=>p.isReady = false)
             break
         case Phase.Patrolling :
-            state.phase = Phase.ThiefArrival
-            break
-        case Phase.ThiefArrival:
             state.phase = Phase.Solving
+            state.players.forEach(p=>p.isReady = false)
             break
         case Phase.Solving:
             state.phase = Phase.NewDay
