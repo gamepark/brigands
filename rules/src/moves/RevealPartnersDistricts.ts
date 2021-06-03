@@ -17,11 +17,13 @@ export default RevealPartnersDistricts
 
 export function revealPartnersDistricts(state:GameState | GameView){
     state.phase = Phase.Solving
+    state.districtResolved = 0;
 }
 
 export function revealPartnersDistrictsInView(state:GameView, move:RevealPartnersDistrictsView){
     state.players.filter(isThiefState).forEach((p, index) => {
         p.partner = move.partnersArray[index]
     })
+    state.districtResolved = 0;
     state.phase = Phase.Solving
 }
