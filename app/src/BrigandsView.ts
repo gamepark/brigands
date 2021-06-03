@@ -1,17 +1,13 @@
 import GameView from '@gamepark/brigands/GameView'
-import {drawCardInPlayerView, drawCardInView, isDrawCardView} from '@gamepark/brigands/moves/DrawCard'
 import { drawEventInView } from '@gamepark/brigands/moves/DrawEvent'
+import { moveOnNextPhase } from '@gamepark/brigands/moves/MoveOnNextPhase'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
-import {spendGold} from '@gamepark/brigands/moves/SpendGold'
+import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
 import { tellYouAreReady } from '@gamepark/brigands/moves/TellYouAreReady'
 import {Game} from '@gamepark/rules-api'
 
-/**
- * This class is useful when the game has "IncompleteInformation" (or "SecretInformation").
- * It allows to handle, in a different way than the backend side, the moves that involve hidden information.
- */
 export default class BrigandsView implements Game<GameView, MoveView> {
   state: GameView
 
@@ -44,6 +40,10 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return placePartnerInView(this.state,move)
       case MoveType.TellYouAreReady:
         return tellYouAreReady(this.state,move)
+      case MoveType.MoveOnNextPhase:
+        return moveOnNextPhase(this.state)
+      case MoveType.PlacePatrol:
+        return placePatrol(this.state, move)
     }
   }
 

@@ -6,6 +6,7 @@ enum MoveType {
   DrawEvent,
   PlacePartner,
   TellYouAreReady,
+  MoveOnNextPhase,
   PlaceToken,
   PlacePatrol,
   UseStealToken,
@@ -14,8 +15,6 @@ enum MoveType {
   ResolvePatrols,
   MoveOnDistrictResolved,
   ResolveDistrict,
-  SpendGold,
-  DrawCard
 }
 
 export default MoveType

@@ -2,6 +2,7 @@
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
@@ -14,7 +15,8 @@ import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
-import PartnerInHand from "src/utils/PartnerInHand";
+import Button from "../utils/Button";
+import PartnerInHand from "../utils/PartnerInHand";
 import AvatarPanel from "./AvatarPanel";
 import DistrictCard from "./DistrictCard";
 import PartnerComponent from "./PartnerComponent";
@@ -37,16 +39,14 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
-    console.log('getPartnerView de', player.role, " : ", player.partner)
-
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
-
-    console.log(cardsPlayed)
 
     function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
         return phase === Phase.Planning && role === playerId
     }
+
+    const play = usePlay<Move>()
 
     return(
 
@@ -127,7 +127,11 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                               draggableItem={{partnerNumber:index}}
                               
             />
-        )}   
+        )}
+
+        {phase === Phase.Planning && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
+        && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        }   
                 
         </>
 
@@ -136,6 +140,15 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     )
 
 }
+
+const validationButtonPosition = css`
+    position:absolute;
+    width:15%;
+    height:25%;
+    top:-125%;
+    right:16%;
+    font-size:4em;
+`
 
 const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
 top:${prince*(-80)+index*8}%;

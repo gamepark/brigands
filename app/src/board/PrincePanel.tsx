@@ -2,7 +2,10 @@
 import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import PlayerState, { PrinceState } from "@gamepark/brigands/PlayerState";
-import { usePlayer } from "@gamepark/react-client";
+import District from "@gamepark/brigands/types/District";
+import Phase from "@gamepark/brigands/types/Phase";
+import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import Images from "../utils/Images";
@@ -11,14 +14,18 @@ import PatrolToken from "./PatrolToken";
 
 type Props = {
     player:PrinceState
+    city:District[]
 }  & HTMLAttributes<HTMLDivElement>
 
-const PrincePanel : FC<Props> = ({player, ...props}) => {
+const PrincePanel : FC<Props> = ({player, city, ...props}) => {
 
+    const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
     return(
+
+        <>
 
         <div {...props} css={princePanelStyle}>
 
@@ -30,24 +37,27 @@ const PrincePanel : FC<Props> = ({player, ...props}) => {
 
             </div>
 
-            <div css={patrolsPosition}>
-
-                {player.patrols.map((patrol,index) => 
-                    patrol !==-1 &&  <PatrolToken key={index}
-                                                  css={patrolTokenSize}
-                                                  isMercenary={index===2}/>
-                )}
-
-            </div>
-
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
-            {[...Array(Math.floor(player.victoryPoints/10))].map((vp, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={victoryTokenPosition(i)} draggable={false} />)}
+            {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={victoryTokenPosition(i)} draggable={false} />)}
             
             {decomposeGold(player.gold).map((coin, index) =>
-                [...Array(coin)].map((c, i) => <img key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} draggable={false} />)
+                [...Array(coin)].map((_, i) => <img key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} draggable={false} />)
             )}
 
         </div>
+
+
+        {player.patrols.map((patrol,index) => 
+            <PatrolToken key={index}
+                         css={[patrolTokenSize, 
+                               patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
+                               
+                        ]}
+                         isMercenary={index===2}/>
+        )}
+
+
+        </>
 
     )
 
@@ -111,20 +121,21 @@ border: 0.5em solid white;
 border-radius:10% / 35%;
 `
 
-const patrolsPosition = css`
-    position:absolute;
-    top:2%;
-    left:5%;
-    width:90%;
-    height:15%;
-
-    display:flex;
-    flex-direction:row;
-    justify-content:space-around;
+const patrolInHand = (index:number, isPrince:number) => css`
+    top:${8+isPrince*55}%;
+    left:${index !== 2 ? 32+index*28 : 46}%;
 `
+
+const patrolInDistrict = (district:number) => css`
+    top:55.5%;
+    left:${district !== 0 ? 24+(district-1)*11.4 : 8.1}%;
+`
+
 const patrolTokenSize = css`
-    height:100%;
-    width:10%;
+    position:absolute;
+    z-index:1;
+    height:7%;
+    width:3%;
 `
 
 const princePanelStyle = css`

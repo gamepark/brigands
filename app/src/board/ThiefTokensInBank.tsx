@@ -61,6 +61,7 @@ flex-direction:row;
 const tokenSize = css`
 height:15%;
 width:100%;
+margin:-0.4em 0em;
 `
 
 const tokenPlayerDivPosition = (player:number) => css`

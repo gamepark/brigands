@@ -26,16 +26,12 @@ type Props = {
 } & Omit<HTMLAttributes<HTMLDivElement>, 'role'>
 
 const PartnerComponent : FC<Props> = ({role, tokens, partnerNumber, phase, draggable = false, type='', draggableItem, ...props}) => {
-    console.log(partnerNumber)
-    console.log(tokens.steal.find(token => token === partnerNumber))
 
     const play = usePlay<Move>()
     const item = {...draggableItem}
     const onDrop = (move:PlacePartner) => {
         play(move)
     }
-
-    console.log(item)
 
     return (
         <Draggable canDrag={draggable}

@@ -24,6 +24,7 @@ export type PlacePartnerView = {
 export default PlacePartner
 
 export function placePartner(state:GameState | GameView, move:PlacePartner){
+    
     (state.players.filter(isThiefState).find(p => p.role === move.playerId)! as ThiefState)
         .partner[move.partnerNumber].district = move.district
 }

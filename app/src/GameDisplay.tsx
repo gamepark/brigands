@@ -27,7 +27,9 @@ export default function GameDisplay({game}: Props) {
                     top:0;left:0;width:100%;height:100%;`}>
         
         <PrincePanel css = {[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
-                     player = {players.find(isPrinceState)!}/>
+                     player = {players.find(isPrinceState)!}
+                     city={game.city}
+                     />
 
 
         <WeekCardsPanel css = {[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}

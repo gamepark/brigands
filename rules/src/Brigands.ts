@@ -1,18 +1,13 @@
 import {GameSpeed, SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import GameState from './GameState'
 import GameView from './GameView'
-import {drawCard} from './moves/DrawCard'
 import Move from './moves/Move'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
-import {spendGold} from './moves/SpendGold'
 import {isGameOptions, BrigandsOptions, BrigandsPlayerOptions} from './BrigandsOptions'
-import PlayerColor from './PlayerColor'
 import Phase from './types/Phase'
 import PlayerState, { isPrinceState, isThiefState, ThiefState } from './PlayerState'
 import DistrictName from './types/DistrictName'
-import Token from './types/Token'
-import TokenAction from './types/TokenAction'
 import District from './types/District'
 import { shuffle } from 'lodash'
 import { EventArray } from './material/Events'
@@ -22,6 +17,8 @@ import { getPartnersView } from './types/Partner'
 import { drawEvent } from './moves/DrawEvent'
 import PlacePartner, { placePartner } from './moves/PlacePartner'
 import { tellYouAreReady } from './moves/TellYouAreReady'
+import { moveOnNextPhase } from './moves/MoveOnNextPhase'
+import PlacePatrol, { placePatrol } from './moves/PlacePatrol'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -47,23 +44,52 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
   }
 
+
+
   /**
    * @return True when game is over
    */
   isOver(): boolean {
     return this.state.phase === undefined
   }
+  isActive(playerId:PlayerRole):boolean{
+    const player = this.state.players.find(p => p.role === playerId)
+    if (!player) return false
+    switch (this.state.phase){
+      case Phase.Planning:
+        return isThiefState(player) && player.isReady === false
+      case Phase.Patrolling:
+        return this.state.players.find(isPrinceState)!.abilities[1] === false ? isPrinceState(player) && player.isReady === false : isThiefState(player) && player.isReady == false
+      default :
+        return false
+      }
+  }
 
   getLegalMoves(role:PlayerRole): Move[] {
     const player = this.state.players.find(p => p.role === role)
-    if (player === undefined || isPrinceState(player)){
+    if (player === undefined){
       return []
-    } else {
+    } else if (isPrinceState(player)){
+      if (this.state.phase === Phase.Patrolling){
+        if (player.patrols.some(pat => pat === -1)){
+          const placePatrolsMoves:PlacePatrol[] = []
+          for (let i=1;i<8;i++){
+            player.patrols.forEach((pat, index) => pat === undefined && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+          }
+          return placePatrolsMoves
+        } else {
+          return [{type:MoveType.TellYouAreReady,playerId:player.role}]
+        }
+
+      } else {
+        return []
+      }
+    } else {    //isThief
       if (this.state.phase === Phase.Planning){
         if(player.partner.some(part => part.district === undefined)){
           const placePartnersMoves:PlacePartner[] = []
-          for (let i=2;i<7;i++){
-            player.partner.forEach((_, index) => placePartnersMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index}))
+          for (let i=2;i<8;i++){
+            player.partner.forEach((part, index) => part.district === undefined && placePartnersMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index}))
           }
           return placePartnersMoves
         } else {
@@ -88,6 +114,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return placePartner(this.state, move)
       case MoveType.TellYouAreReady:
         return tellYouAreReady(this.state, move)
+      case MoveType.MoveOnNextPhase:
+        return moveOnNextPhase(this.state)
+      case MoveType.PlacePatrol:
+        return placePatrol(this.state, move)
     }
   }
 
@@ -99,6 +129,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
       if (this.state.phase === Phase.NewDay){
         return {type:MoveType.DrawEvent}
+      }
+      if (this.state.phase === Phase.Planning &&  (this.state.players.filter(isThiefState) as ThiefState[]).every(p => p.isReady === true)){
+        return {type:MoveType.MoveOnNextPhase}
+      }
+      if (this.state.phase === Phase.Patrolling && this.state.players.find(isPrinceState)!.isReady === true){
+        return {type:MoveType.MoveOnNextPhase}
       }
       
 
@@ -186,7 +222,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[],kick:[-1,-1],move:[-1,-1]},
+          tokens:{steal:[],kick:[],move:[]},
         }
     
     )) 
