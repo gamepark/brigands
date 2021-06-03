@@ -10,7 +10,8 @@ import { usePlayerId } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
-import PartnerInHand from "src/utils/PartnerInHand"
+import PartnerInHand from "../utils/PartnerInHand"
+import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import PartnerComponent from "./PartnerComponent"
 import PatrolToken from "./PatrolToken"
@@ -31,16 +32,25 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
     const {t} = useTranslation()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
-        accept: ["PartnerInHand"],
-        canDrop: (item: PartnerInHand) => {
-            return district.name !== DistrictName.Jail
+        accept: ["PartnerInHand","PatrolInHand"],
+        canDrop: (item: PartnerInHand | PatrolInHand) => {
+            if(isPatrolInHand(item)){
+                return !prince.patrols.includes(district.name)
+            } else {
+                return district.name !== DistrictName.Jail
+            }
+            
         },
         collect: monitor => ({
           canDrop: monitor.canDrop(),
           isOver: monitor.isOver()
         }),
-        drop: (item: PartnerInHand) => {
-            return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
+        drop: (item: PartnerInHand | PatrolInHand) => {
+            if (isPatrolInHand(item)){
+                return {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
+            } else {
+                return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
+            }
         }
       })
 
@@ -57,10 +67,6 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
                     )}
 
                </div>
-            }
-
-            {(phase === Phase.Patrolling || phase === Phase.ThiefArrival || phase === Phase.Solving) 
-                && prince.patrols.findIndex(d => d === district.name) !== -1 && <PatrolToken css={patrolPosition} isMercenary = {prince.patrols.findIndex(d => d === district.name) === 2} />
             }
 
             {(phase === Phase.ThiefArrival || phase === Phase.Solving) 

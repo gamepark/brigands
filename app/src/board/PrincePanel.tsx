@@ -15,13 +15,18 @@ import PatrolToken from "./PatrolToken";
 type Props = {
     player:PrinceState
     city:District[]
+    phase:Phase|undefined
 }  & HTMLAttributes<HTMLDivElement>
 
-const PrincePanel : FC<Props> = ({player, city, ...props}) => {
+const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
+
+    function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+        return phase === Phase.Patrolling && role === playerId
+    }
 
     return(
 
@@ -53,7 +58,11 @@ const PrincePanel : FC<Props> = ({player, city, ...props}) => {
                                patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
                                
                         ]}
-                         isMercenary={index===2}/>
+                         isMercenary={index===2}
+                         draggable={isDraggable(phase, player.role)}
+                         type={'PatrolInHand'}
+                         draggableItem={{patrolNumber:index}}
+                         />
         )}
 
 

@@ -12,5 +12,5 @@ type PlacePatrol = {
 export default PlacePatrol
 
 export function placePatrol(state:GameState|GameView, move:PlacePatrol){
-    (state.players.find(isPrinceState)! as PrinceState).patrols[move.patrolNumber] === move.district
+    (state.players.find(isPrinceState)! as PrinceState).patrols[move.patrolNumber] = move.district
 }

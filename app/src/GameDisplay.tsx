@@ -29,6 +29,7 @@ export default function GameDisplay({game}: Props) {
         <PrincePanel css = {[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
                      player = {players.find(isPrinceState)!}
                      city={game.city}
+                     phase={game.phase}
                      />
 
 

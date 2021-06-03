@@ -74,7 +74,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         if (player.patrols.some(pat => pat === -1)){
           const placePatrolsMoves:PlacePatrol[] = []
           for (let i=1;i<8;i++){
-            player.patrols.forEach((pat, index) => pat === undefined && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+            player.patrols.forEach((pat, index) => pat === -1 && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
           }
           return placePatrolsMoves
         } else {
