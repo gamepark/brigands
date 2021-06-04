@@ -1,11 +1,10 @@
 import { css } from "@emotion/react"
 import MoveType from "@gamepark/brigands/moves/MoveType"
-import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState"
+import { PrinceState } from "@gamepark/brigands/PlayerState"
 import District from "@gamepark/brigands/types/District"
 import DistrictName from "@gamepark/brigands/types/DistrictName"
 import Phase from "@gamepark/brigands/types/Phase"
 import PlayerRole from "@gamepark/brigands/types/PlayerRole"
-import TokenAction from "@gamepark/brigands/types/TokenAction"
 import { usePlayerId } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
@@ -13,10 +12,7 @@ import { useTranslation } from "react-i18next"
 import PartnerInHand from "../utils/PartnerInHand"
 import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
-import PartnerComponent from "./PartnerComponent"
-import PatrolToken from "./PatrolToken"
 import {decomposeGold, getCoin} from './PrincePanel'
-import ThiefToken from "./ThiefToken"
 
 /** @jsxImportSource @emotion/react */
 
@@ -24,6 +20,7 @@ type Props = {
     district:District
     prince:PrinceState
     phase:Phase | undefined
+
 } & HTMLAttributes<HTMLDivElement>
 
 const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
@@ -83,50 +80,6 @@ transition : border 0.5s linear;
 const isOverStyle = css`
 border:1em gold solid;
 transition : border 0.5s linear;
-`
-
-const tokenSize = css`
-width:50%;
-height:100%;
-margin:0em -1.8em;
-`
-
-const thiefTokensDisplay = css`
-position:absolute;
-width:55%;
-height:20%;
-top:75%;
-left:40%;
-
-display:flex;
-flex-direction:row;
-justify-content:center;
-`
-
-const partnerDisplay = css`
-position:relative;
-width:90%;
-height:60%;
-top:15%;
-left:5%;
-
-display:flex;
-flex-direction:row;
-justify-content:center;
-flex-wrap:wrap;
-`
-
-const partnerSize = css`
-width:16%;
-height:25%;
-`
-
-const patrolPosition = css`
-position:relative;
-top:70%;
-left:0%;
-width:30%;
-height:30%;
 `
 
 const goldOnTreasureDisplay = css`

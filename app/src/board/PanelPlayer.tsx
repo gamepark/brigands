@@ -5,12 +5,10 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
-import DistrictName from "@gamepark/brigands/types/DistrictName";
 import { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
-import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
@@ -263,20 +261,6 @@ const panelPlayerStyle = (color:string) => css`
 border:0.5em solid ${color};
 border-radius:10%;
 `
-
-function getTokenActionArray(tokens:Token, district:DistrictName):TokenAction[]{
-    const result:TokenAction[] = []
-    tokens.steal.forEach(token => {
-        if (token === district){result.push(TokenAction.Stealing)}
-    })
-    tokens.kick.forEach(token => {
-        if (token === district){result.push(TokenAction.Kicking)}
-    })
-    tokens.move.forEach(token => {
-        if (token === district){result.push(TokenAction.Fleeing)}
-    })
-    return result
-}
 
 export function getPlayerColor(role:PlayerRole):string{
     switch(role){

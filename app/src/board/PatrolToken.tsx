@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
-import PlacePatrol, { placePatrol } from "@gamepark/brigands/moves/PlacePatrol";
+import PlacePatrol from "@gamepark/brigands/moves/PlacePatrol";
 import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";

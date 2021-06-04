@@ -21,6 +21,7 @@ import { moveOnNextPhase } from './moves/MoveOnNextPhase'
 import PlacePatrol, { placePatrol } from './moves/PlacePatrol'
 import { revealPartnersDistricts } from './moves/RevealPartnersDistricts'
 import { ThiefView } from './types/Thief'
+import { resolveDistrict } from './moves/ResolveDistrict'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -122,6 +123,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return placePatrol(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistricts(this.state)
+      case MoveType.ResolveDistrict:
+        return resolveDistrict(this.state,move)
     }
   }
 
@@ -140,6 +143,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.phase === Phase.Patrolling && this.state.players.find(isPrinceState)!.isReady === true){
         return {type:MoveType.RevealPartnersDistricts}
       }
+      if (this.state.districtResolved !== undefined && (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern || this.state.city[this.state.districtResolved].name !== DistrictName.Harbor)) {
+        return {type:MoveType.ResolveDistrict, district:this.state.city[this.state.districtResolved].name}
+      } else {
+        //Move On District Resolve when all players are ready
+      }
+      
       
 
     return

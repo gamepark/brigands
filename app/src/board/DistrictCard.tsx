@@ -2,13 +2,8 @@
 import { css } from "@emotion/react";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import Token from "@gamepark/brigands/types/Token";
-import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { usePlayerId } from "@gamepark/react-client";
 import { FC } from "react";
 import Images from "../utils/Images";
-import PartnerComponent from "./PartnerComponent";
-import ThiefToken from "./ThiefToken";
 
 type Props = {
     district?:DistrictName
@@ -23,20 +18,6 @@ const DistrictCard : FC<Props> = ({district, color}) => {
         </div>
     )
 }
-
-const partnerDisplay = css`
-height:100%;
-width:45%;
-display:flex;
-flex-direction:column;
-`
-
-const tokensDisplay = css`
-height:100%;
-width:45%;
-display:flex;
-flex-direction:column;
-`
 
 const districtCardStyle = (image:string) => css`
 background-image: url(${image});

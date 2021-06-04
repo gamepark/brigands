@@ -9,7 +9,8 @@ const Event1: Event = {
 const Event2: Event = {
     district:DistrictName.CityHall,
     goldForPrince:3,
-    goldForTreasure:4
+    goldForTreasure:4,
+    numberOfDice:2
 }
 const Event3: Event = {
     district:DistrictName.Tavern,
@@ -44,7 +45,8 @@ const Event8: Event = {
 const Event9: Event = {
     district:DistrictName.CityHall,
     goldForPrince:4,
-    goldForTreasure:3
+    goldForTreasure:3,
+    numberOfDice:1
 }
 const Event10: Event = {
     district:DistrictName.Tavern,

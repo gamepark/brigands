@@ -46,6 +46,7 @@ export default function GameDisplay({game}: Props) {
               city = {game.city}
               phase = {game.phase}
               prince = {players.find(isPrinceState)!}
+              districtResolved = {game.districtResolved}
               />
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>

@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
-import PlayerState, { PrinceState } from "@gamepark/brigands/PlayerState";
+import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";

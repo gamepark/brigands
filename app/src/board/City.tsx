@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from "@emotion/react";
-import MoveType from "@gamepark/brigands/moves/MoveType";
-import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
+import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Phase from "@gamepark/brigands/types/Phase";
 import { FC, HTMLAttributes } from "react";
-import { useDrop } from "react-dnd";
-import PartnerInHand from "src/utils/PartnerInHand";
 import DistrictTile from "./DistrictTile";
 
 
@@ -16,10 +13,11 @@ type Props = {
     city:District[]
     phase:Phase | undefined
     prince:PrinceState
+    districtResolved:number|undefined
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, ...props}) => {
 
     return(
 
@@ -28,12 +26,11 @@ const City : FC<Props> = ({city, phase, prince, ...props}) => {
             {city.map((district, index) => 
             
                 <DistrictTile key={index}
-                              css={districtSize(district.name === DistrictName.Jail)}
+                              css={[districtSize(district.name === DistrictName.Jail), index === districtResolved && resolvingStyle]}
                               district={district}
                               phase={phase}
-                              prince={prince}
-                          
-                          />
+                              prince={prince}                         
+                />
             
             )}
 
@@ -42,6 +39,10 @@ const City : FC<Props> = ({city, phase, prince, ...props}) => {
     )
 
 }
+
+const resolvingStyle = css`
+outline:red 0.5em solid;
+`
 
 const districtSize = (isJail:boolean) => css`
 width:${isJail ? 17.6 : 12.6}%;
