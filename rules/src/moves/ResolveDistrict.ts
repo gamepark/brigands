@@ -5,6 +5,7 @@ import { EventArray } from "../material/Events";
 import { isThiefState, ThiefState } from "../PlayerState";
 import DistrictName from "../types/DistrictName";
 import Partner from "../types/Partner";
+import Phase from "../types/Phase";
 import PlayerRole from "../types/PlayerRole";
 import TokenAction from "../types/TokenAction";
 import MoveType from "./MoveType";
@@ -126,6 +127,11 @@ export function resolveDistrict(state:GameState | GameView, move:ResolveDistrict
 }
 
 function moveOnNextDistrict(state:GameState | GameView, districtResolved:number){
-    districtResolved === 6 ? delete state.districtResolved : state.districtResolved! ++
+    if (districtResolved === 6){
+        delete state.districtResolved 
+        state.phase = Phase.NewDay
+    } else {
+        state.districtResolved! ++
+    }
 }
 

@@ -21,7 +21,9 @@ import { moveOnNextPhase } from './moves/MoveOnNextPhase'
 import PlacePatrol, { placePatrol } from './moves/PlacePatrol'
 import { revealPartnersDistricts } from './moves/RevealPartnersDistricts'
 import { ThiefView } from './types/Thief'
-import { resolveDistrict } from './moves/ResolveDistrict'
+import ResolveDistrict, { resolveDistrict } from './moves/ResolveDistrict'
+import TokenAction from './types/TokenAction'
+import Token from './types/Token'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -63,6 +65,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return isThiefState(player) && player.isReady === false
       case Phase.Patrolling:
         return this.state.players.find(isPrinceState)!.abilities[1] === false ? isPrinceState(player) && player.isReady === false : isThiefState(player) && player.isReady == false
+      case Phase.Solving:
+        if (!isThiefState(player) || (this.state.districtResolved !== DistrictName.Harbor && this.state.districtResolved !== DistrictName.Tavern)){
+          return false
+        } else {
+          return player.partner.some(p => p.district === this.state.districtResolved)
+        }
       default :
         return false
       }
@@ -97,6 +105,59 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           return placePartnersMoves
         } else {
           return [{type:MoveType.TellYouAreReady, playerId:player.role}]
+        }
+      } else if (this.state.phase === Phase.Solving && this.state.districtResolved !== undefined ){
+        if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor){
+          return []
+        } else {
+          if (this.state.districtResolved === DistrictName.Tavern){
+            const tavernMoves:ResolveDistrict[] = []
+            for (let i=1;i<(this.state.players.find(p => p.role === role)!.gold);i++){
+              tavernMoves.push({type:MoveType.ResolveDistrict, district:DistrictName.Tavern, role, gold:i})
+            }
+            return tavernMoves
+          } else {
+            const harborMoves:ResolveDistrict[] = []
+            const takeableTokens:TokenAction[] = getTokensInBank(this.state.players.find(p => p.role === role) as ThiefState)
+            if (EventArray[this.state.event].district === DistrictName.Harbor){
+
+              if (takeableTokens.length<=2){
+                if (takeableTokens.length <= 1){
+                  if (takeableTokens.length === 0){
+                    return []
+                  }
+                  return [{type:MoveType.ResolveDistrict, district:DistrictName.Harbor, role, tokenActionArray:[takeableTokens[0]]}]
+                }
+                return [{type:MoveType.ResolveDistrict, district:DistrictName.Harbor, role, tokenActionArray:[takeableTokens[0], takeableTokens[1]]}]
+              } 
+              for (let i=0;i<=harborMoves.length;i++){
+                for (let j=0;j<=harborMoves.length;j++){
+                  for (let k=0;k<=harborMoves.length;k++){
+                    if(i!==j && i!==k && j!==k){
+                      harborMoves.push({type:MoveType.ResolveDistrict, district:DistrictName.Harbor, role, tokenActionArray:[takeableTokens[i], takeableTokens[j], takeableTokens[k]]})
+                    }
+                  }
+                }
+              }
+              return harborMoves
+
+            } else {
+              if (takeableTokens.length<=1){
+                if (takeableTokens.length === 0){
+                  return []
+                }
+                return [{type:MoveType.ResolveDistrict, district:DistrictName.Harbor, role, tokenActionArray:[takeableTokens[0]]}]
+              } 
+              for (let i=0;i<=harborMoves.length;i++){
+                for (let j=0;j<=harborMoves.length;j++){
+                  if(i!==j){
+                    harborMoves.push({type:MoveType.ResolveDistrict, district:DistrictName.Harbor, role, tokenActionArray:[takeableTokens[i], takeableTokens[j]]})
+                  }
+                }
+              }
+            }
+            return harborMoves
+          }
         }
       } else {
         return []
@@ -143,11 +204,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.phase === Phase.Patrolling && this.state.players.find(isPrinceState)!.isReady === true){
         return {type:MoveType.RevealPartnersDistricts}
       }
-      if (this.state.districtResolved !== undefined && (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern || this.state.city[this.state.districtResolved].name !== DistrictName.Harbor)) {
+      if (this.state.districtResolved !== undefined && (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor)) {
         return {type:MoveType.ResolveDistrict, district:this.state.city[this.state.districtResolved].name}
-      } else {
-        //Move On District Resolve when all players are ready
-      }
+      } 
+
       
       
 
@@ -264,4 +324,31 @@ function setupCity():District[]{
 function setupEventDeck():number[]{
   const result = shuffle(Array.from(EventArray.keys()))
   return result.slice(0,6)
+}
+
+function getTokensInBank(thief:ThiefState):TokenAction[]{
+  const result:TokenAction[] = []
+  if (thief.tokens.steal.length > 0){
+    result.push(TokenAction.Stealing)
+    if (thief.tokens.steal.length > 1){
+      result.push(TokenAction.Stealing)
+    }
+  }
+
+  if (thief.tokens.kick.length > 0){
+    result.push(TokenAction.Kicking)
+    if (thief.tokens.kick.length > 1){
+      result.push(TokenAction.Kicking)
+    }
+  }
+
+  if (thief.tokens.move.length > 0){
+    result.push(TokenAction.Fleeing)
+    if (thief.tokens.move.length > 1){
+      result.push(TokenAction.Fleeing)
+    }
+  }
+
+  return result
+
 }
