@@ -16,6 +16,11 @@ enum MoveType {
   ResolvePatrols,
   MoveOnDistrictResolved,
   ResolveDistrict,
+
+  ThrowDice,
+  GainGold,
+  TakeBackPartner,
+  SpareGoldOnTreasure,
 }
 
 export default MoveType

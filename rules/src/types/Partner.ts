@@ -4,7 +4,8 @@ import Token from "./Token"
 import TokenAction from "./TokenAction"
 
 type Partner = {
-    district?: DistrictName  
+    district?: DistrictName
+    solvingDone?:boolean  
 }
 
 export type PartnerView = {

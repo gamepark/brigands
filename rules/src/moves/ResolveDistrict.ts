@@ -16,11 +16,13 @@ type ResolveDistrict = {
     role?:PlayerRole
     gold?:number
     tokenActionArray?:TokenAction[]
+    diceResult?:number[]
 }
 
 export default ResolveDistrict
 
 export function resolveDistrict(state:GameState | GameView, move:ResolveDistrict){
+    console.log("-----------------Dans ResolveDistrict !-----------------")
     switch(move.district){
         case DistrictName.Jail:
             (state.players.filter(isThiefState) as ThiefState[]).forEach(player => 
@@ -49,9 +51,16 @@ export function resolveDistrict(state:GameState | GameView, move:ResolveDistrict
 
         case DistrictName.Market:
             const isMarketEvent:number = EventArray[state.event].district === DistrictName.Market ? 1 : 0 ;
-            (state.players.filter(isThiefState) as ThiefState[]).forEach(player => 
-                player.partner.filter(partner => partner.district === DistrictName.Market).forEach(partner => {player.gold += rollDice(1+isMarketEvent)[0] ; delete partner.district})            // Back in hand player
-            )
+            (state.players.filter(isThiefState) as ThiefState[]).forEach(player => {
+                player.partner.filter(partner => partner.district === DistrictName.Market).forEach(partner => {
+                    state.city.find(c => c.name === DistrictName.Market)!.dice = rollDice(1+isMarketEvent)
+                    player.gold += state.city.find(c => c.name === DistrictName.Market)!.dice![0]
+                    delete partner.district
+                    console.log("player :",player.role,"get",state.city.find(c => c.name === DistrictName.Market)!.dice![0],"gold")
+                    delete state.city.find(c => c.name === DistrictName.Market)!.dice
+                })            
+                
+            })
             moveOnNextDistrict(state, state.districtResolved!)
             break
 
@@ -62,15 +71,17 @@ export function resolveDistrict(state:GameState | GameView, move:ResolveDistrict
                 player.partner.forEach(partner => partner.district === DistrictName.Palace && partnersOnPalace.push({partner, role:player.role})))
             if (partnersOnPalace.length>(2 + isPalaceEvent)){
                 for (const item of partnersOnPalace){
-                    (state.players.filter(isThiefState) as ThiefState[]).find(p => p.role === item.role)!.partner.find(p => p.district === item.partner.district)!.district = DistrictName.Jail     // Back in Hand player
+                    (state.players.filter(isThiefState) as ThiefState[]).find(p => p.role === item.role)!.partner.find(p => p.district === item.partner.district)!.district = DistrictName.Jail    
                 }
             } else {
                 for (const item of partnersOnPalace){
+                    console.log("+5 gold for : ", (state.players.filter(isThiefState) as ThiefState[]).find(p => p.role === item.role)!) ;
                     (state.players.filter(isThiefState) as ThiefState[]).find(p => p.role === item.role)!.gold += 5
                     delete (state.players.filter(isThiefState) as ThiefState[]).find(p => p.role === item.role)!.partner.find(p => p.district === item.partner.district)!.district
                 }
+                
             }
-            moveOnNextDistrict(state, state.districtResolved!)
+            (moveOnNextDistrict(state, state.districtResolved!))
             break
 
         case DistrictName.Treasure:
