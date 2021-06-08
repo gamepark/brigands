@@ -5,7 +5,6 @@ import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
-import { resolveDistrict } from '@gamepark/brigands/moves/ResolveDistrict'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import { tellYouAreReady } from '@gamepark/brigands/moves/TellYouAreReady'
 import {Game} from '@gamepark/rules-api'
@@ -48,8 +47,6 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return placePatrol(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
-      case MoveType.ResolveDistrict:
-        return resolveDistrict(this.state,move)
     }
   }
 
