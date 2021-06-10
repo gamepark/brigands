@@ -14,5 +14,6 @@ type BetGold = {
 export default BetGold
 
 export function betGold(state:GameState | GameView, move:BetGold){
-    (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Tavern)!.goldForTavern = move.gold
+    console.log("betGold, player : ",(state.players.find(p => p.role === move.role) as ThiefState));
+    (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)!.goldForTavern = move.gold
 }

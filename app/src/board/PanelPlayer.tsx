@@ -37,8 +37,6 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
-    console.log(player.partner)
-
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
 

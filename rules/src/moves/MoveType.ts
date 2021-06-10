@@ -21,7 +21,8 @@ enum MoveType {
   SpareGoldOnTreasure,
   SolvePartner,
   BetGold,
-  TakeToken
+  TakeToken,
+  ArrestPartners
 }
 
 export default MoveType

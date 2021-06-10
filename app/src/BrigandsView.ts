@@ -1,12 +1,21 @@
 import GameView from '@gamepark/brigands/GameView'
+import { arrestPartners } from '@gamepark/brigands/moves/ArrestPartners'
+import { betGold } from '@gamepark/brigands/moves/BetGold'
 import { drawEventInView } from '@gamepark/brigands/moves/DrawEvent'
+import { gainGold } from '@gamepark/brigands/moves/GainGold'
+import { moveOnDistrictResolved } from '@gamepark/brigands/moves/MoveOnDistrictResolved'
 import { moveOnNextPhase } from '@gamepark/brigands/moves/MoveOnNextPhase'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
+import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
+import { spareGoldOnTreasure } from '@gamepark/brigands/moves/SpareGoldOnTreasure'
+import { takeBackPartner } from '@gamepark/brigands/moves/TakeBackPartner'
+import { takeToken } from '@gamepark/brigands/moves/TakeToken'
 import { tellYouAreReady } from '@gamepark/brigands/moves/TellYouAreReady'
+import { throwDice } from '@gamepark/brigands/moves/ThrowDice'
 import {Game} from '@gamepark/rules-api'
 
 export default class BrigandsView implements Game<GameView, MoveView> {
@@ -47,6 +56,24 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return placePatrol(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
+      case MoveType.ThrowDice:
+        return throwDice(this.state, move)
+      case MoveType.TakeToken:
+        return takeToken(this.state, move)
+      case MoveType.TakeBackPartner:
+        return takeBackPartner(this.state, move)
+      case MoveType.SpareGoldOnTreasure:
+        return spareGoldOnTreasure(this.state, move)
+      case MoveType.SolvePartner:
+        return solvePartner(this.state, move)
+      case MoveType.GainGold:
+        return gainGold(this.state, move)
+      case MoveType.BetGold:
+        return betGold(this.state, move)
+      case MoveType.MoveOnDistrictResolved:
+        return moveOnDistrictResolved(this.state, move)
+      case MoveType.ArrestPartners:
+        return arrestPartners(this.state)
     }
   }
 

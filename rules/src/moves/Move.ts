@@ -12,9 +12,10 @@ import MoveOnDistrictResolved from './MoveOnDistrictResolved'
 import SolvePartner from './SolvePartner'
 import BetGold from './BetGold'
 import TakeToken from './TakeToken'
+import ArrestPartners from './ArrestPartners'
 
 type Move = DrawEvent | PlacePartner | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
-| ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken
+| ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
 
 // Moves to code !
 
