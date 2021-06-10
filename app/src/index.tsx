@@ -6,6 +6,7 @@ import normalize from 'emotion-normalize'
 import {StrictMode} from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+import brigandsAnimations from './BrigandsAnimations'
 import BrigandsView from './BrigandsView'
 import translations from './translations.json'
 
@@ -59,7 +60,12 @@ const style = css`
 
 ReactDOM.render(
   <StrictMode>
-    <GameProvider game="brigands" Rules={Brigands} RulesView={BrigandsView} optionsDescription={BrigandsOptionsDescription}>
+    <GameProvider game="brigands" 
+                  Rules={Brigands} 
+                  RulesView={BrigandsView} 
+                  optionsDescription={BrigandsOptionsDescription}
+                  animations={brigandsAnimations}
+                  >
       <App/>
     </GameProvider>
     <Global styles={[normalize, style]}/>
