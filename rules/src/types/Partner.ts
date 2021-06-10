@@ -9,6 +9,9 @@ type Partner = {
 
 export type PartnerView = {
     card:number
+    solvingDone?:boolean  
+    goldForTavern?:number
+    tokensTaken?:number
 }
 
 export function isPartnerView(partner:Partner | PartnerView):partner is PartnerView{

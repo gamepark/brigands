@@ -380,8 +380,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             partnersArray.push((player as ThiefState).partner)
           }
         })
-
         return {type:MoveType.RevealPartnersDistricts, partnersArray}
+        
       default:
         return move
     }

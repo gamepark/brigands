@@ -5,6 +5,7 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
+import DistrictName from "@gamepark/brigands/types/DistrictName";
 import { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
@@ -106,7 +107,9 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                 : cardsPlayed === 2
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
-                                            : partnerHandPosition(positionForPartners, index, numberOfThieves)           // Precise if Jail or Hand with partner.district
+                                            : partner.district === DistrictName.Jail
+                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
+                                                : partnerHandPosition(positionForPartners, index, numberOfThieves)        
                                         : isPartnerView(partner)
                                             ? test
                                             : partner.district === undefined
