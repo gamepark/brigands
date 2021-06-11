@@ -300,8 +300,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
               return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! , district:actualDistrict.name}
             } else {
               return {type:MoveType.SolvePartner, 
-                      thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! ,
-                      partnerNumber:(this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))!.partner.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!}
+                      thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))! ,
+                      partnerNumber:(this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!.partner.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!}
             }
 
           case DistrictName.Tavern :    // Actually simultaneous Phase, but can be better if sequatialized for animations ?
