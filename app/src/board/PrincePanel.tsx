@@ -31,7 +31,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
         return phase === Phase.Patrolling && role === playerId
     }
-
+ 
     return(
 
         <>
@@ -171,20 +171,22 @@ background-repeat: no-repeat;
 background-position: bottom;
 `
 
-export function decomposeGold(gold:number):number[]{
+export function decomposeGold(gold:number):number[]{   
     let quotient:number = 0;
     let rest:number = 0;
     const result = []
-    quotient = Math.floor(gold/5)
-    rest = gold%5
+    quotient = Math.floor(gold/5)                      
+    rest = gold%5                                       
     result.push(quotient)
     if (rest === 0){
-        result.push(0)
+        result.push(0)                                  
         result.push(0)
         return result
     } else {
-        quotient = Math.floor(rest/2)
-        rest = quotient%2
+        let gold2 = rest
+        quotient = Math.floor(gold2/2)   
+        rest = gold2%2  
+                        
         result.push(quotient)
         if (rest === 0){
             result.push(0)

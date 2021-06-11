@@ -22,5 +22,4 @@ export function betGold(state:GameState | GameView, move:BetGold){
     if (isNotThiefView(player)){
         player.gold -= move.gold
     }
-    console.log("fin BetGold, état player : ", (state.players.find(p => p.role === move.role) as ThiefState))
 }

@@ -25,8 +25,6 @@ export default GainGold
 
 export function gainGold(state:GameState | GameView, move:GainGold){
 
-    console.log("dans Gain Gold. Or gagné : ", move.gold)
-
     if (move.district === DistrictName.Treasure){
         if (state.city.find(d => d.name === DistrictName.Treasure)!.dice === undefined) {
             state.city.find(d => d.name === DistrictName.Treasure)!.dice = [move.gold]

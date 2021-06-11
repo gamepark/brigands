@@ -56,7 +56,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
         <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
             {district.gold !== undefined 
-            && <div css={goldOnTreasureDisplay}>
+            && <div css={goldOnTreasureDisplay}> 
                 
                     {            
                         decomposeGold(district.gold).map((coin, index) =>
