@@ -1,14 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
 import GameView from '@gamepark/brigands/GameView'
-import { isPrinceState, isThiefState } from '@gamepark/brigands/PlayerState'
+import { isPrinceState, isThiefState, ThiefState } from '@gamepark/brigands/PlayerState'
+import DistrictName from '@gamepark/brigands/types/DistrictName'
+import Phase from '@gamepark/brigands/types/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
+import { isNotThiefView, ThiefView } from '@gamepark/brigands/types/Thief'
 import { usePlayerId } from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
 import { useMemo } from 'react'
 import City from './board/City'
 import PanelPlayer from './board/PanelPlayer'
 import PrincePanel from './board/PrincePanel'
+import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 
@@ -20,6 +24,10 @@ export default function GameDisplay({game}: Props) {
 
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
+
+  function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined){
+    return phase === Phase.Solving && districtResolved === DistrictName.Tavern && role === playerId  && (playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern)
+  }
 
   return (
     <Letterbox css={letterBoxStyle} top={0}>
@@ -49,7 +57,12 @@ export default function GameDisplay({game}: Props) {
               phase = {game.phase}
               prince = {players.find(isPrinceState)!}
               districtResolved = {game.districtResolved}
-              />
+        />
+
+        <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
+                     css={isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name) ? displayTavernPopUp : hideTavernPopUp}
+                     player = {players.filter(isThiefState).find(isNotThiefView)!}
+        />
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 
@@ -72,6 +85,14 @@ export default function GameDisplay({game}: Props) {
     </Letterbox>
   )
 }
+
+const hideTavernPopUp = css`
+display:none;
+`
+
+const displayTavernPopUp = css`
+display:flex;
+`
 
 const thiefTokensInBankPosition = css`
 position:absolute;
