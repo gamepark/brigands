@@ -15,7 +15,6 @@ type TakeToken = {
 export default TakeToken
 
 export function takeToken(state:GameState | GameView, move:TakeToken){
-    console.log("TakeToken joué :", move)
     if ((state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Harbor)!.tokensTaken === undefined){
         (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Harbor)!.tokensTaken = 1
     } else {

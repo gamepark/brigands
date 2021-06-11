@@ -1,21 +1,44 @@
 /** @jsxImportSource @emotion/react */
 
 import { css } from "@emotion/react";
+import Move from "@gamepark/brigands/moves/Move";
+import TakeToken from "@gamepark/brigands/moves/TakeToken";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
+import { usePlay } from "@gamepark/react-client";
+import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
+import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
 import Images from "../utils/Images";
 
 type Props = {
     action:TokenAction
     role:PlayerRole
+
+    draggable?:boolean
+    type?:'ThiefTokenInBank'
+    draggableItem?:ThiefTokenInBank
 } & Omit<HTMLAttributes<HTMLDivElement>, 'role'>
 
-const ThiefToken : FC<Props> = ({action, role, ...props}) => {
+const ThiefToken : FC<Props> = ({action, role, draggable = false, type = '', draggableItem, ...props}) => {
+    
+    const play = usePlay<Move>()
+    const item = {...draggableItem}
+    const onDrop = (move:TakeToken) => {
+        play(move)
+    }
+    
     return(
-        <div {...props} css={thiefTokenStyle(getTokenBackground(action, role))}>
+        <Draggable {...props} 
+                   css={thiefTokenStyle(getTokenBackground(action, role))}
+                   canDrag={draggable}
+                   item={item}
+                   type={type}
+                   drop={onDrop}
+                   >
+                   
 
-        </div>
+        </Draggable>
     )
 }
 

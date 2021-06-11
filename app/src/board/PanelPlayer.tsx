@@ -13,7 +13,9 @@ import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
+import { useDrop } from "react-dnd";
 import { useTranslation } from "react-i18next";
+import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
 import Button from "../utils/Button";
 import PartnerInHand from "../utils/PartnerInHand";
 import AvatarPanel from "./AvatarPanel";
@@ -47,11 +49,25 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
     const play = usePlay<Move>()
 
+    const [{canDrop, isOver}, dropRef] = useDrop({
+        accept: ["ThiefTokenInBank"],
+        canDrop: (item: ThiefTokenInBank) => {
+            return playerId === player.role   
+        },
+        collect: monitor => ({
+          canDrop: monitor.canDrop(),
+          isOver: monitor.isOver()
+        }),
+        drop: (item: ThiefTokenInBank) => {
+            return {type:MoveType.TakeToken,role:playerId, token:item.tokenAction}
+        }
+      })
+
     return(
 
         <>
 
-        <div {...props} css={[panelPlayerStyle(getPlayerColor(player.role))]}>
+        <div {...props} ref={dropRef} css={[panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
 
             <AvatarPanel playerInfo={playerInfo} role={player.role} />
@@ -140,6 +156,18 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     )
 
 }
+
+const canDropStyle = css`
+background-color:red;
+opacity:0.4;
+transition : opacity 0.5s linear;
+`
+
+const isOverStyle = css`
+background-color:red;
+opacity:0.8;
+transition : opacity 0.5s linear;
+`
 
 const validationButtonPosition = css`
     position:absolute;

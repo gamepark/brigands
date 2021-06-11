@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { ThiefState } from "@gamepark/brigands/PlayerState";
+import DistrictName from "@gamepark/brigands/types/DistrictName";
+import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
@@ -10,11 +12,19 @@ import ThiefToken from "./ThiefToken";
 
 type Props = {
     players:(ThiefState | ThiefView)[]
+    phase?:Phase
+    resolvedDistrict?:DistrictName
 } & HTMLAttributes<HTMLDivElement>
 
-const ThiefTokensInBank : FC<Props> = ({players, ...props}) => {
+const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
+
+    function isDraggable(phase:Phase | undefined, isHarbor:boolean, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
+
+        return phase === Phase.Solving && isHarbor && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partner.some(p => p.district === DistrictName.Harbor)
+
+    }
 
     return(
 
@@ -23,24 +33,34 @@ const ThiefTokensInBank : FC<Props> = ({players, ...props}) => {
         {players.map((player,indexP) =>
 
             <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToEnd]} key={indexP}>
-                {getArray(player.tokens.kick).map((token, indexT) => 
+                {getArray(player.tokens.kick).map((_, indexT) => 
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
+                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    type={'ThiefTokenInBank'}
+                                    draggableItem={{tokenAction:TokenAction.Kicking}}
+
                         />
                     </div>
                 )}
-                {getArray(player.tokens.move).map((token, indexT) => 
+                {getArray(player.tokens.move).map((_, indexT) => 
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
+                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    type={'ThiefTokenInBank'}
+                                    draggableItem={{tokenAction:TokenAction.Fleeing}}
                         />
                     </div>
                 )}
-                {getArray(player.tokens.steal).map((token, indexT) => 
+                {getArray(player.tokens.steal).map((_, indexT) => 
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
+                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    type={'ThiefTokenInBank'}
+                                    draggableItem={{tokenAction:TokenAction.Stealing}}
                         />
                     </div>
                 )}
