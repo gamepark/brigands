@@ -17,5 +17,9 @@ export function arrestPartners(state:GameState | GameView){
             (state.players.find(isPrinceState)! as PrinceState).victoryPoints++
         }
     }))
+
+    if((state.players.find(isPrinceState)! as PrinceState).patrols.find(p => p === state.city[state.districtResolved!].name)){
+        (state.players.find(isPrinceState)! as PrinceState).patrols[(state.players.find(isPrinceState)! as PrinceState).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
+    }
 }
 

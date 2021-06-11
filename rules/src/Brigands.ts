@@ -214,6 +214,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.districtResolved !== undefined) {
         const districtEvent:Event = EventArray[this.state.event]
         const actualDistrict : District = this.state.city[this.state.districtResolved]
+
+        if (actualDistrict.name !== DistrictName.Jail && this.state.players.find(isPrinceState)!.patrols.find(p => p === actualDistrict.name) !== undefined){
+          return {type:MoveType.ArrestPartners}
+        }
+
         switch(actualDistrict.name){
 
           case DistrictName.Market :
