@@ -13,4 +13,5 @@ export default ThrowDice
 
 export function throwDice(state:GameState|GameView, move:ThrowDice){
     state.city.find(d => d.name === move.district)!.dice = move.dice
+    console.log("fin throw dice. Result : ", move.dice)
 }
