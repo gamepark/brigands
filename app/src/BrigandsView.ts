@@ -9,6 +9,7 @@ import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
+import { placeToken } from '@gamepark/brigands/moves/PlaceToken'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
 import { spareGoldOnTreasure } from '@gamepark/brigands/moves/SpareGoldOnTreasure'
@@ -48,6 +49,8 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return drawEventInView(this.state, move)
       case MoveType.PlacePartner:
         return placePartnerInView(this.state,move)
+      case MoveType.PlaceToken:
+        return placeToken(this.state, move)
       case MoveType.TellYouAreReady:
         return tellYouAreReady(this.state,move)
       case MoveType.MoveOnNextPhase:

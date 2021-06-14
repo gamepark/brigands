@@ -32,6 +32,7 @@ import { solvePartner } from './moves/SolvePartner'
 import { gainGold } from './moves/GainGold'
 import { moveOnDistrictResolved } from './moves/MoveOnDistrictResolved'
 import { arrestPartners } from './moves/ArrestPartners'
+import PlaceToken, { placeToken } from './moves/PlaceToken'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -114,11 +115,20 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     } else {    //isThief
       if (this.state.phase === Phase.Planning){
         if(player.partner.some(part => part.district === undefined)){
-          const placePartnersMoves:PlacePartner[] = []
+          const planningMoves:(PlacePartner|PlaceToken)[] = []
           for (let i=2;i<8;i++){
-            player.partner.forEach((part, index) => part.district === undefined && placePartnersMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index}))
+            player.partner.forEach((part, index) => {
+              if (part.district === undefined){
+                part.district === undefined && planningMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index})
+              } else {
+                const playableTokens:TokenAction[] = getTokensInHand(player)
+                for (let j=0;j<playableTokens.length;j++){
+                  planningMoves.push({type:MoveType.PlaceToken, partnerNumber:index, role:player.role, tokenAction:playableTokens[j]})
+                }
+              }
+            })
           }
-          return placePartnersMoves
+          return planningMoves
         } else {
           return [{type:MoveType.TellYouAreReady, playerId:player.role}]
         }
@@ -164,6 +174,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return drawEvent(this.state)
       case MoveType.PlacePartner:
         return placePartner(this.state, move)
+      case MoveType.PlaceToken:
+        return placeToken(this.state, move)
       case MoveType.TellYouAreReady:
         return tellYouAreReady(this.state, move)
       case MoveType.MoveOnNextPhase:
@@ -429,7 +441,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[],kick:[],move:[]},
+          tokens:{steal:[-1],kick:[-1],move:[-1]},
         }
     
     )) 
@@ -466,6 +478,20 @@ function setupCity():District[]{
 function setupEventDeck():number[]{
   const result = shuffle(Array.from(EventArray.keys()))
   return result.slice(0,6)
+}
+
+function getTokensInHand(thief:ThiefState):TokenAction[]{
+  const result:TokenAction[] = []
+  for (let i=0;i<thief.tokens.steal.length;i++){
+    thief.tokens.steal[i] === -1 && result.push(TokenAction.Stealing)
+  }
+  for (let i=0;i<thief.tokens.kick.length;i++){
+    thief.tokens.kick[i] === -1 && result.push(TokenAction.Kicking)
+  }
+  for (let i=0;i<thief.tokens.move.length;i++){
+    thief.tokens.move[i] === -1 && result.push(TokenAction.Fleeing)
+  }
+  return result
 }
 
 function getTokensInBank(thief:ThiefState):TokenAction[]{

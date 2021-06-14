@@ -13,14 +13,13 @@ import SolvePartner from './SolvePartner'
 import BetGold from './BetGold'
 import TakeToken from './TakeToken'
 import ArrestPartners from './ArrestPartners'
+import PlaceToken from './PlaceToken'
 
-type Move = DrawEvent | PlacePartner | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
+type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
 | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
 
 // Moves to code !
 
-//  | PlaceToken 
 // | UseStealToken | UseKickToken | UseMoveToken 
-// | ResolvePatrols
 
 export default Move

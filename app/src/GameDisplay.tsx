@@ -95,14 +95,6 @@ export default function GameDisplay({game}: Props) {
   )
 }
 
-const hideDicePopUp = css`
-display:none;
-`
-
-const displayDicePopUp = css`
-display:flex;
-border:0.3em solid black;
-`
 
 const hideTavernPopUp = css`
 display:none;
