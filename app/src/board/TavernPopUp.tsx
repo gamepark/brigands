@@ -21,7 +21,7 @@ const TavernPopUp : FC<Props> = ({position, player, ...props}) => {
     return(
         <div {...props} css={[tavernPopUpSize, tavernPopUpPosition(position), tavernPopUpStyle]}>
 
-            <div css={[xStyle, betSize]}> <span>X</span> </div>
+            <div css={[xStyle, betSize]}  onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role})} > <span>X</span> </div>
             {[...Array(player.gold < 5 ? player.gold : 5)].map((_, i) => 
                 <div key={i} css={[betStyle(i+1), betSize]} onClick={() => onClick({type:MoveType.BetGold, gold:i+1, role:player.role})} >  </div>
             )}
@@ -68,7 +68,7 @@ height:12%;
 const tavernPopUpPosition = (position:number) => css`
 position:absolute;
 top:28%;
-left:${2+position*12.6}%;
+left:32.5%;
 `
 
 const tavernPopUpStyle = css`

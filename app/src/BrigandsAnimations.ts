@@ -23,7 +23,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.TakeToken){
             return 2
         } else if (move.type === MoveType.ThrowDice){
-            return 2
+            return 5
         } 
 
         return 0

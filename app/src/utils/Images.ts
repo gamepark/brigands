@@ -57,6 +57,9 @@ import coin1 from '../images/Coin1.png'
 import coin2 from '../images/Coin2.png'
 import coin5 from '../images/Coin5.png'
 
+import dice2 from '../images/Dice_2.png'
+import dice3 from '../images/Dice_3.png'
+import dice4 from '../images/Dice_4.png'
 
 import partnerBlue from '../images/PartnerBlue.png'
 import partnerGreen from '../images/PartnerGreen.png'
@@ -107,6 +110,7 @@ const Images = {
     princePanel,
     patrol, mercenary, victoryToken,
     coin1,coin2,coin5,
+    dice2, dice3, dice4,
     partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
     tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
     tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,

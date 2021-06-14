@@ -16,7 +16,7 @@ export function takeBackPartner(state:GameState|GameView, move:TakeBackPartner){
     delete (state.players.find(p => p.role === move.thief.role)! as ThiefState).partner.find(p => p.district === move.district)!.solvingDone
     delete (state.players.find(p => p.role === move.thief.role)! as ThiefState).partner.find(p => p.district === move.district)!.district
 
-    if (move.district === DistrictName.Market || move.district === DistrictName.Jail){
+    if (move.district === DistrictName.Market || move.district === DistrictName.Jail || move.district === DistrictName.Tavern){
         delete state.city.find(d => d.name === move.district)!.dice
     }
 

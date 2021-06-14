@@ -1,26 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
 import GameView from '@gamepark/brigands/GameView'
+import ThrowDice from '@gamepark/brigands/moves/ThrowDice'
 import { isPrinceState, isThiefState, ThiefState } from '@gamepark/brigands/PlayerState'
 import DistrictName from '@gamepark/brigands/types/DistrictName'
 import Phase from '@gamepark/brigands/types/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import { isNotThiefView, ThiefView } from '@gamepark/brigands/types/Thief'
-import { usePlayerId } from '@gamepark/react-client'
+import { useAnimation, usePlayerId } from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
 import { useMemo } from 'react'
 import City from './board/City'
+import DicePopUp from './board/DicePopUp'
 import PanelPlayer from './board/PanelPlayer'
 import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
+import {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
 
 type Props = {
   game: GameView
 } 
 
 export default function GameDisplay({game}: Props) {
+
+  const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
 
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
@@ -64,6 +69,10 @@ export default function GameDisplay({game}: Props) {
                      player = {players.filter(isThiefState).find(isNotThiefView)!}
         />
 
+        {game.districtResolved !== undefined && diceAnimation !== undefined &&
+          <DicePopUp dice={diceAnimation.move.dice} 
+          />}
+
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 
           {players.filter(isThiefState).map((p, index) => 
@@ -85,6 +94,15 @@ export default function GameDisplay({game}: Props) {
     </Letterbox>
   )
 }
+
+const hideDicePopUp = css`
+display:none;
+`
+
+const displayDicePopUp = css`
+display:flex;
+border:0.3em solid black;
+`
 
 const hideTavernPopUp = css`
 display:none;
