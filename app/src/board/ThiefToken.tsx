@@ -9,6 +9,7 @@ import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
 import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
+import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 
 type Props = {
@@ -16,8 +17,8 @@ type Props = {
     role:PlayerRole
 
     draggable?:boolean
-    type?:'ThiefTokenInBank'
-    draggableItem?:ThiefTokenInBank
+    type?:'ThiefTokenInBank' | 'ThiefTokenInHand'
+    draggableItem?:ThiefTokenInBank | ThiefTokenInHand
 } & Omit<HTMLAttributes<HTMLDivElement>, 'role'>
 
 const ThiefToken : FC<Props> = ({action, role, draggable = false, type = '', draggableItem, ...props}) => {

@@ -1,8 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import Move from "@gamepark/brigands/moves/Move";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
+import Partner, { PartnerView } from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { usePlay, usePlayerId } from "@gamepark/react-client";
 import { FC } from "react";
+import { useDrop } from "react-dnd";
+import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 
 type Props = {
@@ -13,7 +19,7 @@ type Props = {
 const DistrictCard : FC<Props> = ({district, color}) => {
 
     return(
-        <div css = {districtCardStyle(getCardBG(color, district))}>
+        <div css = {[districtCardStyle(getCardBG(color, district))]}>
 
         </div>
     )

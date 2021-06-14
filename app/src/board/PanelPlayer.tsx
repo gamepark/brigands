@@ -43,7 +43,11 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
 
-    function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+    function isPartnerDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+        return phase === Phase.Planning && role === playerId
+    }
+
+    function isTokenDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
         return phase === Phase.Planning && role === playerId
     }
 
@@ -84,6 +88,9 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                     token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
+                                    draggable={isTokenDraggable(phase, player.role)}
+                                    type={"ThiefTokenInHand"}
+                                    draggableItem={{tokenAction:TokenAction.Kicking}}
                         />
                     </div>
                 )}
@@ -91,6 +98,9 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                     token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
+                                    draggable={isTokenDraggable(phase, player.role)}
+                                    type={"ThiefTokenInHand"}
+                                    draggableItem={{tokenAction:TokenAction.Fleeing}}
                         />
                     </div>
                 )}
@@ -98,6 +108,9 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                     token === -1 && <div key={index} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
+                                    draggable={isTokenDraggable(phase, player.role)}
+                                    type={"ThiefTokenInHand"}
+                                    draggableItem={{tokenAction:TokenAction.Stealing}}
                         />
                     </div>
                 )}
@@ -138,7 +151,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                               tokens={player.tokens}
                               phase={phase}
 
-                              draggable={isDraggable(phase,player.role)}
+                              draggable={isPartnerDraggable(phase,player.role)}
                               type={"PartnerInHand"}
                               draggableItem={{partnerNumber:index}}
                               
