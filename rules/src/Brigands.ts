@@ -324,10 +324,14 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             if ((this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.find(part => part.district === DistrictName.Harbor)) === undefined){
               return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}
             } else {
-              const anyThiefWhoTookTokens:ThiefState | undefined = (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.find(part => part.district === DistrictName.Harbor && part.tokensTaken === (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))
-              console.log("anyThiefTookToken : ", anyThiefWhoTookTokens)
+              const anyThiefWhoTookTokens:ThiefState | undefined = (this.state.players.filter(isThiefState) as ThiefState[])
+                    .find(p => p.partner.find(part => part.district === DistrictName.Harbor && part.tokensTaken === (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))
+              const anyThiefWhoCantTakeAnymore:ThiefState | undefined = (this.state.players.filter(isThiefState) as ThiefState[]).find (p => getTokensInBank(p).length === 0 && p.partner.find(part => part.district === DistrictName.Harbor))
               if (anyThiefWhoTookTokens){
                 return {type:MoveType.TakeBackPartner, thief: anyThiefWhoTookTokens , district:actualDistrict.name}
+              }
+              if (anyThiefWhoCantTakeAnymore){
+                return {type:MoveType.TakeBackPartner, thief: anyThiefWhoCantTakeAnymore , district:actualDistrict.name}
               }
             }
         } 
