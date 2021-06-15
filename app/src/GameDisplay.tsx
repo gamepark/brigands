@@ -31,7 +31,7 @@ export default function GameDisplay({game}: Props) {
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
 
   function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined){
-    return phase === Phase.Solving && districtResolved === DistrictName.Tavern && role === playerId  && (playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern)
+    return phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince &&(playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern)
   }
 
   return (
@@ -64,10 +64,11 @@ export default function GameDisplay({game}: Props) {
               districtResolved = {game.districtResolved}
         />
 
-        <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
-                     css={isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name) ? displayTavernPopUp : hideTavernPopUp}
-                     player = {players.filter(isThiefState).find(isNotThiefView)!}
-        />
+        {isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name) && 
+          <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
+                       player = {players.filter(isThiefState).find(isNotThiefView)!}
+          />
+        }
 
         {game.districtResolved !== undefined && diceAnimation !== undefined &&
           <DicePopUp dice={diceAnimation.move.dice} 

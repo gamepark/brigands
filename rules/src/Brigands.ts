@@ -16,7 +16,7 @@ import PlayerRole from './types/PlayerRole'
 import Partner, { getPartnersView } from './types/Partner'
 import { drawEvent } from './moves/DrawEvent'
 import PlacePartner, { placePartner } from './moves/PlacePartner'
-import { tellYouAreReady } from './moves/TellYouAreReady'
+import TellYouAreReady, { tellYouAreReady } from './moves/TellYouAreReady'
 import { moveOnNextPhase } from './moves/MoveOnNextPhase'
 import PlacePatrol, { placePatrol } from './moves/PlacePatrol'
 import { revealPartnersDistricts } from './moves/RevealPartnersDistricts'
@@ -114,24 +114,27 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       }
     } else {    //isThief
       if (this.state.phase === Phase.Planning){
-        if(player.partner.some(part => part.district === undefined)){
-          const planningMoves:(PlacePartner|PlaceToken)[] = []
-          for (let i=2;i<8;i++){
-            player.partner.forEach((part, index) => {
-              if (part.district === undefined){
-                part.district === undefined && planningMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index})
-              } else {
-                const playableTokens:TokenAction[] = getTokensInHand(player)
-                for (let j=0;j<playableTokens.length;j++){
-                  planningMoves.push({type:MoveType.PlaceToken, partnerNumber:index, role:player.role, tokenAction:playableTokens[j]})
-                }
-              }
-            })
-          }
-          return planningMoves
-        } else {
-          return [{type:MoveType.TellYouAreReady, playerId:player.role}]
+        if (player.isReady){
+          return []
         }
+        const planningMoves:(PlacePartner|PlaceToken|TellYouAreReady)[] = []
+        if(player.partner.every(part => part.district !== undefined)){
+          planningMoves.push({type:MoveType.TellYouAreReady, playerId:player.role})
+        }
+        player.partner.forEach((part, index) => {
+          if (part.district === undefined){
+            for (let i=2; i<8;i++){
+              planningMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index})
+            }
+          } else if (!isThisPartnerHasAnyToken(player, index)){
+            const playableTokens:TokenAction[] = getTokensInHand(player)
+            for (let j=0;j<playableTokens.length;j++){
+              planningMoves.push({type:MoveType.PlaceToken, partnerNumber:index, role:player.role, tokenAction:playableTokens[j]})
+            }
+          }
+        })
+        return planningMoves
+
       } else if (this.state.phase === Phase.Solving && this.state.districtResolved !== undefined ){
         if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor){
           return []
@@ -508,4 +511,8 @@ function getTokensInBank(thief:ThiefState):TokenAction[]{
 
   return result
 
+}
+
+function isThisPartnerHasAnyToken(thief:ThiefState, partnerNumber:number):boolean{
+  return thief.tokens.steal.some(t => t === partnerNumber) || thief.tokens.kick.some(t => t === partnerNumber) || thief.tokens.move.some(t => t === partnerNumber)
 }

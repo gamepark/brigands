@@ -63,7 +63,7 @@ const PartnerComponent : FC<Props> = ({role, tokens, partnerNumber, phase, dragg
                    // TODO : Add the property ref={dropRef} here, on the Draggable element
 
                    css={[partnerStyle(getPartnerImage(role)),canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
-                       <div ref={dropRef} css={[fullSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+                       <div ref={dropRef} css={[fullSize(partnerNumber), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}></div>
 
                        {tokens.steal.find(token => token === partnerNumber) !== undefined 
                         && <ThiefToken css={[tokenSize, phase !== Phase.Solving ? tokenPositionForPlanning : tokenPositionForSolving]} 
@@ -77,13 +77,13 @@ const PartnerComponent : FC<Props> = ({role, tokens, partnerNumber, phase, dragg
                         && <ThiefToken css={[tokenSize, phase !== Phase.Solving ? tokenPositionForPlanning : tokenPositionForSolving]} 
                                     action={TokenAction.Fleeing} 
                                     role={role} />}
-                       </div>
+                       
 
         </Draggable>
     )
 }
 
-const fullSize = css`
+const fullSize = (partner:number) => css`
 width:100%;
 height:100%;
 `
