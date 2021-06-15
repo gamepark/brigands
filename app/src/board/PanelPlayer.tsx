@@ -147,6 +147,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                      
                                             ]}
                               role={player.role}
+                              partners = {player.partner}
                               partnerNumber={index}
                               tokens={player.tokens}
                               phase={phase}

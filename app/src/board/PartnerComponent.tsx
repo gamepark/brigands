@@ -4,6 +4,7 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import PlacePartner from "@gamepark/brigands/moves/PlacePartner";
 import PlaceToken from "@gamepark/brigands/moves/PlaceToken";
+import Partner, { PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Token from "@gamepark/brigands/types/Token";
@@ -19,6 +20,7 @@ import ThiefToken from "./ThiefToken";
 
 type Props = {
     role:PlayerRole
+    partners:(Partner | PartnerView)[]
     tokens:Token
     partnerNumber:number
     phase:Phase | undefined
@@ -29,7 +31,7 @@ type Props = {
 
 } & Omit<HTMLAttributes<HTMLDivElement>, 'role'>
 
-const PartnerComponent : FC<Props> = ({role, tokens, partnerNumber, phase, draggable = false, type='', draggableItem, ...props}) => {
+const PartnerComponent : FC<Props> = ({role, partners, tokens, partnerNumber, phase, draggable = false, type='', draggableItem, ...props}) => {
 
     const play = usePlay<Move>()
     const item = {...draggableItem}
@@ -38,11 +40,12 @@ const PartnerComponent : FC<Props> = ({role, tokens, partnerNumber, phase, dragg
     }
 
     const playerId = usePlayerId<PlayerRole>()
+    console.log ("partnerCompo. Role : ", role, " condition : ", partners[partnerNumber])
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInHand"],
         canDrop: (item: ThiefTokenInHand) => {
-            return playerId === role
+            return playerId === role && Object.keys(partners[partnerNumber]).length !== 0
         },
         collect: monitor => ({
           canDrop: monitor.canDrop(),
