@@ -10,6 +10,7 @@ import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
 import { placeToken } from '@gamepark/brigands/moves/PlaceToken'
+import { resolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
 import { spareGoldOnTreasure } from '@gamepark/brigands/moves/SpareGoldOnTreasure'
@@ -77,6 +78,8 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return moveOnDistrictResolved(this.state, move)
       case MoveType.ArrestPartners:
         return arrestPartners(this.state)
+      case MoveType.ResolveStealToken:
+        return resolveStealToken(this.state)
     }
   }
 

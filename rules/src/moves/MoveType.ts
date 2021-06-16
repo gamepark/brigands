@@ -10,7 +10,7 @@ enum MoveType {
   RevealPartnersDistricts,
   PlaceToken,
   PlacePatrol,
-  UseStealToken,
+  ResolveStealToken,
   UseKickToken,
   UseMoveToken,
   ResolvePatrols,

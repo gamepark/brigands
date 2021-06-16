@@ -33,6 +33,7 @@ import { gainGold } from './moves/GainGold'
 import { moveOnDistrictResolved } from './moves/MoveOnDistrictResolved'
 import { arrestPartners } from './moves/ArrestPartners'
 import PlaceToken, { placeToken } from './moves/PlaceToken'
+import { resolveStealToken } from './moves/ResolveStealToken'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -205,6 +206,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return moveOnDistrictResolved(this.state, move)
       case MoveType.ArrestPartners:
         return arrestPartners(this.state)
+      case MoveType.ResolveStealToken:
+        return resolveStealToken(this.state)
     }
   }
 
@@ -226,6 +229,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.districtResolved !== undefined) {
         const districtEvent:Event = EventArray[this.state.event]
         const actualDistrict : District = this.state.city[this.state.districtResolved]
+
+        if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.steal.some(ts => ts === index)))){
+          return {type:MoveType.ResolveStealToken}
+        }
 
         if (actualDistrict.name !== DistrictName.Jail && this.state.players.find(isPrinceState)!.patrols.find(p => p === actualDistrict.name) !== undefined){
           return {type:MoveType.ArrestPartners}
@@ -515,4 +522,16 @@ function getTokensInBank(thief:ThiefState):TokenAction[]{
 
 function isThisPartnerHasAnyToken(thief:ThiefState, partnerNumber:number):boolean{
   return thief.tokens.steal.some(t => t === partnerNumber) || thief.tokens.kick.some(t => t === partnerNumber) || thief.tokens.move.some(t => t === partnerNumber)
+}
+
+export function isThisPartnerHasStealToken(thief:ThiefState, partnerNumber:number):boolean{
+  return thief.tokens.steal.some(t => t === partnerNumber)
+}
+
+export function isThisPartnerHasKickToken(thief:ThiefState, partnerNumber:number):boolean{
+  return thief.tokens.kick.some(t => t === partnerNumber)
+}
+
+export function isThisPartnerHasMoveToken(thief:ThiefState, partnerNumber:number):boolean{
+  return thief.tokens.move.some(t => t === partnerNumber)
 }

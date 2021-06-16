@@ -40,7 +40,6 @@ const PartnerComponent : FC<Props> = ({role, partners, tokens, partnerNumber, ph
     }
 
     const playerId = usePlayerId<PlayerRole>()
-    console.log ("partnerCompo. Role : ", role, " condition : ", partners[partnerNumber])
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInHand"],
