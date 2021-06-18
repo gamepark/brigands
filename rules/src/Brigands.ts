@@ -33,7 +33,10 @@ import { gainGold } from './moves/GainGold'
 import { moveOnDistrictResolved } from './moves/MoveOnDistrictResolved'
 import { arrestPartners } from './moves/ArrestPartners'
 import PlaceToken, { placeToken } from './moves/PlaceToken'
-import { resolveStealToken } from './moves/ResolveStealToken'
+import { resolveStealToken, createSteals } from './moves/ResolveStealToken'
+import KickOrNot, { kickOrNot } from './moves/KickOrNot'
+import { revealKickOrNot } from './moves/RevealKickOrNot'
+import { resolveKickOrNot } from './moves/ResolveKickOrNot'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -79,13 +82,20 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         if (!isThiefState(player)){
           return false
         } else {
-          if (this.state.city[this.state.districtResolved!].name !== DistrictName.Harbor && this.state.city[this.state.districtResolved!].name !== DistrictName.Tavern){
-            return false
+          const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index))
+          if (kickerPartners.length > 0){
+            return this.state.readyToKickPartners !== true && kickerPartners.filter(p => p.kickOrNot !== undefined).length > 0
           } else {
-            if (this.state.city[this.state.districtResolved!].name === DistrictName.Harbor){
-              return player.partner.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) === undefined ? false : true
+            if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === this.state.city[this.state.districtResolved!].name && p.tokens.kick.some(ts => ts === index)))){
+              return false 
+            } else if (this.state.city[this.state.districtResolved!].name !== DistrictName.Harbor && this.state.city[this.state.districtResolved!].name !== DistrictName.Tavern){
+              return false
             } else {
-              return player.partner.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) === undefined ? false : true
+              if (this.state.city[this.state.districtResolved!].name === DistrictName.Harbor){
+                return player.partner.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) === undefined ? false : true
+              } else {
+                return player.partner.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) === undefined ? false : true
+              }
             }
           }
         }
@@ -137,6 +147,24 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return planningMoves
 
       } else if (this.state.phase === Phase.Solving && this.state.districtResolved !== undefined ){
+        const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index) && p.kickOrNot === undefined)
+
+        if (kickerPartners.length > 0){
+          const kickOrNotResult:KickOrNot[] = []
+          kickerPartners.forEach(part => {
+            kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, partnerToKick:false})
+            const partnersWhoCouldBeKicked:{role:PlayerRole, indexPartner:number}[] = [] ;
+            (this.state.players.filter(p => isThiefState(p) && p.role !== role) as ThiefState[]).forEach(p => {
+              p.partner.filter(part => part.district === this.state.city[this.state.districtResolved!].name).forEach((part, index) => 
+                partnersWhoCouldBeKicked.push({role:p.role, indexPartner:index})
+              )
+            })
+            partnersWhoCouldBeKicked.forEach(p => kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, partnerToKick:p}))
+          })
+          return kickOrNotResult
+
+        }
+
         if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor){
           return []
         } else {
@@ -207,7 +235,13 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case MoveType.ArrestPartners:
         return arrestPartners(this.state)
       case MoveType.ResolveStealToken:
-        return resolveStealToken(this.state)
+        return resolveStealToken(this.state, move)
+      case MoveType.KickOrNot :
+        return kickOrNot(this.state, move)
+      case MoveType.RevealKickOrNot :
+        return revealKickOrNot(this.state)
+      case MoveType.ResolveKickOrNot :
+        return resolveKickOrNot(this.state)
     }
   }
 
@@ -231,7 +265,17 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         const actualDistrict : District = this.state.city[this.state.districtResolved]
 
         if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.steal.some(ts => ts === index)))){
-          return {type:MoveType.ResolveStealToken}
+          return {type:MoveType.ResolveStealToken, steals:createSteals(this.state)}
+        }
+
+        if (this.state.districtResolved+1 !== this.state.city.length && (this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.kick.some(tk => tk === index)))){
+          if (this.state.readyToKickPartners === true){
+            return {type:MoveType.ResolveKickOrNot}
+          } else if ((this.state.players.filter(isThiefState) as ThiefState[]).every(p => p.partner.filter((part, index) => part.district === actualDistrict.name && part.kickOrNot !== undefined))){
+            return {type:MoveType.RevealKickOrNot}
+          } else {
+            return
+          }
         }
 
         if (actualDistrict.name !== DistrictName.Jail && this.state.players.find(isPrinceState)!.patrols.find(p => p === actualDistrict.name) !== undefined){
@@ -410,6 +454,22 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           }
         })
         return {type:MoveType.RevealPartnersDistricts, partnersArray}
+
+      case MoveType.KickOrNot:
+        if (playerId === move.kickerRole){
+          return move
+        } else {
+          return{type:MoveType.KickOrNot, kickerRole:move.kickerRole}
+        }
+
+      case MoveType.RevealKickOrNot:
+        const partnersArray2:Partner[][] = []
+        this.state.players.forEach(player => {
+          if (player.role !== PlayerRole.Prince){
+            partnersArray2.push((player as ThiefState).partner)
+          }
+        })
+        return {type:MoveType.RevealKickOrNot, partnersArray:partnersArray2}
         
       default:
         return move
@@ -451,7 +511,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[-1],kick:[-1],move:[-1]},
+          tokens:{steal:[-1],kick:[],move:[]},
         }
     
     )) 

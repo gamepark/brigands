@@ -1,7 +1,9 @@
 import DistrictName from "./DistrictName"
+import PlayerRole from "./PlayerRole"
 
 type Partner = {
     district?: DistrictName
+    kickOrNot?:false | {role:PlayerRole, indexPartner:number}
     solvingDone?:boolean  
     goldForTavern?:number
     tokensTaken?:number

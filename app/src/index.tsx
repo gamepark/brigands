@@ -10,7 +10,7 @@ import brigandsAnimations from './BrigandsAnimations'
 import BrigandsView from './BrigandsView'
 import translations from './translations.json'
 
-setupTranslation(translations)
+setupTranslation(translations,{debug:false})
 
 const style = css`
   html {
