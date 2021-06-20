@@ -36,7 +36,8 @@ import PlaceToken, { placeToken } from './moves/PlaceToken'
 import { resolveStealToken, createSteals } from './moves/ResolveStealToken'
 import KickOrNot, { kickOrNot } from './moves/KickOrNot'
 import { revealKickOrNot } from './moves/RevealKickOrNot'
-import { resolveKickOrNot } from './moves/ResolveKickOrNot'
+import { movePartner } from './moves/MovePartner'
+import { removeToken } from './moves/RemoveToken'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -84,7 +85,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         } else {
           const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index))
           if (kickerPartners.length > 0){
-            return this.state.readyToKickPartners !== true && kickerPartners.filter(p => p.kickOrNot !== undefined).length > 0
+            return this.state.readyToKickPartners !== true && player.isReady !== true
           } else {
             if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === this.state.city[this.state.districtResolved!].name && p.tokens.kick.some(ts => ts === index)))){
               return false 
@@ -147,22 +148,24 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return planningMoves
 
       } else if (this.state.phase === Phase.Solving && this.state.districtResolved !== undefined ){
-        const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index) && p.kickOrNot === undefined)
-
+        const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index))
         if (kickerPartners.length > 0){
-          const kickOrNotResult:KickOrNot[] = []
-          kickerPartners.forEach(part => {
-            kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, partnerToKick:false})
-            const partnersWhoCouldBeKicked:{role:PlayerRole, indexPartner:number}[] = [] ;
-            (this.state.players.filter(p => isThiefState(p) && p.role !== role) as ThiefState[]).forEach(p => {
-              p.partner.filter(part => part.district === this.state.city[this.state.districtResolved!].name).forEach((part, index) => 
-                partnersWhoCouldBeKicked.push({role:p.role, indexPartner:index})
-              )
+          if (kickerPartners.every(part => part.kickOrNot !== undefined)){
+            return [{type:MoveType.TellYouAreReady, playerId:role}]
+          } else {
+            const kickOrNotResult:KickOrNot[] = []
+            kickerPartners.forEach(part => {
+              kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, playerToKick:false})
+              const playersWhoCouldBeKicked:PlayerRole[] = [] ;
+              (this.state.players.filter(p => isThiefState(p) && p.role !== role) as ThiefState[]).forEach(p => {
+                p.partner.filter(part => part.district === this.state.city[this.state.districtResolved!].name).forEach((part, index) => 
+                  playersWhoCouldBeKicked.push(p.role)
+                )
+              })
+              playersWhoCouldBeKicked.forEach(p => kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, playerToKick:p}))
             })
-            partnersWhoCouldBeKicked.forEach(p => kickOrNotResult.push({type:MoveType.KickOrNot, kickerRole:role, partnerToKick:p}))
-          })
-          return kickOrNotResult
-
+            return kickOrNotResult
+          }
         }
 
         if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor){
@@ -240,8 +243,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return kickOrNot(this.state, move)
       case MoveType.RevealKickOrNot :
         return revealKickOrNot(this.state)
-      case MoveType.ResolveKickOrNot :
-        return resolveKickOrNot(this.state)
+      case MoveType.MovePartner :
+        return movePartner(this.state, move)
+      case MoveType.RemoveToken :
+        return removeToken(this.state, move)
     }
   }
 
@@ -269,9 +274,21 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         }
 
         if (this.state.districtResolved+1 !== this.state.city.length && (this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.kick.some(tk => tk === index)))){
+          console.log("AutoMove. Actual district : ", actualDistrict.name)
           if (this.state.readyToKickPartners === true){
-            return {type:MoveType.ResolveKickOrNot}
-          } else if ((this.state.players.filter(isThiefState) as ThiefState[]).every(p => p.partner.filter((part, index) => part.district === actualDistrict.name && part.kickOrNot !== undefined))){
+            const kicker: ThiefState = (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.kick.some(tk => tk === index)))!
+            console.log("kicker Partners : ", kicker.partner)
+            if (kicker.partner.find((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot !== undefined){
+              console.log("movePartner auto")
+              console.log("kickOrNot de ce partner : ",kicker.partner.find((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot)
+              return {type:MoveType.MovePartner, role:kicker.partner.find((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot!, kicker:kicker.role}
+            } else {
+              console.log("removeTokenAuto")
+              return {type:MoveType.RemoveToken, role:kicker.role, tokenAction:TokenAction.Kicking, indexPartner: kicker.partner.findIndex((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!}
+            }
+
+          } else if ((this.state.players.filter(isThiefState) as ThiefState[]).filter(p => p.partner.some((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index))).every(p => p.isReady === true)){
+            console.log("reveal auto")
             return {type:MoveType.RevealKickOrNot}
           } else {
             return
@@ -511,7 +528,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[-1],kick:[],move:[]},
+          tokens:{steal:[],kick:[-1],move:[]},
         }
     
     )) 
@@ -580,7 +597,7 @@ function getTokensInBank(thief:ThiefState):TokenAction[]{
 
 }
 
-function isThisPartnerHasAnyToken(thief:ThiefState, partnerNumber:number):boolean{
+export function isThisPartnerHasAnyToken(thief:ThiefState, partnerNumber:number):boolean{
   return thief.tokens.steal.some(t => t === partnerNumber) || thief.tokens.kick.some(t => t === partnerNumber) || thief.tokens.move.some(t => t === partnerNumber)
 }
 

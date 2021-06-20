@@ -17,14 +17,11 @@ import PlaceToken from './PlaceToken'
 import ResolveStealToken from './ResolveStealToken'
 import KickOrNot from './KickOrNot'
 import RevealKickOrNot from './RevealKickOrNot'
-import ResolveKickOrNot from './ResolveKickOrNot'
+import MovePartner from './MovePartner'
+import RemoveToken from './RemoveToken'
 
 type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
 | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
-| ResolveStealToken | KickOrNot | RevealKickOrNot | ResolveKickOrNot
-
-// Moves to code 
-
-//  KickOrNot | RevealKickOrNot | ResolveKickOrNot | UseMoveToken 
+| ResolveStealToken | KickOrNot | RevealKickOrNot | MovePartner | RemoveToken
 
 export default Move

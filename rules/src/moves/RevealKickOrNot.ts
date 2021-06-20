@@ -15,12 +15,11 @@ export type RevealKickOrNotView = RevealKickOrNot & {
 }
 
 export function revealKickOrNot(state:GameState | GameView){
-    console.log("readytoKickPartners before : ", state.readyToKickPartners)
     state.readyToKickPartners = true
-    console.log("readytoKickPartners after : ", state.readyToKickPartners)
 }
 
 export function revealKickOrNotView(state:GameView, move:RevealKickOrNotView){
+    console.log("move.partners : ",move.partnersArray)
     state.players.filter(isThiefState).forEach((p, index) => {
         p.partner = move.partnersArray[index]
     })

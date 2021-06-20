@@ -6,14 +6,15 @@ import { gainGold } from '@gamepark/brigands/moves/GainGold'
 import { kickOrNotInView } from '@gamepark/brigands/moves/KickOrNot'
 import { moveOnDistrictResolved } from '@gamepark/brigands/moves/MoveOnDistrictResolved'
 import { moveOnNextPhase } from '@gamepark/brigands/moves/MoveOnNextPhase'
+import { movePartner } from '@gamepark/brigands/moves/MovePartner'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
 import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
 import { placeToken } from '@gamepark/brigands/moves/PlaceToken'
-import { resolveKickOrNot } from '@gamepark/brigands/moves/ResolveKickOrNot'
+import { removeToken } from '@gamepark/brigands/moves/RemoveToken'
 import { resolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
-import { revealKickOrNot, revealKickOrNotView } from '@gamepark/brigands/moves/RevealKickOrNot'
+import { revealKickOrNotView } from '@gamepark/brigands/moves/RevealKickOrNot'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
 import { spareGoldOnTreasure } from '@gamepark/brigands/moves/SpareGoldOnTreasure'
@@ -83,12 +84,18 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return arrestPartners(this.state)
       case MoveType.ResolveStealToken:
         return resolveStealToken(this.state, move)
+
       case MoveType.KickOrNot:
         return kickOrNotInView(this.state, move)
+
       case MoveType.RevealKickOrNot:
         return revealKickOrNotView(this.state, move)
-      case MoveType.ResolveKickOrNot:
-        return resolveKickOrNot(this.state)
+        
+      case MoveType.MovePartner:
+        return movePartner(this.state, move)
+      case MoveType.RemoveToken:
+        return removeToken(this.state, move)
+      
     }
   }
 
