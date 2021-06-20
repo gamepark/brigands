@@ -4,26 +4,39 @@ import { ThiefState } from "../PlayerState";
 import DistrictName from "../types/DistrictName";
 import PlayerRole from "../types/PlayerRole";
 import MoveType from "./MoveType";
-import {isThisPartnerHasAnyToken, isThisPartnerHasKickToken} from "../Brigands"
+import {isThisPartnerHasAnyToken, isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from "../Brigands"
+import Partner from "../types/Partner";
 
 type MovePartner = {
     type:MoveType.MovePartner
     role:PlayerRole | false
     kicker?:PlayerRole
+    runner?:PlayerRole
 }
 
 export default MovePartner
 
 export function movePartner(state:GameState | GameView, move:MovePartner){
+
+    console.log("In Move Partner : ", move)
+
     const actualDistrict:DistrictName = state.city[state.districtResolved!].name
+    const nextDistrict:DistrictName = state.city[state.districtResolved!+1].name
+    const player:ThiefState = move.runner ? state.players.find(p => p.role === move.runner)! as ThiefState : state.players.find(p => p.role === move.role)! as ThiefState
+
     if (move.role === false){
+        console.log("no move")
+
+        if (move.runner){
+            if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
+                player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
+            }
+        }
 
     } else {
-        
-        const nextDistrict:DistrictName = state.city[state.districtResolved!+1].name
-        const player:ThiefState = state.players.find(p => p.role === move.role)! as ThiefState
-        if (player.tokens.move.find(tm => tm === player.partner.findIndex(part => part.district === actualDistrict)) !== undefined){
-            player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex(part => part.district === actualDistrict)),1)
+        console.log("a move")
+        if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
+            player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
         }
         player.partner.filter(part => part.district === actualDistrict)[0].district = nextDistrict
     }
