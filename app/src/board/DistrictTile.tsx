@@ -109,8 +109,8 @@ const districtStyle = (image:string) => css`
 
 function getDistrictImage(district:number):string{
     switch (district){
-        case 1 :
-            return Images.districtJail
+        // case 1 :
+        //     return Images.districtJail
         case 2 : 
             return Images.districtTavern
         case 3 :

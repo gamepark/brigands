@@ -50,7 +50,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        phase:Phase.NewDay,
+        phase:Phase.Solving,
         eventDeck:setupEventDeck(),
         event:-1,
         districtResolved:undefined
@@ -116,7 +116,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.phase === Phase.Patrolling){
         if (player.patrols.some(pat => pat === -1)){
           const placePatrolsMoves:PlacePatrol[] = []
-          for (let i=1;i<8;i++){
+          for (let i=1;i<9;i++){
             player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
           }
           return placePatrolsMoves
@@ -138,7 +138,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         }
         player.partner.forEach((part, index) => {
           if (part.district === undefined){
-            for (let i=2; i<8;i++){
+            for (let i=2; i<9;i++){
               planningMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index})
             }
           } else if (!isThisPartnerHasAnyToken(player, index)){
@@ -534,15 +534,15 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:0,
           isReady:false,
           victoryPoints : 0,
-          patrols : [-1,-1],
+          patrols : [-1,-1,-1],
           abilities : [false,false,false]
         } 
       : {
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{},{},{}],
-          tokens:{steal:[],kick:[],move:[-1]},
+          partner:[{district:2},{district:3},{district:8}],
+          tokens:{steal:[],kick:[],move:[]},
         }
     
     )) 
@@ -571,7 +571,7 @@ function setupCity():District[]{
   const districtArray = Array.from(DistrictArray.keys())
   const jail:number = districtArray.shift()!
   const result:number[] = shuffle(districtArray)
-  result.unshift(jail)
+  result.push(jail)
   return result.map((districtKey) => ({name:DistrictArray[districtKey].name, gold:DistrictArray[districtKey].name === DistrictName.Treasure ? 0 : undefined}))
 
 }

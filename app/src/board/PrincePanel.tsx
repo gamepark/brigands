@@ -154,7 +154,7 @@ const patrolInHand = (index:number, isPrince:number) => css`
 
 const patrolInDistrict = (district:number) => css`
     top:55.5%;
-    left:${district !== 0 ? 24+(district-1)*11.4 : 8.1}%;
+    left:${5.1+(district*11.25)}%;
 `
 
 const patrolTokenSize = css`

@@ -26,7 +26,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, ...props}) => 
             {city.map((district, index) => 
             
                 <DistrictTile key={index}
-                              css={[districtSize(district.name === DistrictName.Jail), index === districtResolved && resolvingStyle]}
+                              css={[districtSize, index === districtResolved && resolvingStyle]}
                               district={district}
                               phase={phase}
                               prince={prince}                         
@@ -44,8 +44,8 @@ const resolvingStyle = css`
 outline:red 0.5em solid;
 `
 
-const districtSize = (isJail:boolean) => css`
-width:${isJail ? 17.6 : 12.6}%;
+const districtSize = css`
+width:12.6%;
 height:100%;
 box-shadow: 0em 0em 0.2em 0.1em black;
 `

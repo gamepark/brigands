@@ -106,7 +106,7 @@ const Images = {
     cardPalaceBlue, cardPalaceGreen, cardPalacePurple, cardPalaceRed, cardPalaceYellow,
     cardTavernBlue, cardTavernGreen, cardTavernPurple, cardTavernRed, cardTavernYellow,
     cardTreasureBlue, cardTreasureGreen, cardTreasurePurple, cardTreasureRed, cardTreasureYellow,
-    districtCityHall, districtHarbor, districtJail, districtMarket, districtPalace, districtTavern, districtTreasure,
+    districtCityHall, districtHarbor, districtMarket, districtPalace, districtTavern, districtTreasure,
     princePanel,
     patrol, mercenary, victoryToken,
     coin1,coin2,coin5,

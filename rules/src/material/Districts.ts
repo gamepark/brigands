@@ -29,5 +29,9 @@ const Palace:District = {
     name:DistrictName.Palace
 }
 
-export const DistrictArray = [Jail, Market, Tavern, Treasure, CityHall, Harbor, Palace]
-export const DistrictArrayJailLess = [Market, Tavern, Treasure, CityHall, Harbor, Palace]
+const Convoy:District = {
+    name:DistrictName.Convoy
+}
+
+export const DistrictArray = [Jail, Market, Tavern, Treasure, CityHall, Harbor, Palace, Convoy]
+export const DistrictArrayJailLess = [Market, Tavern, Treasure, CityHall, Harbor, Palace, Convoy]

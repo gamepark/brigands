@@ -194,7 +194,7 @@ const validationButtonPosition = css`
 
 const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
 top:${prince*(-80)+index*8}%;
-left:${9.5+district*12.6+positionForPartners*2}%;
+left:${1.0+district*12.5+positionForPartners*2}%;
 `
 
 const test = css`top:-50%;`

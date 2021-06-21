@@ -16,7 +16,7 @@ export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDi
     if (move.districtResolved === 0){
         (state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partner.forEach(part => part.district === state.city[move.districtResolved].name && delete part.solvingDone))
     }
-    if (move.districtResolved === 6){
+    if (move.districtResolved === 7){
         delete state.districtResolved ;
         takeBackPatrols(state.players.find(isPrinceState)! as PrinceState)
         cleanPartners(state.players.filter(isThiefState) as ThiefState[])
