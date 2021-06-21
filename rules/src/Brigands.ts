@@ -117,7 +117,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         if (player.patrols.some(pat => pat === -1)){
           const placePatrolsMoves:PlacePatrol[] = []
           for (let i=1;i<9;i++){
-            player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+            if (i===1){
+              // TODO : Prince Ability to judge Thieves, gain Points and free Partners
+            } else {
+              player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+            }
           }
           return placePatrolsMoves
         } else {
@@ -141,7 +145,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             for (let i=2; i<9;i++){
               planningMoves.push({type:MoveType.PlacePartner,playerId:player.role, district:i, partnerNumber:index})
             }
-          } else if (!isThisPartnerHasAnyToken(player, index)){
+          } else if (!isThisPartnerHasAnyToken(player, index) && part.district !== DistrictName.Jail){
             const playableTokens:TokenAction[] = getTokensInHand(player)
             for (let j=0;j<playableTokens.length;j++){
               planningMoves.push({type:MoveType.PlaceToken, partnerNumber:index, role:player.role, tokenAction:playableTokens[j]})
