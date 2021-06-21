@@ -351,7 +351,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             let countPartnersOnCityHall:number = partnersOnCityHall.length ;
             if (countPartnersOnCityHall === 0){
               return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}
-            } else if (actualDistrict.dice == undefined){
+            } else if (actualDistrict.dice === undefined){
               if (partnersOnCityHall.every(p => p.solvingDone === true)){
                 return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! , district:actualDistrict.name}
               } else {
@@ -362,6 +362,30 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             } else {
               return {type:MoveType.GainGold, gold:Math.floor(actualDistrict.dice.reduce((acc, cv) => acc+cv)/countPartnersOnCityHall), player: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.filter(part => part.district === actualDistrict.name).some(part => part.solvingDone !== true))!, district:DistrictName.CityHall}
             }
+
+          case DistrictName.Convoy : 
+          console.log("----------On Convoy----------")
+          const partnersOnConvoy:Partner[] = [] ;
+          (this.state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partner.forEach(part => part.district === actualDistrict.name && partnersOnConvoy.push(part)))  ;
+          let countPartnersOnConvoy:number = partnersOnConvoy.length ;
+          if (countPartnersOnConvoy === 0){
+            return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}
+          } else if (actualDistrict.dice === undefined){
+            if (partnersOnConvoy.every(p => p.solvingDone === true)){
+              return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! , district:actualDistrict.name}
+            } else {
+              if (partnersOnConvoy.length < (this.state.players.length < 5 ? 2 : 3)){
+                return {type:MoveType.ArrestPartners}
+              } else {
+                return {type:MoveType.ThrowDice, dice:rollDice(districtEvent.numberOfDice === undefined ? 4 : 6), district:actualDistrict.name}
+              }
+            }
+          } else if (partnersOnConvoy.every(p => p.solvingDone === true)){
+            return {type:MoveType.SpareGoldOnTreasure, gold:actualDistrict.dice.reduce((acc, cv) => acc+cv)%countPartnersOnConvoy,district:actualDistrict.name}
+          } else {
+            return {type:MoveType.GainGold, gold:Math.floor(actualDistrict.dice.reduce((acc, cv) => acc+cv)/countPartnersOnConvoy), player: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.filter(part => part.district === actualDistrict.name).some(part => part.solvingDone !== true))!, district:DistrictName.Convoy}
+          }   
+
 
           case DistrictName.Treasure :
             console.log("----------On Treasure----------")

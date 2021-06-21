@@ -32,7 +32,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
 
         {players.map((player,indexP) =>
 
-            <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToEnd]} key={indexP}>
+            <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToStart]} key={indexP}>
                 {getArray(player.tokens.kick).map((_, indexT) => 
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
