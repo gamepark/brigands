@@ -15,11 +15,16 @@ type TakeToken = {
 export default TakeToken
 
 export function takeToken(state:GameState | GameView, move:TakeToken){
-    if ((state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Harbor)!.tokensTaken === undefined){
-        (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Harbor)!.tokensTaken = 1
+    if (state.city[state.districtResolved!].name === DistrictName.Jail){
+        (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name && p.tokensTaken === undefined)!.tokensTaken = 1
     } else {
-        (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Harbor)!.tokensTaken!++
+        if ((state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken === undefined){
+            (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken = 1
+        } else {
+            (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken!++
+        }
     }
+
     switch(move.token){
         case TokenAction.Stealing:
             (state.players.find(p => p.role === move.role) as ThiefState).tokens.steal.push(-1) 

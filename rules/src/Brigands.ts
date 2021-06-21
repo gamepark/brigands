@@ -92,13 +92,15 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           } else {
             if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === this.state.city[this.state.districtResolved!].name && p.tokens.kick.some(ts => ts === index)))){
               return false 
-            } else if (this.state.city[this.state.districtResolved!].name !== DistrictName.Harbor && this.state.city[this.state.districtResolved!].name !== DistrictName.Tavern){
+            } else if (this.state.city[this.state.districtResolved!].name !== DistrictName.Harbor && this.state.city[this.state.districtResolved!].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved!].name !== DistrictName.Jail){
               return false
             } else {
               if (this.state.city[this.state.districtResolved!].name === DistrictName.Harbor){
                 return player.partner.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) === undefined ? false : true
-              } else {
+              } else if (this.state.city[this.state.districtResolved!].name === DistrictName.Tavern){
                 return player.partner.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) === undefined ? false : true
+              } else {
+                return player.partner.find(p => p.district === DistrictName.Jail && p.tokensTaken === undefined) === undefined ? false : true
               }
             }
           }
@@ -186,7 +188,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           return moveArray
         }
 
-        if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor){
+        if (this.state.city[this.state.districtResolved].name !== DistrictName.Tavern && this.state.city[this.state.districtResolved].name !== DistrictName.Harbor && this.state.city[this.state.districtResolved].name !== DistrictName.Jail){
           return []
         } else {
           if (this.state.city[this.state.districtResolved].name === DistrictName.Tavern){
@@ -199,7 +201,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
               }
             }
             return tavernMoves
-          } else {
+          } else if (this.state.city[this.state.districtResolved].name === DistrictName.Harbor){
             const harborMoves:TakeToken[] = []
             if (player.partner.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))){
               const takeableTokens:TokenAction[] = getTokensInBank(this.state.players.find(p => p.role === role) as ThiefState)
@@ -208,6 +210,15 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
               }
             }
             return harborMoves
+          } else {
+            const jailMoves:TakeToken[] = []
+            if (player.partner.find(p => p.district === DistrictName.Jail && (p.tokensTaken === undefined))){
+              const takeableTokens:TokenAction[] = getTokensInBank(this.state.players.find(p => p.role === role) as ThiefState)
+              for (let i=0;i<takeableTokens.length;i++){
+                jailMoves.push({type:MoveType.TakeToken, role, token:takeableTokens[i]})
+              }
+            }
+            return jailMoves
           }
         }
       } else {
@@ -414,17 +425,18 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             console.log("----------On Jail----------")
             const partnersOnJail:Partner[] = [] ;
             (this.state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partner.forEach(part => part.district === actualDistrict.name && partnersOnJail.push(part)));
-            if (partnersOnJail.every(p => p.solvingDone === true)){
-              // Add jugment if any patrol here
+            if (partnersOnJail.every(p => p.tokensTaken === 1)){
               return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}
+            } else if (partnersOnJail.every(p => p.solvingDone === true)){
+              return  // Partner made a 2 or 3 and must take a token
             } else if (this.state.city.find(d => d.name === actualDistrict.name)!.dice === undefined){
               return {type:MoveType.ThrowDice, dice:rollDice(1), district:actualDistrict.name}
             } else if (this.state.city.find(d => d.name === actualDistrict.name)!.dice![0] === 4) {
-              return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! , district:actualDistrict.name}
+              return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))! , district:actualDistrict.name}
             } else {
               return {type:MoveType.SolvePartner, 
-                      thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))! ,
-                      partnerNumber:(this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!.partner.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!}
+                thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))! ,
+                partnerNumber:(this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!.partner.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!}    // Jailed Partners have to take a token
             }
 
           case DistrictName.Tavern :    // Actually simultaneous Phase, but can be better if sequatialized for animations ?
@@ -623,7 +635,7 @@ function getTokensInHand(thief:ThiefState):TokenAction[]{
   return result
 }
 
-function getTokensInBank(thief:ThiefState):TokenAction[]{
+export function getTokensInBank(thief:ThiefState):TokenAction[]{
   const result:TokenAction[] = []
   for (let i=0;i<2-thief.tokens.steal.length;i++){
     result.push(TokenAction.Stealing)

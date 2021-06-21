@@ -20,9 +20,9 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
 
     const playerId = usePlayerId<PlayerRole>()
 
-    function isDraggable(phase:Phase | undefined, isHarbor:boolean, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
+    function isDraggable(phase:Phase | undefined, isHarborOrJail:boolean, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
 
-        return phase === Phase.Solving && isHarbor && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partner.some(p => p.district === DistrictName.Harbor)
+        return phase === Phase.Solving && isHarborOrJail && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partner.some(p => p.district === DistrictName.Harbor || p.district === DistrictName.Jail)
 
     }
 
@@ -37,7 +37,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
-                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    draggable={isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Kicking}}
 
@@ -48,7 +48,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
-                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    draggable={isDraggable(phase, (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Fleeing}}
                         />
@@ -58,7 +58,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
                     <div key={indexT} css={tokenSize}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
-                                    draggable={isDraggable(phase, resolvedDistrict === DistrictName.Harbor, player.role, players)}
+                                    draggable={isDraggable(phase, (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Stealing}}
                         />
