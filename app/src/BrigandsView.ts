@@ -3,6 +3,7 @@ import { arrestPartners } from '@gamepark/brigands/moves/ArrestPartners'
 import { betGold } from '@gamepark/brigands/moves/BetGold'
 import { drawEventInView } from '@gamepark/brigands/moves/DrawEvent'
 import { gainGold } from '@gamepark/brigands/moves/GainGold'
+import { judgePrisoners } from '@gamepark/brigands/moves/JudgePrisoners'
 import { kickOrNotInView } from '@gamepark/brigands/moves/KickOrNot'
 import { moveOnDistrictResolved } from '@gamepark/brigands/moves/MoveOnDistrictResolved'
 import { moveOnNextPhase } from '@gamepark/brigands/moves/MoveOnNextPhase'
@@ -84,17 +85,16 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return arrestPartners(this.state)
       case MoveType.ResolveStealToken:
         return resolveStealToken(this.state, move)
-
       case MoveType.KickOrNot:
         return kickOrNotInView(this.state, move)
-
       case MoveType.RevealKickOrNot:
         return revealKickOrNotView(this.state, move)
-        
       case MoveType.MovePartner:
         return movePartner(this.state, move)
       case MoveType.RemoveToken:
         return removeToken(this.state, move)
+      case MoveType.JudgePrisoners:
+        return judgePrisoners(this.state)
       
     }
   }

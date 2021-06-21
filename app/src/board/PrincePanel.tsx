@@ -28,8 +28,8 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     const {t} = useTranslation()
     const play = usePlay<Move>()
 
-    function isDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
-        return phase === Phase.Patrolling && role === playerId
+    function isDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number):boolean{
+        return phase === Phase.Patrolling && role === playerId && statePatrol !== -2
     }
  
     return(
@@ -63,7 +63,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
                                
                         ]}
                          isMercenary={index===2}
-                         draggable={isDraggable(phase, player.role)}
+                         draggable={isDraggable(phase, player.role, patrol)}
                          type={'PatrolInHand'}
                          draggableItem={{patrolNumber:index}}
                          />

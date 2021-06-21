@@ -38,6 +38,7 @@ import KickOrNot, { kickOrNot } from './moves/KickOrNot'
 import { revealKickOrNot } from './moves/RevealKickOrNot'
 import MovePartner, { movePartner } from './moves/MovePartner'
 import { removeToken } from './moves/RemoveToken'
+import JudgePrisoners, { judgePrisoners } from './moves/JudgePrisoners'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -117,10 +118,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     } else if (isPrinceState(player)){
       if (this.state.phase === Phase.Patrolling){
         if (player.patrols.some(pat => pat === -1)){
-          const placePatrolsMoves:PlacePatrol[] = []
+          const placePatrolsMoves:(PlacePatrol | JudgePrisoners)[] = []
           for (let i=1;i<9;i++){
             if (i===1){
-              // TODO : Prince Ability to judge Thieves, gain Points and free Partners
+              player.patrols.forEach((pat, index) => pat === -1 && player.abilities[0] === false && placePatrolsMoves.push({type:MoveType.JudgePrisoners})) 
             } else {
               player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
             }
@@ -276,6 +277,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return movePartner(this.state, move)
       case MoveType.RemoveToken :
         return removeToken(this.state, move)
+      case MoveType.JudgePrisoners :
+        return judgePrisoners(this.state)
     }
   }
 
@@ -581,7 +584,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{},{},{}],
+          partner:[{district:1},{},{}],
           tokens:{steal:[],kick:[],move:[]},
         }
     

@@ -44,7 +44,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
         }),
         drop: (item: PartnerInHand | PatrolInHand) => {
             if (isPatrolInHand(item)){
-                return {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
+                return district.name === DistrictName.Jail ? {type:MoveType.JudgePrisoners} : {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
             } else {
                 return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
             }

@@ -24,7 +24,8 @@ enum MoveType {
   SolvePartner,
   BetGold,
   TakeToken,
-  ArrestPartners
+  ArrestPartners,
+  JudgePrisoners
 }
 
 export default MoveType
