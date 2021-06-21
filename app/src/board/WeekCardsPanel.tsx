@@ -84,6 +84,10 @@ function getWeekCardImage(image:number):string{
             return Images.weekCardCityHall2
         case 9 : 
             return Images.weekCardTavern2
+        case 10 :
+            return Images.weekCardConvoy1
+        case 11 :
+            return Images.weekCardConvoy2
         default :
             return 'error : no week Card founded'
     }

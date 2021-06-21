@@ -149,6 +149,22 @@ function getCardBG(color:PlayerRole, district?:DistrictName):string{
                 default :
                     return 'error : prince detected'
             }
+
+        case DistrictName.Convoy :
+            switch(color){
+                case PlayerRole.BlueThief :
+                    return Images.cardConvoyBlue
+                case PlayerRole.GreenThief :
+                    return Images.cardConvoyGreen
+                case PlayerRole.PurpleThief :
+                    return Images.cardConvoyPurple
+                case PlayerRole.RedThief :
+                    return Images.cardConvoyRed
+                case PlayerRole.YellowThief :
+                    return Images.cardConvoyYellow
+                default :
+                    return 'error : prince detected'
+                }
         default :
             return 'error : jail detected'
         

@@ -50,7 +50,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       const game:GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
-        phase:Phase.Solving,
+        phase:Phase.NewDay,
         eventDeck:setupEventDeck(),
         event:-1,
         districtResolved:undefined
@@ -541,7 +541,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{district:2},{district:3},{district:8}],
+          partner:[{},{},{}],
           tokens:{steal:[],kick:[],move:[]},
         }
     
