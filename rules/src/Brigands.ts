@@ -39,6 +39,7 @@ import { revealKickOrNot } from './moves/RevealKickOrNot'
 import MovePartner, { movePartner } from './moves/MovePartner'
 import { removeToken } from './moves/RemoveToken'
 import JudgePrisoners, { judgePrisoners } from './moves/JudgePrisoners'
+import PlayHeadStart, { playHeadStart } from './moves/PlayHeadStart'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -79,7 +80,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case Phase.Planning:
         return isThiefState(player) && player.isReady === false
       case Phase.Patrolling:
-        return this.state.players.find(isPrinceState)!.abilities[1] === false ? isPrinceState(player) && player.isReady === false : isThiefState(player) && player.isReady == false
+        return isPrinceState(player) && player.isReady === false
       case Phase.Solving:
         if (!isThiefState(player)){
           return false
@@ -118,19 +119,25 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     } else if (isPrinceState(player)){
       if (this.state.phase === Phase.Patrolling){
         if (player.patrols.some(pat => pat === -1)){
-          const placePatrolsMoves:(PlacePatrol | JudgePrisoners)[] = []
+          const patrollingMoves:(PlacePatrol | JudgePrisoners | PlayHeadStart)[] = []
           for (let i=1;i<9;i++){
             if (i===1){
-              player.patrols.forEach((pat, index) => pat === -1 && player.abilities[0] === false && placePatrolsMoves.push({type:MoveType.JudgePrisoners})) 
+              player.patrols.forEach((pat, index) => pat === -1 && player.abilities[0] === false && patrollingMoves.push({type:MoveType.JudgePrisoners})) 
             } else {
-              player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && placePatrolsMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+              player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
+              player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlayHeadStart, district:i})
             }
           }
-          return placePatrolsMoves
+          return patrollingMoves
         } else {
-          return [{type:MoveType.TellYouAreReady,playerId:player.role}]
+          const patrollingMoves:(TellYouAreReady | PlayHeadStart)[] = [{type:MoveType.TellYouAreReady,playerId:player.role}]
+          if (player.gold > 1){
+            for (let i=2;i<9;i++){
+              player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlayHeadStart, district:i})
+            }
+          }
+          return patrollingMoves
         }
-
       } else {
         return []
       }
@@ -279,6 +286,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return removeToken(this.state, move)
       case MoveType.JudgePrisoners :
         return judgePrisoners(this.state)
+      case MoveType.PlayHeadStart :
+        return playHeadStart(this.state, move)
     }
   }
 
@@ -288,7 +297,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   getAutomaticMove(): void | Move {
 
-      if (this.state.phase === Phase.NewDay){
+       if (this.state.phase === Phase.NewDay){
         return {type:MoveType.DrawEvent}
       }
       if (this.state.phase === Phase.Planning &&  (this.state.players.filter(isThiefState) as ThiefState[]).every(p => p.isReady === true)){
@@ -300,6 +309,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       if (this.state.districtResolved !== undefined) {
         const districtEvent:Event = EventArray[this.state.event]
         const actualDistrict : District = this.state.city[this.state.districtResolved]
+
+        if (this.state.players.find(isPrinceState)!.abilities[1] === actualDistrict.name){
+          return {type:MoveType.ArrestPartners}
+        }
 
         if ((this.state.players.filter(isThiefState) as ThiefState[]).some(p => p.partner.some((part, index) => part.district === actualDistrict.name && p.tokens.steal.some(ts => ts === index)))){
           return {type:MoveType.ResolveStealToken, steals:createSteals(this.state)}
@@ -416,10 +429,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
               return {type:MoveType.TakeBackPartner, thief: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))! , district:actualDistrict.name}
             } else {
               if (actualDistrict.dice === undefined){
-                console.log("partage des golds. Nb partners : ", partnersOnTreasure.length ," et taille part : ", Math.floor(actualDistrict.gold!/countPartnersOnTreasure))
                 return {type:MoveType.GainGold, gold:Math.floor(actualDistrict.gold!/countPartnersOnTreasure), player: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name))!, district:actualDistrict.name }
               } else {
-                console.log("taille part : ", actualDistrict.dice[0])
                 return {type:MoveType.GainGold, gold:actualDistrict.dice[0], player: (this.state.players.filter(isThiefState) as ThiefState[]).find(p => p.partner.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!, district:actualDistrict.name}
               }
             }
@@ -584,8 +595,8 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           role:options.id,
           gold:2,
           isReady:false,
-          partner:[{district:1},{},{}],
-          tokens:{steal:[],kick:[],move:[]},
+          partner:[{},{},{}],
+          tokens:{steal:[-1],kick:[-1],move:[]},
         }
     
     )) 

@@ -20,10 +20,11 @@ import RevealKickOrNot from './RevealKickOrNot'
 import MovePartner from './MovePartner'
 import RemoveToken from './RemoveToken'
 import JudgePrisoners from './JudgePrisoners'
+import PlayHeadStart from './PlayHeadStart'
 
 type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
 | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
 | ResolveStealToken | KickOrNot | RevealKickOrNot | MovePartner | RemoveToken
-| JudgePrisoners
+| JudgePrisoners | PlayHeadStart
 
 export default Move

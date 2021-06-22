@@ -18,14 +18,11 @@ export default MovePartner
 
 export function movePartner(state:GameState | GameView, move:MovePartner){
 
-    console.log("In Move Partner : ", move)
-
     const actualDistrict:DistrictName = state.city[state.districtResolved!].name
     const nextDistrict:DistrictName = state.city[state.districtResolved!+1].name
     const player:ThiefState = move.runner ? state.players.find(p => p.role === move.runner)! as ThiefState : state.players.find(p => p.role === move.role)! as ThiefState
 
     if (move.role === false){
-        console.log("no move")
 
         if (move.runner){
             if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
@@ -34,7 +31,6 @@ export function movePartner(state:GameState | GameView, move:MovePartner){
         }
 
     } else {
-        console.log("a move")
         if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
             player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
         }

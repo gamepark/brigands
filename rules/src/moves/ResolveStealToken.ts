@@ -3,11 +3,8 @@ import GameView from "../GameView";
 import { isThiefState, ThiefState } from "../PlayerState";
 import PlayerRole from "../types/PlayerRole";
 import MoveType from "./MoveType";
-import {isThisPartnerHasStealToken} from '../Brigands'
 import { isNotThiefView, ThiefView } from "../types/Thief";
 import DistrictName from "../types/DistrictName";
-import { placeToken } from "./PlaceToken";
-import { rollDice } from "../material/Dice";
 import { isPartnerView } from "../types/Partner";
 
 type ResolveStealToken = {
@@ -38,7 +35,6 @@ export function resolveStealToken(state:GameState| GameView, {steals}:ResolveSte
             thief.gold += steal.gold
         }
         if (isNotThiefView(victim)){
-            console.log("prise d'or chez la victime. Vicitm: ", victim)
             victim.gold = Math.max(victim.gold-steal.gold, 0)
         }
     }) ;

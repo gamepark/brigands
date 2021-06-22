@@ -9,10 +9,11 @@ import { usePlayerId } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
-import PartnerInHand from "../utils/PartnerInHand"
+import PartnerInHand, { isPartnerInHand } from "../utils/PartnerInHand"
 import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
+import HeadStartToken from "src/utils/HeadStartToken"
 
 /** @jsxImportSource @emotion/react */
 
@@ -29,12 +30,14 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
     const {t} = useTranslation()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
-        accept: ["PartnerInHand","PatrolInHand"],
-        canDrop: (item: PartnerInHand | PatrolInHand) => {
+        accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
+        canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
             if(isPatrolInHand(item)){
                 return !prince.patrols.includes(district.name)
-            } else {
+            } else if (isPartnerInHand(item)){
                 return district.name !== DistrictName.Jail
+            } else {
+                return prince.patrols.includes(district.name) && district.name !== DistrictName.Jail
             }
             
         },
@@ -42,11 +45,13 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
           canDrop: monitor.canDrop(),
           isOver: monitor.isOver()
         }),
-        drop: (item: PartnerInHand | PatrolInHand) => {
+        drop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
             if (isPatrolInHand(item)){
                 return district.name === DistrictName.Jail ? {type:MoveType.JudgePrisoners} : {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
-            } else {
+            } else if (isPartnerInHand(item)){
                 return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
+            } else {
+                return {type:MoveType.PlayHeadStart, district:district.name}
             }
         }
       })

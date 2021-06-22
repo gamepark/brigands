@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import Button from "../utils/Button";
 import Images from "../utils/Images";
 import AvatarPanel from "./AvatarPanel";
+import HeadStart from "./HeadStart";
 import PatrolToken from "./PatrolToken";
 
 type Props = {
@@ -59,7 +60,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         {player.patrols.map((patrol,index) => 
             <PatrolToken key={index}
                          css={[patrolTokenSize, 
-                               patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
+                               patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
                                
                         ]}
                          isMercenary={index===2}
@@ -73,12 +74,37 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
 
+        
+        <HeadStart css={[headStartSize, player.abilities[1] === false ? headStartOnHand(playerId === PlayerRole.Prince ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
+                   draggable={phase === Phase.Patrolling && player.role === playerId && player.gold>1 && player.abilities[1] === false}
+                   type={'HeadStartToken'}
+                   draggableItem={{}}
+        />
+        
+
 
         </>
 
     )
 
 }
+
+const headStartOnHand = (isPrince:number) => css`
+top:${31+isPrince*55}%;
+left:64%;
+`
+
+const headStartOnDistrict = (district:number) => css`
+top:51%;
+left:${10+(district*11.25)}%;
+`
+
+const headStartSize = css`
+position:absolute;
+height:10%;
+width:6%;
+z-index:1;
+`
 
 const validationButtonPosition = css`
 position:absolute;
@@ -145,6 +171,11 @@ width:58%;
 height:25%;
 border: 0.5em solid white;
 border-radius:10% / 35%;
+`
+
+const patrolCanceled = (isPrince:number) => css`
+    top:${24+isPrince*55}%;
+    left:41.8%;
 `
 
 const patrolInHand = (index:number, isPrince:number) => css`

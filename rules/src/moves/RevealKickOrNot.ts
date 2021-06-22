@@ -19,7 +19,6 @@ export function revealKickOrNot(state:GameState | GameView){
 }
 
 export function revealKickOrNotView(state:GameView, move:RevealKickOrNotView){
-    console.log("move.partners : ",move.partnersArray)
     state.players.filter(isThiefState).forEach((p, index) => {
         p.partner = move.partnersArray[index]
     })
