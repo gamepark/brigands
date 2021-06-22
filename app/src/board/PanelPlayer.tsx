@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { isThisPartnerHasMoveToken } from "@gamepark/brigands/Brigands";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
@@ -17,7 +18,6 @@ import { useDrop } from "react-dnd";
 import { useTranslation } from "react-i18next";
 import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
 import Button from "../utils/Button";
-import PartnerInHand from "../utils/PartnerInHand";
 import AvatarPanel from "./AvatarPanel";
 import DistrictCard from "./DistrictCard";
 import PartnerComponent from "./PartnerComponent";
@@ -29,12 +29,11 @@ type Props = {
     positionForPartners:number
     city:District[]
     numberOfThieves:number
-    draggable?:boolean
-    type?:'PartnerInHand'
-    draggableItem?:PartnerInHand
+    districtResolved?:DistrictName
+
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
@@ -159,9 +158,16 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
             />
         )}
 
-        {player.role === playerId && phase === Phase.Planning && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
-        && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        {player.role === playerId && phase === Phase.Planning && player.isReady === false && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
+        && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
+
+        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasMoveToken(player, index)) && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
+        &&  <div>
+                <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
+                <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
+            </div>
+        }  
                 
         </>
 
@@ -181,6 +187,24 @@ const isOverStyle = css`
 background-color:red;
 opacity:0.8;
 transition : opacity 0.5s linear;
+`
+
+const moveButtonPosition = css`
+    position:absolute;
+    width:15%;
+    height:25%;
+    top:-125%;
+    right:20%;
+    font-size:3em;
+`
+
+const dontMoveButtonPosition = css`
+    position:absolute;
+    width:15%;
+    height:25%;
+    top:-125%;
+    right:4%;
+    font-size:3em;
 `
 
 const validationButtonPosition = css`

@@ -597,7 +597,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[-1],kick:[-1],move:[]},
+          tokens:{steal:[-1],kick:[],move:[-1]},
         }
     
     )) 
