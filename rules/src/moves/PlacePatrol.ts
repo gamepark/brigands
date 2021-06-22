@@ -12,5 +12,10 @@ type PlacePatrol = {
 export default PlacePatrol
 
 export function placePatrol(state:GameState|GameView, move:PlacePatrol){
-    (state.players.find(isPrinceState)! as PrinceState).patrols[move.patrolNumber] = move.district
+    const prince : PrinceState = state.players.find(isPrinceState)! as PrinceState
+    prince.patrols[move.patrolNumber] = move.district
+    if (move.patrolNumber === 2){
+        prince.gold -=5
+        prince.abilities[2] = true
+    }
 }

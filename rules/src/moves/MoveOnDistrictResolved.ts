@@ -21,6 +21,7 @@ export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDi
         takeBackPatrols(state.players.find(isPrinceState)! as PrinceState)
         cleanPartners(state.players.filter(isThiefState) as ThiefState[])
         cleanTokens(state.players.filter(isThiefState) as ThiefState[])
+        cleanAbilities(state.players.find(isPrinceState)! as PrinceState)
         state.players.forEach(p => p.isReady = false)
         state.phase = Phase.NewDay
     } else {
@@ -29,10 +30,14 @@ export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDi
     }
 }
 
+function cleanAbilities(prince:PrinceState){
+    prince.abilities.forEach(a => a = false)
+}
+
 function takeBackPatrols(prince:PrinceState){
     prince.patrols[0] = -1
     prince.patrols[1] = -1
-    delete prince.patrols[2]
+    prince.patrols[2] = -1
 }
 
 function cleanPartners(thieves:ThiefState[]){

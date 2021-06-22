@@ -33,7 +33,12 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
         accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
         canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
             if(isPatrolInHand(item)){
-                return !prince.patrols.includes(district.name)
+                if (item.patrolNumber !== 2){
+                    return !prince.patrols.includes(district.name)
+                } else {
+                    return district.name !== DistrictName.Jail && !prince.patrols.includes(district.name)
+                }
+                
             } else if (isPartnerInHand(item)){
                 return district.name !== DistrictName.Jail
             } else {

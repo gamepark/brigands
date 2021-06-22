@@ -118,26 +118,27 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       return []
     } else if (isPrinceState(player)){
       if (this.state.phase === Phase.Patrolling){
-        if (player.patrols.some(pat => pat === -1)){
-          const patrollingMoves:(PlacePatrol | JudgePrisoners | PlayHeadStart)[] = []
-          for (let i=1;i<9;i++){
+
+        const patrollingMoves:(PlacePatrol | JudgePrisoners | PlayHeadStart | TellYouAreReady)[] = []
+        for (let i=1;i<9;i++){
+          if (player.gold > 1){
+            player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlayHeadStart, district:i})
+          }
+          if (player.gold > 4 && player.abilities[2] === false && i !== player.patrols[2] && i !== 1){
+            !player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:2})
+          }
+          if (player.patrols.every(pat => pat !== -1)){
+            patrollingMoves.push({type:MoveType.TellYouAreReady, playerId:player.role})
+          }
+          if (player.patrols.some(pat => pat === -1)){
             if (i===1){
               player.patrols.forEach((pat, index) => pat === -1 && player.abilities[0] === false && patrollingMoves.push({type:MoveType.JudgePrisoners})) 
             } else {
               player.patrols.forEach((pat, index) => pat === -1 && !player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlacePatrol, district:i,patrolNumber:index}))
-              player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlayHeadStart, district:i})
             }
           }
-          return patrollingMoves
-        } else {
-          const patrollingMoves:(TellYouAreReady | PlayHeadStart)[] = [{type:MoveType.TellYouAreReady,playerId:player.role}]
-          if (player.gold > 1){
-            for (let i=2;i<9;i++){
-              player.patrols.includes(i) && patrollingMoves.push({type:MoveType.PlayHeadStart, district:i})
-            }
-          }
-          return patrollingMoves
         }
+        return patrollingMoves
       } else {
         return []
       }
@@ -585,7 +586,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
       options.id === PlayerRole.Prince 
       ? {
           role:options.id,
-          gold:0,
+          gold:10,
           isReady:false,
           victoryPoints : 0,
           patrols : [-1,-1,-1],
