@@ -4,6 +4,7 @@ import { isThisPartnerHasKickToken, isThisPartnerHasMoveToken } from "@gamepark/
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
+import PlacePartner, { isPlacePartner } from "@gamepark/brigands/moves/PlacePartner";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
@@ -12,7 +13,7 @@ import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
+import { useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useDrop } from "react-dnd";
 import { useTranslation } from "react-i18next";
@@ -40,6 +41,8 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     const thiefId = thieves.find(p => p.role === playerId)!
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
+
+    const animationPartner = useAnimation<PlacePartner>(animation => isPlacePartner(animation.move))
 
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
@@ -135,6 +138,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         {partnersView.map((partner, index) => 
             <PartnerComponent key={index}
                               css={[partnerSize,
+                                    //animationPartner && transitionPartner(animationPartner.duration),
                                     phase !== Phase.Solving 
                                         ? isPartnerView(partner) 
                                             ? cardsPlayed === 1 
@@ -191,6 +195,10 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
 }
 
+const transitionPartner = css`
+transition:top 1s ease-in-out, left 1s ease-in-out;
+`
+
 const kickThisPlayerButtonPosition = css`
 font-size:3em;
 text-align:center;
@@ -239,6 +247,8 @@ const validationButtonPosition = css`
 const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
 top:${prince*(-80)+index*8}%;
 left:${1.0+district*12.5+positionForPartners*2}%;
+
+${transitionPartner};
 `
 
 const test = css`top:-50%;`
@@ -249,6 +259,8 @@ ${nbThieves === 5 && `left:${2.5+card*5.2+positionForPartners*20}%;`}
 ${nbThieves === 4 && `left:${5.1+card*5.2+positionForPartners*25}%;`}
 ${nbThieves === 3 && `left:${9.2+card*5.2+positionForPartners*33.4}%;`}
 ${nbThieves === 2 && `left:${17.6+card*5.2+positionForPartners*50}%;`}
+
+${transitionPartner};
 `
 
 const partnerOnOneOfTwoCards = (positionForPartners:number, index:number, card:number, nbThieves:number) => css`
@@ -256,7 +268,9 @@ top:${76+index*15}%;
 ${nbThieves === 5 && `left:${4.2+card*7+positionForPartners*20}%;`} 
 ${nbThieves === 4 && `left:${6.7+card*7+positionForPartners*25}%;`} 
 ${nbThieves === 3 && `left:${10.8+card*7+positionForPartners*33.4}%;`} 
-${nbThieves === 2 && `left:${19.3+card*7+positionForPartners*50}%;`} 
+${nbThieves === 2 && `left:${19.3+card*7+positionForPartners*50}%;`}
+
+${transitionPartner};
 `
 
 const partnerOnOnlyCard = (positionForPartners:number, index:number, nbThieves:number) => css`
@@ -265,6 +279,8 @@ ${nbThieves === 5 && `left:${7.8+positionForPartners*20}%;`}
 ${nbThieves === 4 && `left:${10.3+positionForPartners*25}%;`} 
 ${nbThieves === 3 && `left:${14.4+positionForPartners*33.4}%;`} 
 ${nbThieves === 2 && `left:${22.8+positionForPartners*50}%;`} 
+
+${transitionPartner};
 `
 
 const partnerHandPosition = (positionForPartners:number, index:number, nbThieves:number) => css`
@@ -273,6 +289,8 @@ const partnerHandPosition = (positionForPartners:number, index:number, nbThieves
     ${nbThieves === 4 && `left:${12.5+positionForPartners*25+index*2.5}%;`}
     ${nbThieves === 3 && `left:${16.5+positionForPartners*33.5+index*2.5}%;`}
     ${nbThieves === 2 && `left:${25+positionForPartners*50+index*2.5}%;`}
+
+    ${transitionPartner};
 `
 
 const cardsPanelPosition = css`

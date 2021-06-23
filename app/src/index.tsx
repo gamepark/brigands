@@ -9,6 +9,7 @@ import App from './App'
 import brigandsAnimations from './BrigandsAnimations'
 import BrigandsView from './BrigandsView'
 import translations from './translations.json'
+import Images from './utils/Images'
 
 setupTranslation(translations,{debug:false})
 
@@ -40,6 +41,7 @@ const style = css`
     width: 100vw;
     user-select: none;
     overflow: hidden;
+    background-image: url(${Images.background});
     background-color: white;
     background-size: cover;
     background-position: center;

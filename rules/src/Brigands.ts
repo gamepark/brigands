@@ -611,17 +611,17 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
       options.id === PlayerRole.Prince 
       ? {
           role:options.id,
-          gold:10,
+          gold:0,
           isReady:false,
-          victoryPoints : 58,
+          victoryPoints : 0,
           patrols : [-1,-1,-1],
           abilities : [false,false,false]
         } 
       : {
           role:options.id,
-          gold:2,
+          gold:3,
           isReady:false,
-          partner:[{district:1},{},{}],
+          partner:[{},{},{}],
           tokens:{steal:[],kick:[],move:[]},
         }
     

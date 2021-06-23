@@ -6,7 +6,9 @@ import DistrictName from "../types/DistrictName";
 import Partner, { isPartnerView, PartnerView } from "../types/Partner";
 import PlayerRole from "../types/PlayerRole";
 import { isNotThiefView, ThiefView } from "../types/Thief";
+import Move from "./Move";
 import MoveType from "./MoveType";
+import MoveView from "./MoveView";
 
 type PlacePartner = {
     type:MoveType.PlacePartner
@@ -42,4 +44,8 @@ export function placePartnerInView(state:GameView, move:PlacePartner | PlacePart
 export function isPlacePartnerView(move:PlacePartner | PlacePartnerView):move is PlacePartnerView{
     return (move as PlacePartnerView).partner !== undefined
 }
+
+export function isPlacePartner(move: Move | MoveView): move is PlacePartner {
+    return move.type === MoveType.PlacePartner
+  }
 

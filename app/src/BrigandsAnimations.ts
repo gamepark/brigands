@@ -11,7 +11,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         if (move.type === MoveType.ArrestPartners){
             return 2
         } else if (move.type === MoveType.BetGold){
-            return 2
+            return action.playerId === playerId ? 0 : 2
         } else if (move.type === MoveType.GainGold){
             return 2
         } else if (move.type === MoveType.MoveOnDistrictResolved){
@@ -21,13 +21,19 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.TakeBackPartner){
             return 2
         } else if (move.type === MoveType.TakeToken){
-            return 2
+            return action.playerId === playerId ? 0 : 2
         } else if (move.type === MoveType.ThrowDice){
             return 2
         } else if (move.type === MoveType.ResolveStealToken){
             return 2
         } else if (move.type === MoveType.MovePartner){
             return 2
+        } else if (move.type === MoveType.DrawEvent){
+            return 1
+        } else if (move.type === MoveType.JudgePrisoners){
+            return 2
+        } else if (move.type === MoveType.PlacePartner){
+            return action.playerId === playerId ? 0 : 1
         }
 
         return 0

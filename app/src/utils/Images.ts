@@ -107,6 +107,8 @@ import weekCardConvoy2 from '../images/WeekCardConvoy2.jpg'
 
 import headStartToken from '../images/coupdavance.png'
 
+import background from '../images/background.jpg'
+
 
 const Images = {
     cardBackBlue, cardBackGreen, cardBackPurple, cardBackRed, cardBackYellow, 
@@ -128,7 +130,8 @@ const Images = {
     tokenStealBlue, tokenStealGreen, tokenStealPurple, tokenStealRed, tokenStealYellow,
     weekCardBack,
     weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1, weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
-    headStartToken
+    headStartToken,
+    background
 }
 
 export default Images
