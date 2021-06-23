@@ -11,6 +11,7 @@ type JudgePrisoners = {
 export default JudgePrisoners
 
 export function judgePrisoners(state:GameState | GameView){
+    console.log("Judging")
     const prince : PrinceState = state.players.find(isPrinceState) as PrinceState ;
     const thieves : ThiefState[] = state.players.filter(isThiefState) as ThiefState[] ;
     prince.abilities[0] = true

@@ -26,7 +26,8 @@ enum MoveType {
   TakeToken,
   ArrestPartners,
   JudgePrisoners,
-  PlayHeadStart
+  PlayHeadStart,
+  RevealGolds
 }
 
 export default MoveType

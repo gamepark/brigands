@@ -16,6 +16,7 @@ import { placeToken } from '@gamepark/brigands/moves/PlaceToken'
 import { playHeadStart } from '@gamepark/brigands/moves/PlayHeadStart'
 import { removeToken } from '@gamepark/brigands/moves/RemoveToken'
 import { resolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
+import { revealGoldsInView } from '@gamepark/brigands/moves/RevealGolds'
 import { revealKickOrNotView } from '@gamepark/brigands/moves/RevealKickOrNot'
 import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
@@ -98,6 +99,8 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return judgePrisoners(this.state)
       case MoveType.PlayHeadStart :
         return playHeadStart(this.state, move)
+      case MoveType.RevealGolds:
+        return revealGoldsInView(this.state, move)
       
     }
   }

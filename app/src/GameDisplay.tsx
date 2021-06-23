@@ -36,8 +36,7 @@ export default function GameDisplay({game}: Props) {
 
   return (
     <Letterbox css={letterBoxStyle} top={0}>
-      <div css={css`position: absolute;
-                    top:0;left:0;width:100%;height:100%;`}>
+      <div css={perspective}>
         
         <PrincePanel css = {[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
                      player = {players.find(isPrinceState)!}
@@ -98,6 +97,17 @@ export default function GameDisplay({game}: Props) {
   )
 }
 
+const perspective = css`
+position: absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+transform-style: preserve-3d;
+transform: perspective(150em) rotateX(10deg) scale(1.13);
+transform-origin: bottom;
+`
 
 const hideTavernPopUp = css`
 display:none;

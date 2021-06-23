@@ -23,6 +23,9 @@ export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDi
         cleanTokens(state.players.filter(isThiefState) as ThiefState[])
         cleanAbilities(state.players.find(isPrinceState)! as PrinceState)
         state.players.forEach(p => p.isReady = false)
+
+        // If state.eventDeck.length === 0 => state.phase = undefined
+
         state.phase = Phase.NewDay
     } else {
         delete state.city[move.districtResolved].dice
