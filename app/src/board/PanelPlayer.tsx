@@ -1,13 +1,13 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { isThisPartnerHasMoveToken } from "@gamepark/brigands/Brigands";
+import { isThisPartnerHasKickToken, isThisPartnerHasMoveToken } from "@gamepark/brigands/Brigands";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import {ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
-import { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
+import Partner, { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/types/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView , isNotThiefView} from "@gamepark/brigands/types/Thief";
@@ -25,6 +25,7 @@ import ThiefToken from "./ThiefToken";
 
 type Props = {
     player:ThiefState | ThiefView
+    thieves:(ThiefState | ThiefView)[] 
     phase:Phase | undefined
     positionForPartners:number
     city:District[]
@@ -33,9 +34,10 @@ type Props = {
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
+    const thiefId = thieves.find(p => p.role === playerId)!
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
@@ -115,6 +117,11 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                 )}
             </div>
 
+            {phase === Phase.Solving && isNotThiefView(thiefId) && thiefId.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined) 
+            && (player.partner as Partner[]).some(part => part.district === districtResolved && player.role !== playerId)
+            && <Button css={[kickThisPlayerButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:player.role})}>{t("Kick")}</Button>
+            }  
+
             {(phase === Phase.Planning || phase === Phase.Patrolling) && <div css={cardsPanelPosition}>
 
                 {[...Array(cardsPlayed)].map((_,index) => <DistrictCard key={index}
@@ -162,10 +169,17 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
 
-        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasMoveToken(player, index)) && player.partner.every(part => !isPartnerView(part) && part.district !== undefined) 
+        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasMoveToken(player, index))
+        && thieves.every(p => isNotThiefView(p) && p.partner.every((part, index) => part.district !== districtResolved || !isThisPartnerHasKickToken(p, index)))
         &&  <div>
                 <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
+            </div>
+        }  
+
+        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
+        &&  <div>
+                <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})}>{t("Don't Kick")}</Button>
             </div>
         }  
                 
@@ -176,6 +190,12 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     )
 
 }
+
+const kickThisPlayerButtonPosition = css`
+font-size:3em;
+text-align:center;
+margin:0 3em;
+`
 
 const canDropStyle = css`
 background-color:red;

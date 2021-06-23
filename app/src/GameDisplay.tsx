@@ -86,6 +86,7 @@ export default function GameDisplay({game}: Props) {
             city={game.city}
             numberOfThieves = {players.filter(isThiefState).length}
             districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved].name}
+            thieves = {game.players.filter(isThiefState)}
             />
 
           )}

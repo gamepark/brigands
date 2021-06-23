@@ -88,7 +88,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index))
           const runnerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.move.some(t => t === index))
           if (kickerPartners.length > 0){
-            return this.state.readyToKickPartners !== true && player.isReady !== true
+            return this.state.readyToKickPartners !== true && kickerPartners.some(part => part.kickOrNot === undefined)
           } else if (runnerPartners.length > 0){
             return player.partner.some((part, index) => part.district === this.state.city[this.state.districtResolved!].name && isThisPartnerHasMoveToken(player, index))
           } else {
@@ -166,10 +166,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return planningMoves
 
       } else if (this.state.phase === Phase.Solving && this.state.districtResolved !== undefined ){
-        const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && player.tokens.kick.some(t => t === index))
+        const kickerPartners:Partner[] = player.partner.filter((p, index) => p.district === this.state.city[this.state.districtResolved!].name && isThisPartnerHasKickToken(player, index))
         if (kickerPartners.length > 0){
           if (kickerPartners.every(part => part.kickOrNot !== undefined)){
-            return [{type:MoveType.TellYouAreReady, playerId:role}]
+            return []
           } else {
             const kickOrNotResult:KickOrNot[] = []
             kickerPartners.forEach(part => {
@@ -327,9 +327,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             } else {
               return {type:MoveType.RemoveToken, role:kicker.role, tokenAction:TokenAction.Kicking, indexPartner: kicker.partner.findIndex((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!}
             }
-          } else if ((this.state.players.filter(isThiefState) as ThiefState[]).filter(p => p.partner.some((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index))).every(p => p.isReady === true)){
+          } else if ((this.state.players.filter(isThiefState) as ThiefState[]).filter(p => p.partner.some((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index))).every(p => p.partner.filter((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))){
+            console.log("reveal")
             return {type:MoveType.RevealKickOrNot}
           } else {
+            console.log("waiting")
             return
           }
         }
@@ -597,7 +599,7 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[]{
           gold:2,
           isReady:false,
           partner:[{},{},{}],
-          tokens:{steal:[-1],kick:[],move:[-1]},
+          tokens:{steal:[-1],kick:[-1],move:[]},
         }
     
     )) 
