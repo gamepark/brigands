@@ -1,6 +1,6 @@
 import {css, Global} from '@emotion/react'
 import Brigands from '@gamepark/brigands/Brigands'
-import {BrigandsOptionsDescription} from '@gamepark/brigands/BrigandsOptions'
+import {BrigandsOptionsSpec} from '@gamepark/brigands/BrigandsOptions'
 import {GameProvider, setupTranslation} from '@gamepark/react-client'
 import normalize from 'emotion-normalize'
 import {StrictMode} from 'react'
@@ -65,7 +65,7 @@ ReactDOM.render(
     <GameProvider game="brigands" 
                   Rules={Brigands} 
                   RulesView={BrigandsView} 
-                  optionsDescription={BrigandsOptionsDescription}
+                  optionsSpec={BrigandsOptionsSpec}
                   animations={brigandsAnimations}
                   >
       <App/>

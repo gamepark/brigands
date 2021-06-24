@@ -1,2 +1,2 @@
 export {default} from './Brigands'
-export {BrigandsOptionsDescription} from './BrigandsOptions'
+export {BrigandsOptionsSpec} from './BrigandsOptions'
