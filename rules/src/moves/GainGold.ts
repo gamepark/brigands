@@ -5,7 +5,9 @@ import { isThiefState, ThiefState } from "../PlayerState";
 import DistrictName from "../types/DistrictName";
 import { isPartnerView } from "../types/Partner";
 import { isNotThiefView, ThiefView } from "../types/Thief";
+import Move from "./Move";
 import MoveType from "./MoveType";
+import MoveView from "./MoveView";
 
 type GainGold = {
     type:MoveType.GainGold
@@ -40,3 +42,7 @@ export function gainGold(state:GameState | GameView, move:GainGold){
 
     player.partner.find(part => !isPartnerView(part) && part.district === move.district && part.solvingDone !== true)!.solvingDone = true
 }
+
+export function isGainGold(move: Move | MoveView): move is GainGold {
+    return move.type === MoveType.GainGold
+  }

@@ -1,11 +1,13 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { isThisPartnerHasKickToken, isThisPartnerHasMoveToken } from "@gamepark/brigands/Brigands";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
+import BetGold, { betGold } from "@gamepark/brigands/moves/BetGold";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
-import PlacePartner, { isPlacePartner } from "@gamepark/brigands/moves/PlacePartner";
-import {ThiefState} from "@gamepark/brigands/PlayerState";
+import { isBetGold } from "@gamepark/brigands/moves/BetGold";
+import { isGainGold } from "@gamepark/brigands/moves/GainGold";
+import {isThiefState, ThiefState} from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Partner, { getPartnersView, isPartnerView } from "@gamepark/brigands/types/Partner";
@@ -17,12 +19,15 @@ import { useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-c
 import { FC, HTMLAttributes } from "react";
 import { useDrop } from "react-dnd";
 import { useTranslation } from "react-i18next";
-import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
+import ThiefTokenInBank from "../utils/ThiefTokenInBank";
 import Button from "../utils/Button";
 import AvatarPanel from "./AvatarPanel";
 import DistrictCard from "./DistrictCard";
 import PartnerComponent from "./PartnerComponent";
 import ThiefToken from "./ThiefToken";
+import Images from "../utils/Images";
+import GainGold from "@gamepark/brigands/moves/GainGold";
+import { decomposeGold, getCoin } from "./PrincePanel";
 
 type Props = {
     player:ThiefState | ThiefView
@@ -31,18 +36,19 @@ type Props = {
     positionForPartners:number
     city:District[]
     numberOfThieves:number
-    districtResolved?:DistrictName
+    districtResolved?:District
 
 } & HTMLAttributes<HTMLDivElement>
 
 const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
-    const thiefId = thieves.find(p => p.role === playerId)!
+    const thiefId = playerId !== PlayerRole.Prince && thieves.find(p => p.role === playerId)!
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
-    const animationPartner = useAnimation<PlacePartner>(animation => isPlacePartner(animation.move))
+    const animationBetGold = useAnimation<BetGold>(animation => isBetGold(animation.move))
+    const animationGainGold = useAnimation<GainGold>(animation => isGainGold(animation.move))
 
     const partnersView = isNotThiefView(player) ? phase !== Phase.Solving ? getPartnersView(player.partner) : player.partner : player.partner 
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
@@ -120,8 +126,8 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                 )}
             </div>
 
-            {phase === Phase.Solving && isNotThiefView(thiefId) && thiefId.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined) 
-            && (player.partner as Partner[]).some(part => part.district === districtResolved && player.role !== playerId)
+            {phase === Phase.Solving && thiefId !== false && isNotThiefView(thiefId) && thiefId.partner.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined) 
+            && (player.partner as Partner[]).some(part => part.district === districtResolved!.name && player.role !== playerId)
             && <Button css={[kickThisPlayerButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:player.role})}>{t("Kick")}</Button>
             }  
 
@@ -132,6 +138,11 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                 />)}
 
             </div>}
+
+        {animationGainGold && (animationGainGold.move.player.role === player.role)
+            && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
+                [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration)]} draggable={false} />))
+        }
 
         </div>
 
@@ -162,7 +173,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                               tokens={player.tokens}
                               phase={phase}
 
-                              draggable={isPartnerDraggable(phase,player.role)}
+                              draggable={!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase,player.role) : isPartnerDraggable(phase,player.role)}
                               type={"PartnerInHand"}
                               draggableItem={{partnerNumber:index}}
                               
@@ -173,27 +184,97 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
 
-        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasMoveToken(player, index))
-        && thieves.every(p => isNotThiefView(p) && p.partner.every((part, index) => part.district !== districtResolved || !isThisPartnerHasKickToken(p, index)))
+        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
+        && thieves.every(p => isNotThiefView(p) && p.partner.every((part, index) => part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index)))
         &&  <div>
                 <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
             </div>
         }  
 
-        {player.role === playerId && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
+        {player.role === playerId && thiefId !== false && phase === Phase.Solving && isNotThiefView(player) && player.partner.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
         &&  <div>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})}>{t("Don't Kick")}</Button>
             </div>
         }  
-                
-        </>
 
-        
+        {animationBetGold && (animationBetGold.move.role === player.role
+        && <div css={[betStyle(animationBetGold.move.gold), betSize, betPositionPlayer(positionForPartners), betGoldAnimation(animationBetGold.duration)]}> </div>)
+        } 
+
+        </>
 
     )
 
 }
+
+const gainGoldKeyFrames = keyframes`
+from{opacity:1; transform:translateZ(200em);}
+80%{opacity:1; transform:translateZ(0em);}
+to{opacity:0; transform:translateZ(0em);}
+`
+
+const gainGoldAnimation = (duration:number) => css`
+animation: ${gainGoldKeyFrames} ${duration}s ;
+`
+
+const coinPosition = (index1:number, index2:number) => css`
+position:relative;
+top:${-30+index2}%;
+left:${15+index1*-10}%;
+width:25%;
+height:30%;
+
+`
+
+const betGoldKeyFrames = keyframes`
+from{opacity:1;
+}
+80%{
+    top:-165%;
+    left:88%; 
+    opacity:1;
+}
+to {
+    top:-165%;
+    left:88%;
+    opacity:0;
+}
+`
+
+const betGoldAnimation = (duration:number) => css`
+animation: ${betGoldKeyFrames} ${duration}s ease-in;
+`
+
+const betStyle = (gold:number) => css`
+${gold === 1 && `
+background: center center / 70% no-repeat url(${Images.coin1})`}
+${gold === 2 && `
+background: center bottom / 70% no-repeat url(${Images.coin1}), center top / 70% no-repeat url(${Images.coin1})`}
+${gold === 3 && `
+background: center bottom / 70% no-repeat url(${Images.coin1}), center top / 85% no-repeat url(${Images.coin2})`}
+${gold === 4 && `
+background: center bottom / 85% no-repeat url(${Images.coin2}), center top / 85% no-repeat url(${Images.coin2})`}
+${gold === 5 && `
+background: center center / 100% no-repeat url(${Images.coin5})`}
+`
+
+const betPositionPlayer = (position:number) => css`
+position:absolute;
+top:50%;
+left:${13+position*20}%;
+`
+
+const betPositionDice = css`
+position:absolute;
+top:-165%;
+left:88%;
+`
+
+const betSize = css`
+width:5%;
+height:40%;
+`
 
 const transitionPartner = css`
 transition:top 1s ease-in-out, left 1s ease-in-out;

@@ -69,8 +69,8 @@ export default function GameDisplay({game}: Props) {
           />
         }
 
-        {game.districtResolved !== undefined && diceAnimation !== undefined &&
-          <DicePopUp dice={diceAnimation.move.dice} 
+        {game.districtResolved !== undefined && game.districtResolved !== DistrictName.Treasure && game.city[game.districtResolved].dice &&
+          <DicePopUp dice={game.city[game.districtResolved].dice} 
           />}
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
@@ -84,7 +84,7 @@ export default function GameDisplay({game}: Props) {
             phase = {game.phase}
             city={game.city}
             numberOfThieves = {players.filter(isThiefState).length}
-            districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved].name}
+            districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
             thieves = {game.players.filter(isThiefState)}
             />
 

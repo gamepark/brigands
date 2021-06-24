@@ -414,7 +414,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
               if (partnersOnConvoy.length < (this.state.players.length < 5 ? 2 : 3)){
                 return {type:MoveType.ArrestPartners}
               } else {
-                return {type:MoveType.ThrowDice, dice:rollDice(districtEvent.numberOfDice === undefined ? 4 : 6), district:actualDistrict.name}
+                console.log("districtEvent : ", districtEvent)
+                return {type:MoveType.ThrowDice, dice:rollDice(districtEvent.district === DistrictName.Convoy ? 6 : 4), district:actualDistrict.name}
               }
             }
           } else if (partnersOnConvoy.every(p => p.solvingDone === true)){

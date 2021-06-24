@@ -5,6 +5,8 @@ import DistrictName from "../types/DistrictName";
 import PlayerRole from "../types/PlayerRole";
 import MoveType from "./MoveType";
 import { isNotThiefView, ThiefView } from "../types/Thief";
+import Move from "./Move";
+import MoveView from "./MoveView";
 
 type BetGold = {
     type:MoveType.BetGold
@@ -23,3 +25,7 @@ export function betGold(state:GameState | GameView, move:BetGold){
         player.gold -= move.gold
     }
 }
+
+export function isBetGold(move: Move | MoveView): move is BetGold {
+    return move.type === MoveType.BetGold
+  }

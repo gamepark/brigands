@@ -148,6 +148,8 @@ ${ points%10 !== 9 && `left:${15+6.5*(points%10)}%;`};
 ${ points%10 === 9 && `left:75%;`};
 width:5.5%;
 height:10%;
+
+transition:left 1s ease-in-out;
 `
 
 const nameStyle = css`
