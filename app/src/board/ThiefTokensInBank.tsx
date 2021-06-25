@@ -76,6 +76,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
 const bankFlex = css`
 display:flex;
 flex-direction:row;
+justify-content:start;
 `
 
 const tokenSize = css`

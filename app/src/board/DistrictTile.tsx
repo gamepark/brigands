@@ -64,18 +64,24 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}
 
     return(
 
-        <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name, nbPlayers)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+        <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name, nbPlayers))]}>
 
-            {district.gold !== undefined 
-            && <div css={goldOnTreasureDisplay}> 
-                
-                    {            
-                        decomposeGold(district.gold).map((coin, index) =>
-                        [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} draggable={false} />)
-                    )}
+            <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
-               </div>
-            }
+                <h1 css={titleDistrictStyle}>{t(getDistrictName(district.name))}</h1>
+
+                {district.gold !== undefined 
+                && <div css={goldOnTreasureDisplay}> 
+                    
+                        {            
+                            decomposeGold(district.gold).map((coin, index) =>
+                            [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} draggable={false} />)
+                        )}
+
+                </div>
+                }
+
+            </div>
             
         </div>
 
@@ -83,14 +89,25 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}
 
 }
 
+const dropSize = css`
+width:100%;
+height:100%;
+position:absolute;
+`
+
+const titleDistrictStyle = css`
+text-align:center;
+font-size:2.5em;
+margin:0.2em 0 ;
+color:black;
+`
+
 const canDropStyle = css`
-border:0.5em gold solid;
-transition : border 0.5s linear;
+background-color:rgba(255,255,255,0.2);
 `
 
 const isOverStyle = css`
-border:1em gold solid;
-transition : border 0.5s linear;
+background-color:rgba(255,255,255,0.5);
 `
 
 const goldOnTreasureDisplay = css`
@@ -141,6 +158,29 @@ function getDistrictImage(district:number, nbPlayers:number):string{
             return nbPlayers < 5 ? Images.districtConvoy1 : Images.districtConvoy2
         default :
             return 'error : no BG'
+    }
+}
+
+function getDistrictName(district:number):string{
+    switch(district){
+        case 1:
+            return "Jail"
+        case 2:
+            return "Tavern"
+        case 3:
+            return "Market"
+        case 4:
+            return "Harbor"
+        case 5:
+            return "CityHall"
+        case 6:
+            return "Treasure"
+        case 7:
+            return "Palace"
+        case 8:
+            return "Convoy"
+        default:
+            return 'error:no District Name !'
     }
 }
 
