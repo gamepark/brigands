@@ -137,6 +137,7 @@ bottom:${10+7.5*(Math.floor(points/2)+points%2)}%;
 right:${10+5*(points%2)}%;
 width:8.25%;
 height:15%;
+border-radius:100%;
 `
 
 const victoryPointStyle = css`

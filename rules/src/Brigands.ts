@@ -370,7 +370,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             console.log("----------On Palace----------")
             let partnersOnPalace:number = 0 ;
             (this.state.players.filter(isThiefState) as ThiefState[]).forEach(p => partnersOnPalace += p.partner.filter(part => part.district === DistrictName.Palace).length)
-            if (partnersOnPalace > (districtEvent.district === DistrictName.Palace ? 3 : (this.state.players.length < 4 ? 2: 3))){
+            if (partnersOnPalace > (districtEvent.district === DistrictName.Palace ? 3 : (this.state.players.length < 4 ? 1: 2))){
               return {type:MoveType.ArrestPartners}
             } else if (partnersOnPalace === 0){
               return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}

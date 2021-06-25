@@ -60,7 +60,7 @@ import districtTreasure from '../images/DistrictTreasure.jpg'
 import princePanel from '../images/PrincePanel.png'
 import patrol from '../images/Patrol.png'
 import mercenary from '../images/Mercenary.png'
-import victoryToken from '../images/VictoryToken.png'
+import victoryToken from '../images/VictoryToken.jpg'
 
 import coin1 from '../images/Coin1.png'
 import coin2 from '../images/Coin2.png'
