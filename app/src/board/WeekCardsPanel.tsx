@@ -16,7 +16,7 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, ...props}) => {
 
             <div css={[revealedCardPosition, revealedCardStyle(getWeekCardImage(event))]}></div>
 
-            <div css={[hiddenCardPosition, hiddenCardStyle]}></div>
+            {eventDeck !==0 && <div css={[hiddenCardPosition, hiddenCardStyle]}></div>}
 
         </div>
 

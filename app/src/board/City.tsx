@@ -14,10 +14,11 @@ type Props = {
     phase:Phase | undefined
     prince:PrinceState
     districtResolved:number|undefined
+    nbPlayers:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, ...props}) => {
 
     return(
 
@@ -29,7 +30,8 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, ...props}) => 
                               css={[districtSize, index === districtResolved && resolvingStyle]}
                               district={district}
                               phase={phase}
-                              prince={prince}                         
+                              prince={prince}   
+                              nbPlayers={nbPlayers}                      
                 />
             
             )}

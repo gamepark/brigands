@@ -2,7 +2,7 @@
 import {css, keyframes} from '@emotion/react'
 import GameView from '@gamepark/brigands/GameView'
 import ThrowDice from '@gamepark/brigands/moves/ThrowDice'
-import { isPrinceState, isThiefState, ThiefState } from '@gamepark/brigands/PlayerState'
+import { isPrinceState, isThiefState, PrinceState, ThiefState } from '@gamepark/brigands/PlayerState'
 import DistrictName from '@gamepark/brigands/types/DistrictName'
 import Phase from '@gamepark/brigands/types/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
@@ -18,6 +18,8 @@ import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 import {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
+import { isPartnerView } from '@gamepark/brigands/types/Partner'
+import { isThisPartnerHasAnyToken } from '@gamepark/brigands/Brigands'
 
 type Props = {
   game: GameView
@@ -30,8 +32,10 @@ export default function GameDisplay({game}: Props) {
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
 
-  function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined){
-    return phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince &&(playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern)
+  function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined, prince:PrinceState){    
+    return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
+    && playerList.filter(p => p.partner.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
+    && prince.patrols.some(pat => pat === DistrictName.Tavern) === false)
   }
 
   return (
@@ -61,9 +65,10 @@ export default function GameDisplay({game}: Props) {
               phase = {game.phase}
               prince = {players.find(isPrinceState)!}
               districtResolved = {game.districtResolved}
+              nbPlayers = {game.players.length}
         />
 
-        {isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name) && 
+        {isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name, game.players.find(isPrinceState)!) && 
           <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
                        player = {players.filter(isThiefState).find(isNotThiefView)!}
           />

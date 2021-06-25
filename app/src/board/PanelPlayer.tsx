@@ -224,6 +224,8 @@ top:${-30+index2}%;
 left:${15+index1*-10}%;
 width:25%;
 height:30%;
+border-radius: 100%;
+box-shadow: 0 0 1em 0.2em black;
 
 `
 
@@ -388,7 +390,7 @@ justify-content:space-evenly;
 
 const goldPanel = css`
 height:100%;
-width:50%;
+width:60%;
 
 p{
     font-size:2.5em;

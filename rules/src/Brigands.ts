@@ -41,6 +41,7 @@ import { removeToken } from './moves/RemoveToken'
 import JudgePrisoners, { judgePrisoners } from './moves/JudgePrisoners'
 import PlayHeadStart, { playHeadStart } from './moves/PlayHeadStart'
 import { revealGolds } from './moves/RevealGolds'
+import { ThiefView } from './types/Thief'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole> {
@@ -369,7 +370,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             console.log("----------On Palace----------")
             let partnersOnPalace:number = 0 ;
             (this.state.players.filter(isThiefState) as ThiefState[]).forEach(p => partnersOnPalace += p.partner.filter(part => part.district === DistrictName.Palace).length)
-            if (partnersOnPalace > (districtEvent.district === DistrictName.Palace ? 3 : 2)){
+            if (partnersOnPalace > (districtEvent.district === DistrictName.Palace ? 3 : (this.state.players.length < 4 ? 2: 3))){
               return {type:MoveType.ArrestPartners}
             } else if (partnersOnPalace === 0){
               return {type:MoveType.MoveOnDistrictResolved, districtResolved:this.state.districtResolved}
@@ -692,18 +693,18 @@ export function getTokensInBank(thief:ThiefState):TokenAction[]{
 
 }
 
-export function isThisPartnerHasAnyToken(thief:ThiefState, partnerNumber:number):boolean{
+export function isThisPartnerHasAnyToken(thief:ThiefState | ThiefView, partnerNumber:number):boolean{
   return thief.tokens.steal.some(t => t === partnerNumber) || thief.tokens.kick.some(t => t === partnerNumber) || thief.tokens.move.some(t => t === partnerNumber)
 }
 
-export function isThisPartnerHasStealToken(thief:ThiefState, partnerNumber:number):boolean{
+export function isThisPartnerHasStealToken(thief:ThiefState | ThiefView, partnerNumber:number):boolean{
   return thief.tokens.steal.some(t => t === partnerNumber)
 }
 
-export function isThisPartnerHasKickToken(thief:ThiefState, partnerNumber:number):boolean{
+export function isThisPartnerHasKickToken(thief:ThiefState | ThiefView, partnerNumber:number):boolean{
   return thief.tokens.kick.some(t => t === partnerNumber)
 }
 
-export function isThisPartnerHasMoveToken(thief:ThiefState, partnerNumber:number):boolean{
+export function isThisPartnerHasMoveToken(thief:ThiefState | ThiefView, partnerNumber:number):boolean{
   return thief.tokens.move.some(t => t === partnerNumber)
 }

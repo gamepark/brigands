@@ -50,7 +50,10 @@ import districtCityHall from '../images/DistrictCityHall.jpg'
 import districtHarbor from '../images/DistrictHarbor.jpg'
 import districtJail from '../images/DistrictJail.jpg'
 import districtMarket from '../images/DistrictMarket.jpg'
-import districtPalace from '../images/DistrictPalace.jpg'
+import districtPalace1 from '../images/DistrictPalace1.jpg'
+import districtPalace2 from '../images/DistrictPalace2.jpg'
+import districtConvoy1 from '../images/DistrictConvoy1.jpg'
+import districtConvoy2 from '../images/DistrictConvoy2.jpg'
 import districtTavern from '../images/DistrictTavern.jpg'
 import districtTreasure from '../images/DistrictTreasure.jpg'
 
@@ -108,6 +111,7 @@ import weekCardConvoy2 from '../images/WeekCardConvoy2.jpg'
 import headStartToken from '../images/coupdavance.png'
 
 import background from '../images/background.jpg'
+import box from '../images/boite3D.png'
 
 
 const Images = {
@@ -119,7 +123,7 @@ const Images = {
     cardTavernBlue, cardTavernGreen, cardTavernPurple, cardTavernRed, cardTavernYellow,
     cardTreasureBlue, cardTreasureGreen, cardTreasurePurple, cardTreasureRed, cardTreasureYellow,
     cardConvoyBlue, cardConvoyGreen, cardConvoyPurple, cardConvoyRed, cardConvoyYellow,
-    districtCityHall, districtHarbor, districtMarket, districtPalace, districtTavern, districtTreasure, // ADD CONVOY TILE HERE
+    districtCityHall, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail, districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
     princePanel,
     patrol, mercenary, victoryToken,
     coin1,coin2,coin5,
@@ -131,7 +135,7 @@ const Images = {
     weekCardBack,
     weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1, weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
     headStartToken,
-    background
+    background, box
 }
 
 export default Images

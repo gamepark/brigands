@@ -50,6 +50,8 @@ background-repeat: no-repeat;
 background-position: top;
 width:100%;
 height:100%;
+border-radius: 100%;
+box-shadow: 0 0 0.5em 0.1em black;
 `
 
 function getTokenBackground(action:TokenAction, role:PlayerRole):string{

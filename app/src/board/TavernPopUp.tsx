@@ -21,9 +21,9 @@ const TavernPopUp : FC<Props> = ({position, player, ...props}) => {
     return(
         <div {...props} css={[tavernPopUpSize, tavernPopUpPosition(position), tavernPopUpStyle]}>
 
-            <div css={[xStyle, betSize]}  onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role})} > <span>X</span> </div>
+            <div css={[xStyle, betSize(0)]} onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role})} > <span>X</span> </div>
             {[...Array(player.gold < 5 ? player.gold : 5)].map((_, i) => 
-                <div key={i} css={[betStyle(i+1), betSize]} onClick={() => onClick({type:MoveType.BetGold, gold:i+1, role:player.role})} >  </div>
+                <div key={i} css={[betStyle(i+1), betSize(i+1, player.gold)]} onClick={() => onClick({type:MoveType.BetGold, gold:i+1, role:player.role})} >  </div>
             )}
 
         </div>
@@ -31,12 +31,18 @@ const TavernPopUp : FC<Props> = ({position, player, ...props}) => {
 
 }
 
-const betSize = css`
+const betSize = (position:number, goldMax?:number) => css`
 width:16%;
 height:100%;
+transition:background-color 0.5s, border-radius 0.5s;
+${position === 0 && `border-radius:30% 0% 0% 30%;`}
+${(position === goldMax || position === 5) && `border-radius:0% 30% 30% 0%;`}
 :hover{
     background-color:black;
     cursor:pointer;
+    ${position === 0 && `border-radius:30% 0% 0% 30%;`}
+    ${(position === goldMax || position === 5) && `border-radius:0% 30% 30% 0%;`}
+    transition:background-color 0.5s, border-radius 0.5s;
 }
 `
 
@@ -69,6 +75,7 @@ const tavernPopUpPosition = (position:number) => css`
 position:absolute;
 top:28%;
 left:32.5%;
+z-index:99;
 `
 
 const tavernPopUpStyle = css`

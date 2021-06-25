@@ -21,10 +21,11 @@ type Props = {
     district:District
     prince:PrinceState
     phase:Phase | undefined
+    nbPlayers:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -63,7 +64,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, ...props}) => {
 
     return(
 
-        <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+        <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name, nbPlayers)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
             {district.gold !== undefined 
             && <div css={goldOnTreasureDisplay}> 
@@ -106,6 +107,9 @@ top:${25+25*firstI}%;
 left:${10+10*secondI}%;
 width:${30-firstI*2.75}%;
 height:${55-firstI*5}%;
+
+border-radius: 100%;
+box-shadow: 0 0 1em 0.2em black;
 `
 
 const districtStyle = (image:string) => css`
@@ -117,10 +121,10 @@ const districtStyle = (image:string) => css`
     background-position: top;
 `
 
-function getDistrictImage(district:number):string{
+function getDistrictImage(district:number, nbPlayers:number):string{
     switch (district){
-        // case 1 :
-        //     return Images.districtJail
+        case 1 :
+             return Images.districtJail
         case 2 : 
             return Images.districtTavern
         case 3 :
@@ -132,7 +136,9 @@ function getDistrictImage(district:number):string{
         case 6 : 
             return Images.districtTreasure
         case 7 : 
-            return Images.districtPalace
+            return nbPlayers < 4 ? Images.districtPalace1 : Images.districtPalace2
+        case 8 : 
+            return nbPlayers < 5 ? Images.districtConvoy1 : Images.districtConvoy2
         default :
             return 'error : no BG'
     }

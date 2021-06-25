@@ -95,8 +95,8 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
 }
 
 const headStartOnHand = (isPrince:number) => css`
-top:${31+isPrince*55}%;
-left:64%;
+top:${33+isPrince*55}%;
+left:58%;
 `
 
 const headStartOnDistrict = (district:number) => css`
@@ -106,8 +106,8 @@ left:${10+(district*11.25)}%;
 
 const headStartSize = css`
 position:absolute;
-height:10%;
-width:6%;
+height:8%;
+width:4%;
 z-index:1;
 `
 
@@ -126,6 +126,9 @@ top:${50+16*firstI}%;
 left:${10+4*secondI}%;
 width:${11-firstI*2.75}%;
 height:${20-firstI*5}%;
+
+border-radius: 100%;
+box-shadow: 0 0 1em 0.2em black;
 `
 
 const victoryTokenPosition = (points:number) => css`
