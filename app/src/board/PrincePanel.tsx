@@ -113,6 +113,7 @@ z-index:1;
 
 const validationButtonPosition = css`
 position:absolute;
+z-index: 1;
 width:15%;
 height:7%;
 top:88%;

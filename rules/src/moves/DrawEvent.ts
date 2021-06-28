@@ -8,7 +8,9 @@ import DistrictName from "../types/DistrictName";
 import Phase from "../types/Phase";
 import PlayerRole from "../types/PlayerRole";
 import { isNotThiefView } from "../types/Thief";
+import Move from "./Move";
 import MoveType from "./MoveType";
+import MoveView from "./MoveView";
 
 type DrawEvent = { type:typeof MoveType.DrawEvent}
 
@@ -34,4 +36,8 @@ function applyEvent(state: GameState | GameView) {
     state.city.find(d => d.name === DistrictName.Treasure)!.gold! += EventArray[state.event].goldForTreasure ;
     (state.players.find(isPrinceState) as PrinceState).patrols[2] = state.city[EventArray[state.event].positionOfCaptain].name
     state.phase = Phase.Planning
+}
+
+export function isDrawEvent(move: Move | MoveView): move is DrawEvent {
+    return move.type === MoveType.DrawEvent
 }

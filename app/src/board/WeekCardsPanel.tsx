@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
+import DrawEvent, {DrawEventView, isDrawEvent} from "@gamepark/brigands/moves/DrawEvent";
+import { useAnimation } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import Images from "../utils/Images";
 
@@ -10,13 +12,28 @@ type Props = {
 
 const WeekCardsPanel : FC<Props> = ({event, eventDeck, ...props}) => {
 
+    const animationDrawEvent = useAnimation<DrawEventView>(animation => isDrawEvent(animation.move))
+
     return (
 
         <div {...props} css={weekCardsPanelStyle}>
 
             <div css={[revealedCardPosition, revealedCardStyle(getWeekCardImage(event))]}></div>
+            
+            
+            {animationDrawEvent 
+            ? <div css={[hiddenCardPosition]}>
+                    <div css={[frontCard, card, drawEventAnimationFront(animationDrawEvent.duration), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
+                    <div css={[backCard, card, drawEventAnimationBack(animationDrawEvent.duration), hiddenCardStyle]}></div>
+              </div> 
+            : <div css={[hiddenCardPosition]}>
+                    <div css={[frontCard, card]}></div>
+                    <div css={[backCard, card, hiddenCardStyle]}></div>
+              </div> 
+            }
 
-            {eventDeck !==0 && <div css={[hiddenCardPosition, hiddenCardStyle]}></div>}
+
+           
 
         </div>
 
@@ -24,12 +41,51 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, ...props}) => {
 
 }
 
+const drawEventKeyFramesFront = keyframes`
+    from{}
+    to{
+        transform-origin:left;
+        transform:translateX(19em) rotateY(0deg);
+    }
+`
+const drawEventKeyFramesBack = keyframes`
+    from{}
+    to{
+        transform-origin:right;
+        transform:translateX(2em) rotateY(180deg);
+    }
+`
+
+const drawEventAnimationFront = (duration:number) => css`
+animation:${drawEventKeyFramesFront} ${duration}s ease-in-out;
+`
+
+const drawEventAnimationBack = (duration:number) => css`
+animation:${drawEventKeyFramesBack} ${duration}s ease-in-out;
+`
+
+const card = css`
+position:absolute;
+width:100%;
+height:100%;
+`
+
+const frontCard = css`
+transform:rotateY(-180deg);
+backface-visibility:hidden;
+`
+
+const backCard = css`
+backface-visibility:hidden;
+`
+
 const revealedCardPosition = css`
 position:absolute;
 bottom:0%;
 right:2%;
 width:40%;
 height:100%;
+
 `
 
 const revealedCardStyle = (image:string) => css`
@@ -59,7 +115,7 @@ border-radius:15% / 10%;
 `
 
 const weekCardsPanelStyle = css`
-
+transform-style: preserve-3d;
 `
 
 function getWeekCardImage(image:number):string{

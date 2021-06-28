@@ -19,7 +19,7 @@ export default function App() {
   return (
     <DndProvider options={HTML5ToTouch}>
       {game && <GameDisplay game={game}/>}
-      <LoadingScreen display={loading} gameBox={Images.box} author="Florian Boué & Laurène Brosseau" artist="Sylvain Aublin" publisher="Aspic Games" developer="Théo GREGORIO"/>
+      <LoadingScreen display={loading} gameBox={Images.box} author="Florian Boué & Laurène Brosseau" artist="Sylvain Aublin" publisher="Aspic Games" developer="Théo Grégorio"/>
       <Header><HeaderText loading={loading} game={game}/></Header>
       <Menu/>
       <FailuresDialog/>

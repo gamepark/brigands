@@ -83,6 +83,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
         <div {...props} ref={dropRef} css={[panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
+            
 
             <AvatarPanel playerInfo={playerInfo} role={player.role} />
             <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
@@ -289,15 +290,13 @@ margin:0 3em;
 `
 
 const canDropStyle = css`
-background-color:red;
-opacity:0.4;
-transition : opacity 0.5s linear;
+background-color:rgba(0,0,0,0.5);
+transition : background-color 0.5s linear;
 `
 
 const isOverStyle = css`
-background-color:red;
-opacity:0.8;
-transition : opacity 0.5s linear;
+background-color:rgba(0,0,0,0.8);
+transition : background-color 0.5s linear;
 `
 
 const moveButtonPosition = css`

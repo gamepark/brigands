@@ -29,7 +29,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.MovePartner){
             return 2
         } else if (move.type === MoveType.DrawEvent){
-            return 1
+            return 2
         } else if (move.type === MoveType.JudgePrisoners){
             return 2
         } else if (move.type === MoveType.PlacePartner){

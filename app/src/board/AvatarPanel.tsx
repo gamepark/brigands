@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import { Player } from "@gamepark/react-client";
+import { Avatar, Player } from "@gamepark/react-client";
 import { FC } from "react";
-import { Avatar } from "react-avataaars";
 import { useTranslation } from "react-i18next";
 import Images from "../utils/Images";
 
@@ -20,7 +19,7 @@ const AvatarPanel : FC<Props> = ({playerInfo, role}) => {
 
         <div css={avatarStyle}>
             {playerInfo?.avatar 
-                ? <Avatar style={{width:'100%', height:'100%'}} avatarStyle="Circle" {...playerInfo.avatar}/> 
+                ? <Avatar css={avatarStyle} avatarStyle="Circle" {...playerInfo.avatar}/> 
                 : <img alt={t('Player avatar')} src={getAlternativeAvatar(role)} css={alternativeAvatarStyle} draggable={false}/>
             }
         </div>
