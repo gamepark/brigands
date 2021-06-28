@@ -32,6 +32,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
 
+    console.log("nbPartners : ", nbPartners)
+
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
         canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
@@ -72,8 +74,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
                 <h1 css={titleDistrictStyle}>{t(getDistrictName(district.name))}</h1>
 
-                {phase === Phase.Planning && nbPartners && 
-                [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={temporaryPartnerPosition(i)} /> )
+                {phase === Phase.Planning && district.name !== DistrictName.Jail && nbPartners !== 0 && 
+                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={temporaryPartnerPosition(i)} /> )
                 }
 
                 {district.gold !== undefined 
@@ -98,7 +100,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 const temporaryPartnerPosition = (index:number) => css`
 position:absolute;
 top:20%;
-left:${20+index*5}%
+left:${20+index*20}%;
+height:20%;
 `
 
 const dropSize = css`

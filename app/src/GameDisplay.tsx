@@ -18,7 +18,7 @@ import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 import {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
-import { isPartnerView } from '@gamepark/brigands/types/Partner'
+import Partner, { isPartnerView } from '@gamepark/brigands/types/Partner'
 import { isThisPartnerHasAnyToken } from '@gamepark/brigands/Brigands'
 
 type Props = {
@@ -31,6 +31,8 @@ export default function GameDisplay({game}: Props) {
 
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
+
+  const partnersOfPlayerId = playerId !== PlayerRole.Prince ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partner as Partner[] : undefined
 
   function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined, prince:PrinceState){    
     return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
@@ -66,6 +68,7 @@ export default function GameDisplay({game}: Props) {
               prince = {players.find(isPrinceState)!}
               districtResolved = {game.districtResolved}
               nbPlayers = {game.players.length}
+              partnersOfPlayerId = {game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name, game.players.find(isPrinceState)!) && 
