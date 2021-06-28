@@ -1,8 +1,9 @@
-import GameState from "../GameState"
-import GameView from "../GameView"
-import { isThiefState, ThiefState } from "../PlayerState"
-import PlayerRole from "../types/PlayerRole"
-import MoveType from "./MoveType"
+import GameState from '../GameState'
+import GameView, {getThieves} from '../GameView'
+import {isThief} from '../PlayerState'
+import {getPartners, isPartner} from '../types/Partner'
+import PlayerRole from '../types/PlayerRole'
+import MoveType from './MoveType'
 
 type KickOrNot = {
     type : MoveType.KickOrNot
@@ -18,11 +19,9 @@ export type KickOrNotView = {
 }
 
 export function kickOrNot(state:GameState|GameView, move : KickOrNot){
-    const kicker:ThiefState = (state.players.find(p => p.role === move.kickerRole) as ThiefState)
-    const kickerIndexPartner:number = kicker.partners.findIndex((part, index) => part.district === state.city[state.districtResolved!].name && kicker.tokens.kick.some(t => t === index) && part.kickOrNot === undefined)
-
-    kicker.partners[kickerIndexPartner].kickOrNot = move.playerToKick
-
+    const kicker = getThieves(state).find(p => p.role === move.kickerRole)!
+    const partner = getPartners(kicker).filter(isPartner).find((partner, index) => partner.district === state.city[state.districtResolved!].name && kicker.tokens.kick.some(t => t === index) && partner.kickOrNot === undefined)!
+    partner.kickOrNot = move.playerToKick
 }
 
 export function kickOrNotInView(state:GameView, move:KickOrNot | KickOrNotView){

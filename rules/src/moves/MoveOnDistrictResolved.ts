@@ -1,9 +1,8 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isPrinceState, isThiefState, PrinceState, ThiefState } from "../PlayerState";
-import Phase from "../types/Phase";
-import Thief from "../types/Thief";
-import MoveType from "./MoveType";
+import GameState from '../GameState'
+import GameView, {getPrince, getThieves} from '../GameView'
+import {isThiefState, PrinceState, ThiefState} from '../PlayerState'
+import Phase from '../types/Phase'
+import MoveType from './MoveType'
 
 type MoveOnDistrictResolved = {
     type:MoveType.MoveOnDistrictResolved
@@ -14,14 +13,16 @@ export default MoveOnDistrictResolved
 
 export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDistrictResolved){
     if (move.districtResolved === 0){
-        (state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partners.forEach(part => part.district === state.city[move.districtResolved].name && delete part.solvingDone))
+        getThieves(state).filter(isThiefState).forEach(p => p.partners.forEach(part => part.district === state.city[move.districtResolved].name && delete part.solvingDone))
     }
     if (move.districtResolved === 7){
-        delete state.districtResolved ;
-        takeBackPatrols(state.players.find(isPrinceState)! as PrinceState)
-        cleanPartners(state.players.filter(isThiefState) as ThiefState[])
-        cleanTokens(state.players.filter(isThiefState) as ThiefState[])
-        cleanAbilities(state.players.find(isPrinceState)! as PrinceState)
+        const prince = getPrince(state)
+        const thieves = getThieves(state).filter(isThiefState)
+        delete state.districtResolved
+        takeBackPatrols(prince)
+        cleanPartners(thieves)
+        cleanTokens(thieves)
+        cleanAbilities(prince)
         state.players.forEach(p => p.isReady = false)
 
         // If state.eventDeck.length === 0 => state.phase = undefined

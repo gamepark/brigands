@@ -1,14 +1,13 @@
-import { GameSpeed, getGameView } from "@gamepark/rules-api";
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isPrinceState, isThiefState, ThiefState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
-import Partner, { isPartnerView, PartnerView } from "../types/Partner";
-import PlayerRole from "../types/PlayerRole";
-import { isNotThiefView, ThiefView } from "../types/Thief";
-import Move from "./Move";
-import MoveType from "./MoveType";
-import MoveView from "./MoveView";
+import GameState from '../GameState'
+import GameView from '../GameView'
+import {isThief, isThiefState} from '../PlayerState'
+import DistrictName from '../types/DistrictName'
+import Partner, {PartnerView} from '../types/Partner'
+import PlayerRole from '../types/PlayerRole'
+import {ThiefView} from '../types/Thief'
+import Move from './Move'
+import MoveType from './MoveType'
+import MoveView from './MoveView'
 
 type PlacePartner = {
     type:MoveType.PlacePartner
@@ -26,19 +25,17 @@ export type PlacePartnerView = {
 export default PlacePartner
 
 export function placePartner(state:GameState | GameView, move:PlacePartner){
-    
-    (state.players.filter(isThiefState).find(p => p.role === move.playerId)! as ThiefState)
-        .partners[move.partnerNumber].district = move.district
+    const player = state.players.find(p => p.role === move.playerId)!
+    if (!isThiefState(player)) throw new Error('Thief State expected')
+    player.partners[move.partnerNumber].district = move.district
 }
 
 export function placePartnerInView(state:GameView, move:PlacePartner | PlacePartnerView){
     if(isPlacePartnerView(move)){
-        (state.players.filter(isThiefState).find(p => p.role === move.playerId)! as ThiefView)
-            .partners = move.partner
+        state.players = state.players.map(p => p.role === move.playerId ? {...p, partners: move.partner} : p)
     } else {
         placePartner(state,move)
     }
-
 }
 
 export function isPlacePartnerView(move:PlacePartner | PlacePartnerView):move is PlacePartnerView{

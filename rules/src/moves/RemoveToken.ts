@@ -1,10 +1,10 @@
-import { isThisPartnerHasKickToken } from "../Brigands";
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isThiefState, ThiefState } from "../PlayerState";
-import PlayerRole from "../types/PlayerRole";
-import TokenAction from "../types/TokenAction";
-import MoveType from "./MoveType";
+import {isThisPartnerHasKickToken} from '../Brigands'
+import GameState from '../GameState'
+import GameView, {getThieves} from '../GameView'
+import {isPartner} from '../types/Partner'
+import PlayerRole from '../types/PlayerRole'
+import TokenAction from '../types/TokenAction'
+import MoveType from './MoveType'
 
 type RemoveToken = {
     type:MoveType.RemoveToken
@@ -16,7 +16,7 @@ type RemoveToken = {
 export default RemoveToken
 
 export function removeToken(state:GameState | GameView, move:RemoveToken){
-    const player:ThiefState = state.players.find(p => p.role === move.role) as ThiefState
+    const player = getThieves(state).find(p => p.role === move.role)!
     switch(move.tokenAction){
         case TokenAction.Stealing : {
             player.tokens.steal.splice(player.tokens.steal.indexOf(move.indexPartner), 1)
@@ -33,7 +33,7 @@ export function removeToken(state:GameState | GameView, move:RemoveToken){
 
     }
 
-    if (state.readyToKickPartners === true && (state.players.filter(isThiefState) as ThiefState[]).every(p => p.partners.every((part, index) => part.district !== state.city[state.districtResolved!].name || !isThisPartnerHasKickToken(p, index) ))){
+    if (state.readyToKickPartners === true && getThieves(state).every(p => p.partners.every((part, index) => isPartner(part) && part.district !== state.city[state.districtResolved!].name || !isThisPartnerHasKickToken(p, index) ))){
         delete state.readyToKickPartners
     }
 

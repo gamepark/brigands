@@ -1,8 +1,8 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isPrinceState, isThiefState, PrinceState, ThiefState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
-import MoveType from "./MoveType";
+import GameState from '../GameState'
+import GameView, {getPrince, getThieves} from '../GameView'
+import DistrictName from '../types/DistrictName'
+import {isPartnerView} from '../types/Partner'
+import MoveType from './MoveType'
 
 type JudgePrisoners = {
     type:MoveType.JudgePrisoners  
@@ -11,14 +11,14 @@ type JudgePrisoners = {
 export default JudgePrisoners
 
 export function judgePrisoners(state:GameState | GameView){
-    const prince : PrinceState = state.players.find(isPrinceState) as PrinceState ;
-    const thieves : ThiefState[] = state.players.filter(isThiefState) as ThiefState[] ;
+    const prince = getPrince(state)
+    const thieves = getThieves(state)
     prince.abilities[0] = true
     prince.patrols[prince.patrols.findIndex(pat => pat === -1)] = -2
     
-    thieves.forEach(t => t.partners.forEach(part => {
-        if (part.district === DistrictName.Jail){
-            delete part.district
+    thieves.forEach(t => t.partners.forEach(partner => {
+        if (!isPartnerView(partner) && partner.district === DistrictName.Jail){
+            delete partner.district
             prince.victoryPoints +=2
         }
     }))

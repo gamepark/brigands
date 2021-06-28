@@ -1,26 +1,17 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { playerColors } from "../PlayerColor";
-import { isThiefState, ThiefState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
-import { isPartnerView } from "../types/Partner";
-import { isNotThiefView, ThiefView } from "../types/Thief";
-import Move from "./Move";
-import MoveType from "./MoveType";
-import MoveView from "./MoveView";
+import GameState from '../GameState'
+import GameView from '../GameView'
+import {isThief, isThiefState, ThiefState} from '../PlayerState'
+import DistrictName from '../types/DistrictName'
+import {isPartnerView} from '../types/Partner'
+import Move from './Move'
+import MoveType from './MoveType'
+import MoveView from './MoveView'
 
 type GainGold = {
     type:MoveType.GainGold
     gold:number
     player:ThiefState
     district:DistrictName
-}
-
-export type GainGoldInView = {
-    type:MoveType.GainGold
-    player:ThiefView
-    district:DistrictName
-    gold:number
 }
 
 export default GainGold
@@ -34,12 +25,12 @@ export function gainGold(state:GameState | GameView, move:GainGold){
         state.city.find(d => d.name === DistrictName.Treasure)!.gold! -= move.gold      
     }
 
-    const player = state.players.find(p => p.role === move.player.role) as ThiefState | ThiefView ;
+    const player = state.players.find(p => p.role === move.player.role)!
 
-    if (isNotThiefView(player)){
+    if (isThiefState(player)){
         player.gold += move.gold
     }
-
+    if (isThief(player))
     player.partners.find(part => !isPartnerView(part) && part.district === move.district && part.solvingDone !== true)!.solvingDone = true
 }
 

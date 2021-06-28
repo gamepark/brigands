@@ -1,6 +1,6 @@
 import GameState from "../GameState"
 import GameView from "../GameView"
-import { isThiefState } from "../PlayerState"
+import { isThief } from "../PlayerState"
 import Partner from "../types/Partner"
 import Phase from "../types/Phase"
 import MoveType from "./MoveType"
@@ -21,7 +21,7 @@ export function revealPartnersDistricts(state:GameState | GameView){
 }
 
 export function revealPartnersDistrictsInView(state:GameView, move:RevealPartnersDistrictsView){
-    state.players.filter(isThiefState).forEach((p, index) => {
+    state.players.filter(isThief).forEach((p, index) => {
         p.partners = move.partnersArray[index]
     })
     state.districtResolved = 0;

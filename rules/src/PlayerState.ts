@@ -1,7 +1,7 @@
-import PlayerView from './PlayerView';
-import PlayerRole from './types/PlayerRole';
-import Prince from './types/Prince';
-import Thief, { ThiefView } from './types/Thief';
+import PlayerView from './PlayerView'
+import PlayerRole from './types/PlayerRole'
+import Prince from './types/Prince'
+import Thief, {ThiefView} from './types/Thief'
 
 type PlayerState = PrinceState | ThiefState
  
@@ -17,10 +17,14 @@ export type PrinceState = PlayerCommon & Prince
 
 export type ThiefState = PlayerCommon & Thief
 
-export function isPrinceState(state:PrinceState | ThiefState | ThiefView):state is PrinceState{
-  return (state.role === PlayerRole.Prince)
+export function isPrinceState(state: PlayerState | PlayerView): state is PrinceState {
+  return state.role === PlayerRole.Prince
 }
 
-export function isThiefState(state:PlayerState | PlayerView):state is (ThiefState |ThiefView){
-  return (state.role !== PlayerRole.Prince)
+export function isThief(player: PlayerState | PlayerView): player is (ThiefState | ThiefView) {
+  return player.role !== PlayerRole.Prince
+}
+
+export function isThiefState(player: PlayerState | PlayerView): player is ThiefState {
+  return isThief(player) && (player as ThiefState).gold !== undefined
 }

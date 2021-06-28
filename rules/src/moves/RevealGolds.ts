@@ -1,7 +1,7 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isThiefState, ThiefState } from "../PlayerState";
-import MoveType from "./MoveType";
+import GameState from '../GameState'
+import GameView from '../GameView'
+import {isThiefState} from '../PlayerState'
+import MoveType from './MoveType'
 
 type RevealGolds = {
     type:MoveType.RevealGolds
@@ -19,7 +19,7 @@ export function revealGolds(state:GameState|GameView){
 
 export function revealGoldsInView(state:GameView, move:RevealGoldsView){
     delete state.phase ;
-    (state.players.filter(isThiefState) as ThiefState[]).forEach((p, index) => {
+    state.players.filter(isThiefState).forEach((p, index) => {
         p.gold = move.goldArray[index]
     })
 }

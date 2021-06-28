@@ -1,15 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
+import {isThisPartnerHasAnyToken} from '@gamepark/brigands/Brigands'
 import GameView from '@gamepark/brigands/GameView'
-import ThrowDice from '@gamepark/brigands/moves/ThrowDice'
-import { isPrinceState, isThiefState, PrinceState, ThiefState } from '@gamepark/brigands/PlayerState'
+import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
+import {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import DistrictName from '@gamepark/brigands/types/DistrictName'
+import Partner, {isPartnerView} from '@gamepark/brigands/types/Partner'
 import Phase from '@gamepark/brigands/types/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
-import { isNotThiefView, ThiefView } from '@gamepark/brigands/types/Thief'
-import { useAnimation, usePlayerId } from '@gamepark/react-client'
+import {ThiefView} from '@gamepark/brigands/types/Thief'
+import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
-import { useMemo } from 'react'
+import {useMemo} from 'react'
 import City from './board/City'
 import DicePopUp from './board/DicePopUp'
 import PanelPlayer from './board/PanelPlayer'
@@ -17,9 +19,6 @@ import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
-import {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
-import Partner, { isPartnerView } from '@gamepark/brigands/types/Partner'
-import { isThisPartnerHasAnyToken } from '@gamepark/brigands/Brigands'
 
 type Props = {
   game: GameView
@@ -56,7 +55,7 @@ export default function GameDisplay({game}: Props) {
                         eventDeck = {game.eventDeck} />
 
         <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank ]}
-                           players = {players.filter(isThiefState)}  
+                           players = {players.filter(isThief)}
                            phase={game.phase}
                            resolvedDistrict={game.districtResolved && game.city[game.districtResolved].name}
         />
@@ -71,9 +70,9 @@ export default function GameDisplay({game}: Props) {
               partnersOfPlayerId = {game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
         />
 
-        {isTavernPopUpDisplay(game.players.filter(isThiefState), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name, game.players.find(isPrinceState)!) && 
+        {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name, game.players.find(isPrinceState)!) &&
           <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
-                       player = {players.filter(isThiefState).find(isNotThiefView)!}
+                       player = {players.find(isThiefState)!}
           />
         }
 
@@ -83,7 +82,7 @@ export default function GameDisplay({game}: Props) {
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 
-          {players.filter(isThiefState).map((p, index) => 
+          {players.filter(isThief).map((p, index) =>
             
             <PanelPlayer key = {index}
             positionForPartners = {index}
@@ -91,9 +90,9 @@ export default function GameDisplay({game}: Props) {
             player = {p} 
             phase = {game.phase}
             city={game.city}
-            numberOfThieves = {players.filter(isThiefState).length}
+            numberOfThieves = {players.filter(isThief).length}
             districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
-            thieves = {game.players.filter(isThiefState)}
+            thieves = {game.players.filter(isThief)}
             />
 
           )}

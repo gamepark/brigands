@@ -1,6 +1,6 @@
 import GameState from "../GameState";
 import GameView from "../GameView";
-import { isThiefState } from "../PlayerState";
+import { isThief } from "../PlayerState";
 import Partner from "../types/Partner";
 import MoveType from "./MoveType";
 
@@ -19,7 +19,7 @@ export function revealKickOrNot(state:GameState | GameView){
 }
 
 export function revealKickOrNotView(state:GameView, move:RevealKickOrNotView){
-    state.players.filter(isThiefState).forEach((p, index) => {
+    state.players.filter(isThief).forEach((p, index) => {
         p.partners = move.partnersArray[index]
     })
     

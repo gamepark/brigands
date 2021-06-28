@@ -1,10 +1,9 @@
-import { isThisPartnerHasAnyToken, isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasStealToken } from "../Brigands";
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isPrinceState, isThiefState, PrinceState, ThiefState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
-import Thief from "../types/Thief";
-import MoveType from "./MoveType";
+import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasStealToken} from '../Brigands'
+import GameState from '../GameState'
+import GameView, {getPrince, isGameView} from '../GameView'
+import {isThiefState} from '../PlayerState'
+import DistrictName from '../types/DistrictName'
+import MoveType from './MoveType'
 
 type ArrestPartners = {
     type:MoveType.ArrestPartners
@@ -14,8 +13,8 @@ export default ArrestPartners
 
 export function arrestPartners(state:GameState | GameView){
 
-    const prince : PrinceState = state.players.find(isPrinceState) as PrinceState
-    const thieves : ThiefState[] = state.players.filter(isThiefState) as ThiefState[]
+    const prince = getPrince(state)
+    const thieves = isGameView(state) ? state.players.filter(isThiefState) : state.players.filter(isThiefState)
 
     thieves.forEach(p => p.partners.forEach((part, index) => {
         if (part.district === state.city[state.districtResolved!].name){
@@ -32,7 +31,7 @@ export function arrestPartners(state:GameState | GameView){
     }))
 
     if(prince.patrols.find(p => p === state.city[state.districtResolved!].name)){
-        prince.patrols[(state.players.find(isPrinceState)! as PrinceState).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
+        prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
         if (prince.abilities[1] === state.city[state.districtResolved!].name){
             prince.abilities[1] = false
         }

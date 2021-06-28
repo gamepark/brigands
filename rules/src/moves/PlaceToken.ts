@@ -1,9 +1,8 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { ThiefState } from "../PlayerState";
-import PlayerRole from "../types/PlayerRole";
-import TokenAction from "../types/TokenAction";
-import MoveType from "./MoveType";
+import GameState from '../GameState'
+import GameView, {getThieves} from '../GameView'
+import PlayerRole from '../types/PlayerRole'
+import TokenAction from '../types/TokenAction'
+import MoveType from './MoveType'
 
 type PlaceToken = {
     type:MoveType.PlaceToken
@@ -15,7 +14,7 @@ type PlaceToken = {
 export default PlaceToken
 
 export function placeToken(state:GameState|GameView, move:PlaceToken){
-    const player : ThiefState = (state.players.find(p => p.role === move.role) as ThiefState)
+    const player = getThieves(state).find(p => p.role === move.role)!
     switch(move.tokenAction){
         case TokenAction.Stealing:
             player.tokens.steal[player.tokens.steal.findIndex(t => t === -1)] = move.partnerNumber

@@ -1,11 +1,10 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isThiefState, ThiefState } from "../PlayerState";
-import PlayerRole from "../types/PlayerRole";
-import MoveType from "./MoveType";
-import { isNotThiefView, ThiefView } from "../types/Thief";
-import DistrictName from "../types/DistrictName";
-import { isPartnerView } from "../types/Partner";
+import GameState from '../GameState'
+import GameView, {getThieves} from '../GameView'
+import {isThief, isThiefState, ThiefState} from '../PlayerState'
+import DistrictName from '../types/DistrictName'
+import {isPartnerView} from '../types/Partner'
+import PlayerRole from '../types/PlayerRole'
+import MoveType from './MoveType'
 
 type ResolveStealToken = {
     type:MoveType.ResolveStealToken
@@ -28,19 +27,20 @@ export function resolveStealToken(state:GameState| GameView, {steals}:ResolveSte
 
     steals.forEach(steal => {
 
-        const thief = state.players.find(p => p.role === steal.thief)! as (ThiefState | ThiefView) ; 
-        const victim = state.players.find(p => p.role === steal.victim)! as (ThiefState | ThiefView) ;
+        const thieves = getThieves(state)
+        const thief = thieves.find(p => p.role === steal.thief)!
+        const victim = thieves.find(p => p.role === steal.victim)!
 
-        if (isNotThiefView(thief)){
+        if (isThiefState(thief)){
             thief.gold += steal.gold
         }
-        if (isNotThiefView(victim)){
+        if (isThiefState(victim)){
             victim.gold = Math.max(victim.gold-steal.gold, 0)
         }
     }) ;
 
     for (const player of state.players){
-        if (isThiefState(player)){
+        if (isThief(player)){
             player.tokens.steal = player.tokens.steal.filter(ts => {
                 if (ts === -1){
                     return true
@@ -57,7 +57,7 @@ export function resolveStealToken(state:GameState| GameView, {steals}:ResolveSte
 export function createSteals(state:GameState):Steal[]{
 
     const districtResolved:DistrictName = state.city[state.districtResolved!].name
-    const thieves:ThiefState[] = (state.players.filter(isThiefState) as ThiefState[]) ;
+    const thieves = state.players.filter(isThiefState)
     const resultArray:Steal[] = []
 
     thieves.forEach(thief => {

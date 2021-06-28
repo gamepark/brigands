@@ -1,12 +1,12 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { ThiefState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
-import PlayerRole from "../types/PlayerRole";
-import MoveType from "./MoveType";
-import { isNotThiefView, ThiefView } from "../types/Thief";
-import Move from "./Move";
-import MoveView from "./MoveView";
+import GameState from '../GameState'
+import GameView, {getThieves} from '../GameView'
+import {isThiefState} from '../PlayerState'
+import DistrictName from '../types/DistrictName'
+import {isPartnerView} from '../types/Partner'
+import PlayerRole from '../types/PlayerRole'
+import Move from './Move'
+import MoveType from './MoveType'
+import MoveView from './MoveView'
 
 type BetGold = {
     type:MoveType.BetGold
@@ -18,10 +18,10 @@ export default BetGold
 
 export function betGold(state:GameState | GameView, move:BetGold){
 
-    const player = state.players.find(p => p.role === move.role) as ThiefState | ThiefView ;
+    const player = getThieves(state).find(p => p.role === move.role)!;
 
-    (state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)!.goldForTavern = move.gold ;
-    if (isNotThiefView(player)){
+    player.partners.find(p => !isPartnerView(p) && p.district === DistrictName.Tavern && p.goldForTavern === undefined)!.goldForTavern = move.gold
+    if (isThiefState(player)){
         player.gold -= move.gold
     }
 }

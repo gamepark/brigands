@@ -1,7 +1,6 @@
-import GameState from "../GameState";
-import GameView from "../GameView";
-import { isPrinceState, PrinceState } from "../PlayerState";
-import MoveType from "./MoveType";
+import GameState from '../GameState'
+import GameView, {getPrince} from '../GameView'
+import MoveType from './MoveType'
 
 type PlacePatrol = {
     type:MoveType.PlacePatrol
@@ -12,7 +11,7 @@ type PlacePatrol = {
 export default PlacePatrol
 
 export function placePatrol(state:GameState|GameView, move:PlacePatrol){
-    const prince : PrinceState = state.players.find(isPrinceState)! as PrinceState
+    const prince = getPrince(state)
     prince.patrols[move.patrolNumber] = move.district
     if (move.patrolNumber === 2){
         prince.gold -=5

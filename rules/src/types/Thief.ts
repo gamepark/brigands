@@ -12,8 +12,4 @@ export type ThiefView = Omit<ThiefState, 'gold' | 'partners'> & {
   partners: (PartnerView | Partner)[]
 }
 
-export function isNotThiefView(thief: ThiefState | ThiefView): thief is ThiefState {
-  return typeof (thief as ThiefState).gold === 'number'
-}
-
 export default Thief

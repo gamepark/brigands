@@ -1,5 +1,7 @@
-import DistrictName from "./DistrictName"
-import PlayerRole from "./PlayerRole"
+import {isThiefState, ThiefState} from '../PlayerState'
+import DistrictName from './DistrictName'
+import PlayerRole from './PlayerRole'
+import {ThiefView} from './Thief'
 
 type Partner = {
     district?: DistrictName
@@ -16,8 +18,16 @@ export type PartnerView = {
     tokensTaken?:number
 }
 
-export function isPartnerView(partner:Partner | PartnerView):partner is PartnerView{
-    return typeof (partner as PartnerView).card === 'number'
+export function isPartner(partner: Partner | PartnerView): partner is Partner {
+    return (partner as Partner).district !== undefined
+}
+
+export function isPartnerView(partner: Partner | PartnerView): partner is PartnerView {
+    return (partner as PartnerView).card !== undefined
+}
+
+export function getPartners(thief: ThiefState | ThiefView) {
+    return isThiefState(thief) ? thief.partners : thief.partners
 }
 
 export function getPartnersView(partners:Partner[]):(PartnerView | Partner)[] {
