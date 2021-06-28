@@ -32,8 +32,6 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
 
-    console.log("nbPartners : ", nbPartners)
-
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
         canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
