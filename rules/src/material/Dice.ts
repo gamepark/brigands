@@ -1,11 +1,3 @@
-const dice:number[] = [2,2,3,3,4,4]
-
-export default dice
-
-export function rollDice(numberOfRolls:number):number[]{
-    const result:number[] = []
-    for (let i=0;i<numberOfRolls;i++){
-        result.push(dice[Math.floor(Math.random()*dice.length)])
-    }
-    return result
+export function rollDice(length: number): number[] {
+  return Array.from({length}, () => 2 + Math.floor(Math.random() * 3))
 }
