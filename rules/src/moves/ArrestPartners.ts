@@ -17,7 +17,7 @@ export function arrestPartners(state:GameState | GameView){
     const prince : PrinceState = state.players.find(isPrinceState) as PrinceState
     const thieves : ThiefState[] = state.players.filter(isThiefState) as ThiefState[]
 
-    thieves.forEach(p => p.partner.forEach((part, index) => {
+    thieves.forEach(p => p.partners.forEach((part, index) => {
         if (part.district === state.city[state.districtResolved!].name){
             part.district = DistrictName.Jail ;
             prince.victoryPoints++

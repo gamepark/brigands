@@ -22,7 +22,7 @@ export function revealPartnersDistricts(state:GameState | GameView){
 
 export function revealPartnersDistrictsInView(state:GameView, move:RevealPartnersDistrictsView){
     state.players.filter(isThiefState).forEach((p, index) => {
-        p.partner = move.partnersArray[index]
+        p.partners = move.partnersArray[index]
     })
     state.districtResolved = 0;
     state.phase = Phase.Solving

@@ -28,13 +28,13 @@ export default PlacePartner
 export function placePartner(state:GameState | GameView, move:PlacePartner){
     
     (state.players.filter(isThiefState).find(p => p.role === move.playerId)! as ThiefState)
-        .partner[move.partnerNumber].district = move.district
+        .partners[move.partnerNumber].district = move.district
 }
 
 export function placePartnerInView(state:GameView, move:PlacePartner | PlacePartnerView){
     if(isPlacePartnerView(move)){
         (state.players.filter(isThiefState).find(p => p.role === move.playerId)! as ThiefView)
-            .partner = move.partner
+            .partners = move.partner
     } else {
         placePartner(state,move)
     }

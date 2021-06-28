@@ -16,12 +16,12 @@ export default TakeToken
 
 export function takeToken(state:GameState | GameView, move:TakeToken){
     if (state.city[state.districtResolved!].name === DistrictName.Jail){
-        (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name && p.tokensTaken === undefined)!.tokensTaken = 1
+        (state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === state.city[state.districtResolved!].name && p.tokensTaken === undefined)!.tokensTaken = 1
     } else {
-        if ((state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken === undefined){
-            (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken = 1
+        if ((state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken === undefined){
+            (state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken = 1
         } else {
-            (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken!++
+            (state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === state.city[state.districtResolved!].name)!.tokensTaken!++
         }
     }
 

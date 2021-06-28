@@ -22,7 +22,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, ...pro
 
     function isDraggable(phase:Phase | undefined, isHarborOrJail:boolean, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
 
-        return phase === Phase.Solving && isHarborOrJail && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partner.some(p => p.district === DistrictName.Harbor || p.district === DistrictName.Jail)
+        return phase === Phase.Solving && isHarborOrJail && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partners.some(p => p.district === DistrictName.Harbor || p.district === DistrictName.Jail)
 
     }
 

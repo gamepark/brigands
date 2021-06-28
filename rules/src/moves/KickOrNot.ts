@@ -19,9 +19,9 @@ export type KickOrNotView = {
 
 export function kickOrNot(state:GameState|GameView, move : KickOrNot){
     const kicker:ThiefState = (state.players.find(p => p.role === move.kickerRole) as ThiefState)
-    const kickerIndexPartner:number = kicker.partner.findIndex((part, index) => part.district === state.city[state.districtResolved!].name && kicker.tokens.kick.some(t => t === index) && part.kickOrNot === undefined)
+    const kickerIndexPartner:number = kicker.partners.findIndex((part, index) => part.district === state.city[state.districtResolved!].name && kicker.tokens.kick.some(t => t === index) && part.kickOrNot === undefined)
 
-    kicker.partner[kickerIndexPartner].kickOrNot = move.playerToKick
+    kicker.partners[kickerIndexPartner].kickOrNot = move.playerToKick
 
 }
 

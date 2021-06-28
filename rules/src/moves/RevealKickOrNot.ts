@@ -20,7 +20,7 @@ export function revealKickOrNot(state:GameState | GameView){
 
 export function revealKickOrNotView(state:GameView, move:RevealKickOrNotView){
     state.players.filter(isThiefState).forEach((p, index) => {
-        p.partner = move.partnersArray[index]
+        p.partners = move.partnersArray[index]
     })
     
     state.readyToKickPartners = true

@@ -14,9 +14,9 @@ type SolvePartner = {
 export default SolvePartner
 
 export function solvePartner(state:GameState | GameView, move:SolvePartner){
-    (state.players.find(p => p.role === move.thief.role) as ThiefState).partner[move.partnerNumber].solvingDone = true
+    (state.players.find(p => p.role === move.thief.role) as ThiefState).partners[move.partnerNumber].solvingDone = true
     if (getTokensInBank(move.thief).length === 0){
-        (state.players.find(p => p.role === move.thief.role) as ThiefState).partner[move.partnerNumber].tokensTaken = 1
+        (state.players.find(p => p.role === move.thief.role) as ThiefState).partners[move.partnerNumber].tokensTaken = 1
     }
 
     if(state.city[state.districtResolved!].name === DistrictName.Jail){

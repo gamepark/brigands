@@ -16,7 +16,7 @@ export function judgePrisoners(state:GameState | GameView){
     prince.abilities[0] = true
     prince.patrols[prince.patrols.findIndex(pat => pat === -1)] = -2
     
-    thieves.forEach(t => t.partner.forEach(part => {
+    thieves.forEach(t => t.partners.forEach(part => {
         if (part.district === DistrictName.Jail){
             delete part.district
             prince.victoryPoints +=2

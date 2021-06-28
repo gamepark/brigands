@@ -40,7 +40,7 @@ export function gainGold(state:GameState | GameView, move:GainGold){
         player.gold += move.gold
     }
 
-    player.partner.find(part => !isPartnerView(part) && part.district === move.district && part.solvingDone !== true)!.solvingDone = true
+    player.partners.find(part => !isPartnerView(part) && part.district === move.district && part.solvingDone !== true)!.solvingDone = true
 }
 
 export function isGainGold(move: Move | MoveView): move is GainGold {

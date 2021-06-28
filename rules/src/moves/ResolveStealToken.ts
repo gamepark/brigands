@@ -45,7 +45,7 @@ export function resolveStealToken(state:GameState| GameView, {steals}:ResolveSte
                 if (ts === -1){
                     return true
                 } else {
-                    const partner = player.partner[ts]
+                    const partner = player.partners[ts]
                     return isPartnerView(partner) || partner.district !== state.city[state.districtResolved!].name
                 }
             })
@@ -61,24 +61,24 @@ export function createSteals(state:GameState):Steal[]{
     const resultArray:Steal[] = []
 
     thieves.forEach(thief => {
-        if (thief.partner.some((part, index) => part.district === districtResolved && thief.tokens.steal.some(ts => ts === index))){
+        if (thief.partners.some((part, index) => part.district === districtResolved && thief.tokens.steal.some(ts => ts === index))){
             // thief has a Steal Token to use
-            if (thieves.filter(p => p.partner.some(part => part.district === districtResolved)).length !== 1){
+            if (thieves.filter(p => p.partners.some(part => part.district === districtResolved)).length !== 1){
                 // thief isn't alone on the district
-                if (thieves.filter(p => p.partner.some(part => part.district === districtResolved)).length === 2){
-                    const victim:ThiefState = thieves.filter(p => p.partner.some(part => part.district === districtResolved)).find(p => p.role !== thief.role)!
+                if (thieves.filter(p => p.partners.some(part => part.district === districtResolved)).length === 2){
+                    const victim:ThiefState = thieves.filter(p => p.partners.some(part => part.district === districtResolved)).find(p => p.role !== thief.role)!
                     // thief meet only one player
-                    if (victim.partner.filter(part => part.district === districtResolved).length === 1) {
+                    if (victim.partners.filter(part => part.district === districtResolved).length === 1) {
                         //There is only one victim, not 2 or 3
                         resultArray.push({thief:thief.role, victim:victim.role, gold:Math.min(3, victim.gold)})
                     } else {
                         // There is more victims
-                        resultArray.push({thief:thief.role, victim:victim.role, gold:Math.min(victim.partner.filter(part => part.district === districtResolved).length, victim.gold)})
+                        resultArray.push({thief:thief.role, victim:victim.role, gold:Math.min(victim.partners.filter(part => part.district === districtResolved).length, victim.gold)})
                     }
                 } else {
                     // Thief meet more than one player
-                    const victims : ThiefState[] = thieves.filter(p => p.partner.some(part => part.district === districtResolved))
-                    victims.forEach(victim => resultArray.push({thief:thief.role, victim:victim.role, gold:Math.min(victim.gold, victim.partner.filter(part => part.district === districtResolved).length)}))
+                    const victims : ThiefState[] = thieves.filter(p => p.partners.some(part => part.district === districtResolved))
+                    victims.forEach(victim => resultArray.push({thief:thief.role, victim:victim.role, gold:Math.min(victim.gold, victim.partners.filter(part => part.district === districtResolved).length)}))
                 }
             }
         }

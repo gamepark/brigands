@@ -25,21 +25,21 @@ export function movePartner(state:GameState | GameView, move:MovePartner){
     if (move.role === false){
 
         if (move.runner){
-            if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
-                player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
+            if (player.partners.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
+                player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partners.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
             }
         }
 
     } else {
-        if (player.partner.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
-            player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partner.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
+        if (player.partners.some((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))){
+            player.tokens.move.splice(player.tokens.move.findIndex(tm => tm === player.partners.findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(player, index))),1)
         }
-        player.partner.filter(part => part.district === actualDistrict)[0].district = nextDistrict
+        player.partners.filter(part => part.district === actualDistrict)[0].district = nextDistrict
     }
 
     if (move.kicker){
         const kicker : ThiefState = (state.players.find(p => p.role === move.kicker)! as ThiefState) ;
-        delete kicker.partner.find((part, index) => part.district === actualDistrict && isThisPartnerHasKickToken(kicker, index))!.kickOrNot
+        delete kicker.partners.find((part, index) => part.district === actualDistrict && isThisPartnerHasKickToken(kicker, index))!.kickOrNot
     }
 
 }

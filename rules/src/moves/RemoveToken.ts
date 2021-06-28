@@ -33,7 +33,7 @@ export function removeToken(state:GameState | GameView, move:RemoveToken){
 
     }
 
-    if (state.readyToKickPartners === true && (state.players.filter(isThiefState) as ThiefState[]).every(p => p.partner.every((part, index) => part.district !== state.city[state.districtResolved!].name || !isThisPartnerHasKickToken(p, index) ))){
+    if (state.readyToKickPartners === true && (state.players.filter(isThiefState) as ThiefState[]).every(p => p.partners.every((part, index) => part.district !== state.city[state.districtResolved!].name || !isThisPartnerHasKickToken(p, index) ))){
         delete state.readyToKickPartners
     }
 

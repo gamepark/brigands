@@ -32,11 +32,11 @@ export default function GameDisplay({game}: Props) {
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
 
-  const partnersOfPlayerId = playerId !== PlayerRole.Prince ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partner as Partner[] : undefined
+  const partnersOfPlayerId = playerId !== PlayerRole.Prince ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partners as Partner[] : undefined
 
   function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined, prince:PrinceState){    
-    return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partner.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
-    && playerList.filter(p => p.partner.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
+    return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
+    && playerList.filter(p => p.partners.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
     && prince.patrols.some(pat => pat === DistrictName.Tavern) === false)
   }
 

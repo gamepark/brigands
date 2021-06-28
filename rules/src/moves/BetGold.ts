@@ -20,7 +20,7 @@ export function betGold(state:GameState | GameView, move:BetGold){
 
     const player = state.players.find(p => p.role === move.role) as ThiefState | ThiefView ;
 
-    (state.players.find(p => p.role === move.role) as ThiefState).partner.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)!.goldForTavern = move.gold ;
+    (state.players.find(p => p.role === move.role) as ThiefState).partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)!.goldForTavern = move.gold ;
     if (isNotThiefView(player)){
         player.gold -= move.gold
     }

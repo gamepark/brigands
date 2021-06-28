@@ -14,7 +14,7 @@ export default MoveOnDistrictResolved
 
 export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDistrictResolved){
     if (move.districtResolved === 0){
-        (state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partner.forEach(part => part.district === state.city[move.districtResolved].name && delete part.solvingDone))
+        (state.players.filter(isThiefState) as ThiefState[]).forEach(p => p.partners.forEach(part => part.district === state.city[move.districtResolved].name && delete part.solvingDone))
     }
     if (move.districtResolved === 7){
         delete state.districtResolved ;
@@ -44,7 +44,7 @@ function takeBackPatrols(prince:PrinceState){
 }
 
 function cleanPartners(thieves:ThiefState[]){
-    thieves.forEach(p => p.partner.forEach(part => {
+    thieves.forEach(p => p.partners.forEach(part => {
         delete part.goldForTavern
         delete part.solvingDone
         delete part.tokensTaken
