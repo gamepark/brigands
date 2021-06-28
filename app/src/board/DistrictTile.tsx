@@ -14,6 +14,7 @@ import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
 import HeadStartToken from "src/utils/HeadStartToken"
+import Partner from "@gamepark/brigands/types/Partner"
 
 /** @jsxImportSource @emotion/react */
 
@@ -22,10 +23,11 @@ type Props = {
     prince:PrinceState
     phase:Phase | undefined
     nbPlayers:number
+    nbPartners?:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -70,6 +72,10 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}
 
                 <h1 css={titleDistrictStyle}>{t(getDistrictName(district.name))}</h1>
 
+                {phase === Phase.Planning && nbPartners && 
+                [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={temporaryPartnerPosition(i)} /> )
+                }
+
                 {district.gold !== undefined 
                 && <div css={goldOnTreasureDisplay}> 
                     
@@ -88,6 +94,12 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, ...props}
     )
 
 }
+
+const temporaryPartnerPosition = (index:number) => css`
+position:absolute;
+top:20%;
+left:${20+index*5}%
+`
 
 const dropSize = css`
 width:100%;
