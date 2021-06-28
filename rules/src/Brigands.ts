@@ -4,7 +4,6 @@ import {BrigandsOptions, BrigandsPlayerOptions, isGameOptions} from './BrigandsO
 import GameState from './GameState'
 import GameView from './GameView'
 import {rollDice} from './material/Dice'
-import {DistrictArray} from './material/Districts'
 import {EventArray} from './material/Events'
 import {arrestPartners} from './moves/ArrestPartners'
 import BetGold, {betGold} from './moves/BetGold'
@@ -35,7 +34,7 @@ import TellYouAreReady, {tellYouAreReady} from './moves/TellYouAreReady'
 import {throwDice} from './moves/ThrowDice'
 import PlayerState, {isPrinceState, isThiefState, PrinceState, ThiefState} from './PlayerState'
 import District from './types/District'
-import DistrictName from './types/DistrictName'
+import DistrictName, {districtNames} from './types/DistrictName'
 import Event from './types/Event'
 import Partner, {getPartnersView} from './types/Partner'
 import Phase from './types/Phase'
@@ -681,11 +680,9 @@ function betResult(goldBet: number, dice: number, isEvent: boolean): number {
 }
 
 function setupCity(): District[] {
-  const districtArray = Array.from(DistrictArray.keys())
-  const jail: number = districtArray.shift()!
-  const result: number[] = shuffle(districtArray)
-  result.push(jail)
-  return result.map((districtKey) => ({name: DistrictArray[districtKey].name, gold: DistrictArray[districtKey].name === DistrictName.Treasure ? 0 : undefined}))
+  const districts = shuffle(districtNames.filter(district => district !== DistrictName.Jail))
+  districts.push(DistrictName.Jail)
+  return districts.map(district => ({name: district, gold: district === DistrictName.Treasure ? 0 : undefined}))
 
 }
 
