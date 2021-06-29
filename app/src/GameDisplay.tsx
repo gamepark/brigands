@@ -96,6 +96,7 @@ export default function GameDisplay({game}: Props) {
             numberOfThieves = {players.filter(isThief).length}
             districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
             thieves = {game.players.filter(isThief)}
+            partnersForCards = {revealPartnersAnimation && revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners}
             />
 
           )}

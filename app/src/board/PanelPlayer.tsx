@@ -35,10 +35,11 @@ type Props = {
     city:District[]
     numberOfThieves:number
     districtResolved?:District
+    partnersForCards?:Partner[]
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = playerId !== PlayerRole.Prince && thieves.find(p => p.role === playerId)!
@@ -134,6 +135,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
                 {[...Array(cardsPlayed)].map((_,index) => <DistrictCard key={index}
                                                                         color={player.role}
+                                                                        district={partnersForCards && [... new Set(partnersForCards)].filter(part => part.district !== DistrictName.Jail)[index].district}
                 />)}
 
             </div>}

@@ -1,50 +1,17 @@
-import cardBackBlue from '../images/CardBackBlue.jpg'
-import cardBackGreen from '../images/CardBackGreen.jpg'
-import cardBackPurple from '../images/CardBackPurple.jpg'
-import cardBackRed from '../images/CardBackRed.jpg'
-import cardBackYellow from '../images/CardBackYellow.jpg'
+import cardBack from '../images/CardBack.jpg'
+import sealBlue from '../images/SealBlue.png'
+import sealGreen from '../images/SealGreen.png'
+import sealPurple from '../images/SealPurple.png'
+import sealRed from '../images/SealRed.png'
+import sealYellow from '../images/SealYellow.png'
 
-import cardCityHallBlue from '../images/CardCityHallBlue.jpg'
-import cardCityHallGreen from '../images/CardCityHallGreen.jpg'
-import cardCityHallPurple from '../images/CardCityHallPurple.jpg'
-import cardCityHallRed from '../images/CardCityHallRed.jpg'
-import cardCityHallYellow from '../images/CardCityHallYellow.jpg'
-
-import cardHarborBlue from '../images/CardHarborBlue.jpg'
-import cardHarborGreen from '../images/CardHarborGreen.jpg'
-import cardHarborPurple from '../images/CardHarborPurple.jpg'
-import cardHarborRed from '../images/CardHarborRed.jpg'
-import cardHarborYellow from '../images/CardHarborYellow.jpg'
-
-import cardMarketBlue from '../images/CardMarketBlue.jpg'
-import cardMarketGreen from '../images/CardMarketGreen.jpg'
-import cardMarketPurple from '../images/CardMarketPurple.jpg'
-import cardMarketRed from '../images/CardMarketRed.jpg'
-import cardMarketYellow from '../images/CardMarketYellow.jpg'
-
-import cardPalaceBlue from '../images/CardPalaceBlue.jpg'
-import cardPalaceGreen from '../images/CardPalaceGreen.jpg'
-import cardPalacePurple from '../images/CardPalacePurple.jpg'
-import cardPalaceRed from '../images/CardPalaceRed.jpg'
-import cardPalaceYellow from '../images/CardPalaceYellow.jpg'
-
-import cardTavernBlue from '../images/CardTavernBlue.jpg'
-import cardTavernGreen from '../images/CardTavernGreen.jpg'
-import cardTavernPurple from '../images/CardTavernPurple.jpg'
-import cardTavernRed from '../images/CardTavernRed.jpg'
-import cardTavernYellow from '../images/CardTavernYellow.jpg'
-
-import cardTreasureBlue from '../images/CardTreasureBlue.jpg'
-import cardTreasureGreen from '../images/CardTreasureGreen.jpg'
-import cardTreasurePurple from '../images/CardTreasurePurple.jpg'
-import cardTreasureRed from '../images/CardTreasureRed.jpg'
-import cardTreasureYellow from '../images/CardTreasureYellow.jpg'
-
-import cardConvoyBlue from '../images/CardConvoyBlue.jpg'
-import cardConvoyGreen from '../images/CardConvoyGreen.jpg'
-import cardConvoyPurple from '../images/CardConvoyPurple.jpg'
-import cardConvoyRed from '../images/CardConvoyRed.jpg'
-import cardConvoyYellow from '../images/CardConvoyYellow.jpg'
+import cardCityHall from '../images/CardCityHall.jpg'
+import cardHarbor from '../images/CardHarbor.jpg'
+import cardMarket from '../images/CardMarket.jpg'
+import cardPalace from '../images/CardPalace.jpg'
+import cardTavern from '../images/CardTavern.jpg'
+import cardTreasure from '../images/CardTreasure.jpg'
+import cardConvoy from '../images/CardConvoy.jpg'
 
 import districtCityHall from '../images/DistrictCityHall.jpg'
 import districtHarbor from '../images/DistrictHarbor.jpg'
@@ -116,14 +83,14 @@ import box from '../images/boite3D.png'
 
 
 const Images = {
-    cardBackBlue, cardBackGreen, cardBackPurple, cardBackRed, cardBackYellow, 
-    cardCityHallBlue, cardCityHallGreen,  cardCityHallPurple,  cardCityHallRed, cardCityHallYellow, 
-    cardHarborBlue, cardHarborGreen,  cardHarborPurple,  cardHarborRed,  cardHarborYellow, 
-    cardMarketBlue, cardMarketGreen, cardMarketPurple, cardMarketRed, cardMarketYellow,
-    cardPalaceBlue, cardPalaceGreen, cardPalacePurple, cardPalaceRed, cardPalaceYellow,
-    cardTavernBlue, cardTavernGreen, cardTavernPurple, cardTavernRed, cardTavernYellow,
-    cardTreasureBlue, cardTreasureGreen, cardTreasurePurple, cardTreasureRed, cardTreasureYellow,
-    cardConvoyBlue, cardConvoyGreen, cardConvoyPurple, cardConvoyRed, cardConvoyYellow,
+    cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
+    cardCityHall, 
+    cardHarbor, 
+    cardMarket, 
+    cardPalace,
+    cardTavern, 
+    cardTreasure, 
+    cardConvoy,
     districtCityHall, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail, districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
     princePanel,
     patrol, mercenary, victoryToken,

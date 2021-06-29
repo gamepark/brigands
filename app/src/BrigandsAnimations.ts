@@ -34,6 +34,8 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
             return 2
         } else if (move.type === MoveType.PlacePartner){
             return action.playerId === playerId ? 0 : 1
+        } else if (move.type === MoveType.RevealPartnersDistricts){
+            return 15
         }
 
         return 0
