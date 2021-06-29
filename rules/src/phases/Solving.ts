@@ -1,4 +1,5 @@
 import {getTokensInBank, isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '../Brigands'
+import {getPrince} from '../GameView'
 import {rollDice} from '../material/Dice'
 import {EventArray} from '../material/Events'
 import BetGold from '../moves/BetGold'
@@ -8,7 +9,7 @@ import MovePartner from '../moves/MovePartner'
 import MoveType from '../moves/MoveType'
 import {createSteals} from '../moves/ResolveStealToken'
 import TakeToken from '../moves/TakeToken'
-import {isPrinceState, ThiefState} from '../PlayerState'
+import {ThiefState} from '../PlayerState'
 import District from '../types/District'
 import DistrictName from '../types/DistrictName'
 import Event from '../types/Event'
@@ -109,241 +110,255 @@ export default class Solving extends PhaseRules {
   }
 
   getAutomaticMove(): Move | void {
-    if (this.state.districtResolved !== undefined) {
-      const districtEvent: Event = EventArray[this.state.event]
-      const actualDistrict: District = this.state.city[this.state.districtResolved]
+    if (this.state.districtResolved === undefined) return
 
-      if (this.state.players.find(isPrinceState)!.abilities[1] === actualDistrict.name) {
-        return {type: MoveType.ArrestPartners}
-      }
+    const prince = getPrince(this.state)
+    const district: District = this.state.city[this.state.districtResolved]
+    const districtHasPatrol = prince.patrols.some(patrol => patrol === district.name)
 
-      if (this.getThieves().some(p => p.partners.some((part, index) => part.district === actualDistrict.name && p.tokens.steal.some(ts => ts === index)))) {
-        return {type: MoveType.ResolveStealToken, steals: createSteals(this.state)}
-      }
+    if (districtHasPatrol && prince.abilities[1] === district.name) {
+      return {type: MoveType.ArrestPartners}
+    }
 
-      if (this.state.districtResolved + 1 !== this.state.city.length && this.getThieves().some(p => p.partners.some((part, index) => part.district === actualDistrict.name && p.tokens.kick.some(tk => tk === index)))) {
-        if (this.state.readyToKickPartners === true) {
-          const kicker: ThiefState = this.getThieves().find(p => p.partners.some((part, index) => part.district === actualDistrict.name && p.tokens.kick.some(tk => tk === index)))!
-          if (kicker.partners.find((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot !== undefined) {
+    if (this.hasStealToken(district)) {
+      return {type: MoveType.ResolveStealToken, steals: createSteals(this.state)}
+    }
+    if (this.hasKickToken(district)) {
+      return this.getKickTokenAutomaticMove(district)
+    }
+    if (this.hasMoveToken(district)) {
+      // TODO: simultaneous secrete decision whether to move or not
+      return
+    }
+
+    if (district.name !== DistrictName.Jail && districtHasPatrol) {
+      return {type: MoveType.ArrestPartners}
+    }
+
+    const event: Event = EventArray[this.state.event]
+    switch (district.name) {
+      case DistrictName.Market :
+        console.log('----------On Market----------')
+        const thiefOnMarket: ThiefState | undefined = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Market))
+        if (thiefOnMarket === undefined) {    // Plus de comparses sur le marché
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else if (district.dice === undefined) {    // Aucun dé lancé
+          return {type: MoveType.ThrowDice, dice: event.district === DistrictName.Market ? rollDice(2) : rollDice(1), district: district.name}
+        } else if (!thiefOnMarket.partners.find(part => part.district === DistrictName.Market)!.solvingDone) {     // Le comparse n'a pas encore pris son argent
+          return {type: MoveType.GainGold, gold: district.dice!.reduce((acc, vc) => acc + vc), player: thiefOnMarket, district: DistrictName.Market}
+        } else {    // Le comparse doit rentrer à la maison
+          return {type: MoveType.TakeBackPartner, thief: thiefOnMarket, district: district.name}
+        }
+
+      case DistrictName.Palace :
+        console.log('----------On Palace----------')
+        let partnersOnPalace: number = 0
+        this.getThieves().forEach(p => partnersOnPalace += p.partners.filter(part => part.district === DistrictName.Palace).length)
+        if (partnersOnPalace > (event.district === DistrictName.Palace ? 3 : (this.state.players.length < 4 ? 1 : 2))) {
+          return {type: MoveType.ArrestPartners}
+        } else if (partnersOnPalace === 0) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else {
+          const thiefOnPalace: ThiefState = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Palace)!)!
+          if (!thiefOnPalace.partners.find(part => part.district === DistrictName.Palace)!.solvingDone) {
+            return {type: MoveType.GainGold, gold: 5, player: thiefOnPalace, district: DistrictName.Palace}
+          } else {
+            return {type: MoveType.TakeBackPartner, thief: thiefOnPalace, district: district.name}
+          }
+        }
+      case DistrictName.CityHall :
+        console.log('----------On CityHall----------')
+        const partnersOnCityHall: Partner[] = []
+        this.getThieves().forEach(p => p.partners.forEach(part => part.district === district.name && partnersOnCityHall.push(part)))
+        let countPartnersOnCityHall: number = partnersOnCityHall.length
+        if (countPartnersOnCityHall === 0) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else if (district.dice === undefined) {
+          if (partnersOnCityHall.every(p => p.solvingDone === true)) {
             return {
-              type: MoveType.MovePartner,
-              role: kicker.partners.find((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot!,
-              kicker: kicker.role
+              type: MoveType.TakeBackPartner,
+              thief: this.getThieves().find(p => p.partners.some(part => part.district === district.name))!,
+              district: district.name
             }
           } else {
             return {
-              type: MoveType.RemoveToken, role: kicker.role, tokenAction: TokenAction.Kicking,
-              indexPartner: kicker.partners.findIndex((part, index) => part.district === actualDistrict.name && kicker.tokens.kick.some(tk => tk === index))!
+              type: MoveType.ThrowDice, dice: rollDice(event.numberOfDice === undefined ? 2 : event.numberOfDice + 2),
+              district: district.name
             }
           }
-        } else if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === actualDistrict.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
-          return {type: MoveType.RevealKickOrNot}
+        } else if (partnersOnCityHall.every(p => p.solvingDone === true)) {
+          return {
+            type: MoveType.SpareGoldOnTreasure, gold: district.dice.reduce((acc, cv) => acc + cv) % countPartnersOnCityHall,
+            district: district.name
+          }
         } else {
-          return
+          return {
+            type: MoveType.GainGold, gold: Math.floor(district.dice.reduce((acc, cv) => acc + cv) / countPartnersOnCityHall),
+            player: this.getThieves().find(p => p.partners.filter(part => part.district === district.name).some(part => part.solvingDone !== true))!,
+            district: DistrictName.CityHall
+          }
+        }
+
+      case DistrictName.Convoy :
+        console.log('----------On Convoy----------')
+        const partnersOnConvoy: Partner[] = []
+        this.getThieves().forEach(p => p.partners.forEach(part => part.district === district.name && partnersOnConvoy.push(part)))
+        let countPartnersOnConvoy: number = partnersOnConvoy.length
+        if (countPartnersOnConvoy === 0) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else if (district.dice === undefined) {
+          if (partnersOnConvoy.every(p => p.solvingDone === true)) {
+            return {
+              type: MoveType.TakeBackPartner,
+              thief: this.getThieves().find(p => p.partners.some(part => part.district === district.name))!,
+              district: district.name
+            }
+          } else {
+            if (partnersOnConvoy.length < (this.state.players.length < 5 ? 2 : 3)) {
+              return {type: MoveType.ArrestPartners}
+            } else {
+              console.log('districtEvent : ', event)
+              return {type: MoveType.ThrowDice, dice: rollDice(event.district === DistrictName.Convoy ? 6 : 4), district: district.name}
+            }
+          }
+        } else if (partnersOnConvoy.every(p => p.solvingDone === true)) {
+          return {
+            type: MoveType.SpareGoldOnTreasure, gold: district.dice.reduce((acc, cv) => acc + cv) % countPartnersOnConvoy, district: district.name
+          }
+        } else {
+          return {
+            type: MoveType.GainGold, gold: Math.floor(district.dice.reduce((acc, cv) => acc + cv) / countPartnersOnConvoy),
+            player: this.getThieves().find(p => p.partners.filter(part => part.district === district.name).some(part => part.solvingDone !== true))!,
+            district: DistrictName.Convoy
+          }
+        }
+
+
+      case DistrictName.Treasure :
+        console.log('----------On Treasure----------')
+        const partnersOnTreasure: Partner[] = []
+        this.getThieves().forEach(p => p.partners.forEach(part => part.district === district.name && partnersOnTreasure.push(part)))
+        let countPartnersOnTreasure: number = partnersOnTreasure.length
+        if (countPartnersOnTreasure === 0) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else if (partnersOnTreasure.every(p => p.solvingDone === true)) {
+          return {
+            type: MoveType.TakeBackPartner,
+            thief: this.getThieves().find(p => p.partners.some(part => part.district === district.name))!,
+            district: district.name
+          }
+        } else {
+          if (district.dice === undefined) {
+            return {
+              type: MoveType.GainGold, gold: Math.floor(district.gold! / countPartnersOnTreasure),
+              player: this.getThieves().find(p => p.partners.some(part => part.district === district.name))!,
+              district: district.name
+            }
+          } else {
+            return {
+              type: MoveType.GainGold, gold: district.dice[0],
+              player: this.getThieves().find(p => p.partners.some(part => part.district === district.name && part.solvingDone !== true))!,
+              district: district.name
+            }
+          }
+        }
+
+      case DistrictName.Jail :
+        console.log('----------On Jail----------')
+        const partnersOnJail: Partner[] = []
+        this.getThieves().forEach(p => p.partners.forEach(part => part.district === district.name && partnersOnJail.push(part)))
+        if (partnersOnJail.every(p => p.tokensTaken === 1)) {
+          console.log("end Jail")
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else if (partnersOnJail.every(p => p.solvingDone === true)) {
+          return  // Partner made a 2 or 3 and must take a token
+        } else if (this.state.city.find(d => d.name === district.name)!.dice === undefined) {
+          return {type: MoveType.ThrowDice, dice: rollDice(1), district: district.name}
+        } else if (this.state.city.find(d => d.name === district.name)!.dice![0] === 4) {
+          return {
+            type: MoveType.TakeBackPartner,
+            thief: this.getThieves().find(p => p.partners.some(part => part.district === district.name && part.solvingDone !== true))!,
+            district: district.name
+          }
+        } else {
+          let thief = this.getThieves().find(p => p.partners.some(part => part.district === district.name && part.solvingDone !== true))!
+          return {
+            type: MoveType.SolvePartner,
+            thief,
+            partnerNumber: thief.partners.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!
+          }    // Jailed Partners have to take a token
+        }
+
+      case DistrictName.Tavern :    // Actually simultaneous Phase, but can be better if sequatialized for animations ?
+        console.log('----------On Tavern----------')
+        if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern)) === undefined) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else {
+          const anyThiefWhoBet = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined))
+          if (anyThiefWhoBet === undefined) {
+            return
+          } else if (district.dice === undefined) {
+            return {type: MoveType.ThrowDice, dice: rollDice(1), district: district.name}
+          } else if (anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.solvingDone) {
+            return {type: MoveType.TakeBackPartner, thief: anyThiefWhoBet, district: district.name}
+          } else {
+            return {
+              type: MoveType.GainGold,
+              gold: betResult(anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.goldForTavern!, district.dice[0], EventArray[this.state.event].district === DistrictName.Tavern),
+              player: anyThiefWhoBet, district: district.name
+            }
+          }
+        }
+
+      case DistrictName.Harbor :
+        console.log('----------On Harbor----------')
+        if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor)) === undefined) {
+          return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
+        } else {
+          const anyThiefWhoTookTokens = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor && part.tokensTaken === (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))
+          const anyThiefWhoCantTakeAnymore = this.getThieves().find(p => getTokensInBank(p).length === 0 && p.partners.find(part => part.district === DistrictName.Harbor))
+          if (anyThiefWhoTookTokens) {
+            return {type: MoveType.TakeBackPartner, thief: anyThiefWhoTookTokens, district: district.name}
+          }
+          if (anyThiefWhoCantTakeAnymore) {
+            return {type: MoveType.TakeBackPartner, thief: anyThiefWhoCantTakeAnymore, district: district.name}
+          }
+        }
+    }
+  }
+
+  hasStealToken(district: District) {
+    return this.getThieves().some(p => p.partners.some((part, index) => part.district === district.name && p.tokens.steal.some(ts => ts === index)))
+  }
+
+  hasKickToken(district: District) {
+    return this.getThieves().some(p => p.partners.some((part, index) => part.district === district.name && p.tokens.kick.some(tk => tk === index)))
+  }
+
+  getKickTokenAutomaticMove(district: District): Move | void {
+    if (this.state.readyToKickPartners) {
+      const kicker = this.getThieves().find(p => p.partners.some((part, index) => part.district === district.name && p.tokens.kick.some(tk => tk === index)))!
+      if (kicker.partners.find((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot !== undefined) {
+        return {
+          type: MoveType.MovePartner,
+          role: kicker.partners.find((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot!,
+          kicker: kicker.role
+        }
+      } else {
+        return {
+          type: MoveType.RemoveToken, role: kicker.role, tokenAction: TokenAction.Kicking,
+          indexPartner: kicker.partners.findIndex((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!
         }
       }
-
-      if (this.state.districtResolved + 1 !== this.state.city.length && this.getThieves().some(p => p.partners.some((part, index) => part.district === actualDistrict.name && isThisPartnerHasMoveToken(p, index)))) {
-        console.log('waiting for move token')
-        return
-      }
-
-
-      if (actualDistrict.name !== DistrictName.Jail && this.state.players.find(isPrinceState)!.patrols.find(p => p === actualDistrict.name) !== undefined) {
-        return {type: MoveType.ArrestPartners}
-      }
-
-      switch (actualDistrict.name) {
-
-        case DistrictName.Market :
-          console.log('----------On Market----------')
-          const thiefOnMarket: ThiefState | undefined = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Market))
-          if (thiefOnMarket === undefined) {    // Plus de comparses sur le marché
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else if (actualDistrict.dice === undefined) {    // Aucun dé lancé
-            return {type: MoveType.ThrowDice, dice: districtEvent.district === DistrictName.Market ? rollDice(2) : rollDice(1), district: actualDistrict.name}
-          } else if (!thiefOnMarket.partners.find(part => part.district === DistrictName.Market)!.solvingDone) {     // Le comparse n'a pas encore pris son argent
-            return {type: MoveType.GainGold, gold: actualDistrict.dice!.reduce((acc, vc) => acc + vc), player: thiefOnMarket, district: DistrictName.Market}
-          } else {    // Le comparse doit rentrer à la maison
-            return {type: MoveType.TakeBackPartner, thief: thiefOnMarket, district: actualDistrict.name}
-          }
-
-        case DistrictName.Palace :
-          console.log('----------On Palace----------')
-          let partnersOnPalace: number = 0
-          this.getThieves().forEach(p => partnersOnPalace += p.partners.filter(part => part.district === DistrictName.Palace).length)
-          if (partnersOnPalace > (districtEvent.district === DistrictName.Palace ? 3 : (this.state.players.length < 4 ? 1 : 2))) {
-            return {type: MoveType.ArrestPartners}
-          } else if (partnersOnPalace === 0) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else {
-            const thiefOnPalace: ThiefState = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Palace)!)!
-            if (!thiefOnPalace.partners.find(part => part.district === DistrictName.Palace)!.solvingDone) {
-              return {type: MoveType.GainGold, gold: 5, player: thiefOnPalace, district: DistrictName.Palace}
-            } else {
-              return {type: MoveType.TakeBackPartner, thief: thiefOnPalace, district: actualDistrict.name}
-            }
-          }
-        case DistrictName.CityHall :
-          console.log('----------On CityHall----------')
-          const partnersOnCityHall: Partner[] = []
-          this.getThieves().forEach(p => p.partners.forEach(part => part.district === actualDistrict.name && partnersOnCityHall.push(part)))
-          let countPartnersOnCityHall: number = partnersOnCityHall.length
-          if (countPartnersOnCityHall === 0) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else if (actualDistrict.dice === undefined) {
-            if (partnersOnCityHall.every(p => p.solvingDone === true)) {
-              return {
-                type: MoveType.TakeBackPartner,
-                thief: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name))!,
-                district: actualDistrict.name
-              }
-            } else {
-              return {
-                type: MoveType.ThrowDice, dice: rollDice(districtEvent.numberOfDice === undefined ? 2 : districtEvent.numberOfDice + 2),
-                district: actualDistrict.name
-              }
-            }
-          } else if (partnersOnCityHall.every(p => p.solvingDone === true)) {
-            return {
-              type: MoveType.SpareGoldOnTreasure, gold: actualDistrict.dice.reduce((acc, cv) => acc + cv) % countPartnersOnCityHall,
-              district: actualDistrict.name
-            }
-          } else {
-            return {
-              type: MoveType.GainGold, gold: Math.floor(actualDistrict.dice.reduce((acc, cv) => acc + cv) / countPartnersOnCityHall),
-              player: this.getThieves().find(p => p.partners.filter(part => part.district === actualDistrict.name).some(part => part.solvingDone !== true))!,
-              district: DistrictName.CityHall
-            }
-          }
-
-        case DistrictName.Convoy :
-          console.log('----------On Convoy----------')
-          const partnersOnConvoy: Partner[] = []
-          this.getThieves().forEach(p => p.partners.forEach(part => part.district === actualDistrict.name && partnersOnConvoy.push(part)))
-          let countPartnersOnConvoy: number = partnersOnConvoy.length
-          if (countPartnersOnConvoy === 0) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else if (actualDistrict.dice === undefined) {
-            if (partnersOnConvoy.every(p => p.solvingDone === true)) {
-              return {
-                type: MoveType.TakeBackPartner,
-                thief: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name))!,
-                district: actualDistrict.name
-              }
-            } else {
-              if (partnersOnConvoy.length < (this.state.players.length < 5 ? 2 : 3)) {
-                return {type: MoveType.ArrestPartners}
-              } else {
-                console.log('districtEvent : ', districtEvent)
-                return {type: MoveType.ThrowDice, dice: rollDice(districtEvent.district === DistrictName.Convoy ? 6 : 4), district: actualDistrict.name}
-              }
-            }
-          } else if (partnersOnConvoy.every(p => p.solvingDone === true)) {
-            return {
-              type: MoveType.SpareGoldOnTreasure, gold: actualDistrict.dice.reduce((acc, cv) => acc + cv) % countPartnersOnConvoy, district: actualDistrict.name
-            }
-          } else {
-            return {
-              type: MoveType.GainGold, gold: Math.floor(actualDistrict.dice.reduce((acc, cv) => acc + cv) / countPartnersOnConvoy),
-              player: this.getThieves().find(p => p.partners.filter(part => part.district === actualDistrict.name).some(part => part.solvingDone !== true))!,
-              district: DistrictName.Convoy
-            }
-          }
-
-
-        case DistrictName.Treasure :
-          console.log('----------On Treasure----------')
-          const partnersOnTreasure: Partner[] = []
-          this.getThieves().forEach(p => p.partners.forEach(part => part.district === actualDistrict.name && partnersOnTreasure.push(part)))
-          let countPartnersOnTreasure: number = partnersOnTreasure.length
-          if (countPartnersOnTreasure === 0) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else if (partnersOnTreasure.every(p => p.solvingDone === true)) {
-            return {
-              type: MoveType.TakeBackPartner,
-              thief: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name))!,
-              district: actualDistrict.name
-            }
-          } else {
-            if (actualDistrict.dice === undefined) {
-              return {
-                type: MoveType.GainGold, gold: Math.floor(actualDistrict.gold! / countPartnersOnTreasure),
-                player: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name))!,
-                district: actualDistrict.name
-              }
-            } else {
-              return {
-                type: MoveType.GainGold, gold: actualDistrict.dice[0],
-                player: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!,
-                district: actualDistrict.name
-              }
-            }
-          }
-
-        case DistrictName.Jail :
-          console.log('----------On Jail----------')
-          const partnersOnJail: Partner[] = []
-          this.getThieves().forEach(p => p.partners.forEach(part => part.district === actualDistrict.name && partnersOnJail.push(part)))
-          if (partnersOnJail.every(p => p.tokensTaken === 1)) {
-            console.log("end Jail")
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else if (partnersOnJail.every(p => p.solvingDone === true)) {
-            return  // Partner made a 2 or 3 and must take a token
-          } else if (this.state.city.find(d => d.name === actualDistrict.name)!.dice === undefined) {
-            return {type: MoveType.ThrowDice, dice: rollDice(1), district: actualDistrict.name}
-          } else if (this.state.city.find(d => d.name === actualDistrict.name)!.dice![0] === 4) {
-            return {
-              type: MoveType.TakeBackPartner,
-              thief: this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!,
-              district: actualDistrict.name
-            }
-          } else {
-            let thief = this.getThieves().find(p => p.partners.some(part => part.district === actualDistrict.name && part.solvingDone !== true))!
-            return {
-              type: MoveType.SolvePartner,
-              thief,
-              partnerNumber: thief.partners.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!
-            }    // Jailed Partners have to take a token
-          }
-
-        case DistrictName.Tavern :    // Actually simultaneous Phase, but can be better if sequatialized for animations ?
-          console.log('----------On Tavern----------')
-          if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern)) === undefined) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else {
-            const anyThiefWhoBet = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined))
-            if (anyThiefWhoBet === undefined) {
-              return
-            } else if (actualDistrict.dice === undefined) {
-              return {type: MoveType.ThrowDice, dice: rollDice(1), district: actualDistrict.name}
-            } else if (anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.solvingDone) {
-              return {type: MoveType.TakeBackPartner, thief: anyThiefWhoBet, district: actualDistrict.name}
-            } else {
-              return {
-                type: MoveType.GainGold,
-                gold: betResult(anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.goldForTavern!, actualDistrict.dice[0], EventArray[this.state.event].district === DistrictName.Tavern),
-                player: anyThiefWhoBet, district: actualDistrict.name
-              }
-            }
-          }
-
-        case DistrictName.Harbor :
-          console.log('----------On Harbor----------')
-          if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor)) === undefined) {
-            return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
-          } else {
-            const anyThiefWhoTookTokens = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor && part.tokensTaken === (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))
-            const anyThiefWhoCantTakeAnymore = this.getThieves().find(p => getTokensInBank(p).length === 0 && p.partners.find(part => part.district === DistrictName.Harbor))
-            if (anyThiefWhoTookTokens) {
-              return {type: MoveType.TakeBackPartner, thief: anyThiefWhoTookTokens, district: actualDistrict.name}
-            }
-            if (anyThiefWhoCantTakeAnymore) {
-              return {type: MoveType.TakeBackPartner, thief: anyThiefWhoCantTakeAnymore, district: actualDistrict.name}
-            }
-          }
-      }
+    } else if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
+      return {type: MoveType.RevealKickOrNot}
+    } else {
+      return
     }
+  }
+
+  hasMoveToken(district: District) {
+    return this.getThieves().some(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasMoveToken(p, index)))
   }
 }
 
