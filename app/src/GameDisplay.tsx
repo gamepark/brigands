@@ -19,6 +19,7 @@ import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
+import RevealPartnersDistricts, { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 
 type Props = {
   game: GameView
@@ -27,6 +28,7 @@ type Props = {
 export default function GameDisplay({game}: Props) {
 
   const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
+  const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
@@ -67,10 +69,11 @@ export default function GameDisplay({game}: Props) {
               prince = {players.find(isPrinceState)!}
               districtResolved = {game.districtResolved}
               nbPlayers = {game.players.length}
-              partnersOfPlayerId = {game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
+              partnersOfPlayerId = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince) ? partnersOfPlayerId : undefined}
+        
         />
 
-        {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, game.districtResolved && game.city[game.districtResolved].name, game.players.find(isPrinceState)!) &&
+        {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
           <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
                        player = {players.find(isThiefState)!}
           />

@@ -18,6 +18,8 @@ export function solvePartner(state:GameState | GameView, move:SolvePartner){
     thief.partners[move.partnerNumber].solvingDone = true
     if (getTokensInBank(move.thief).length === 0){
         thief.partners[move.partnerNumber].tokensTaken = 1
+    } else {
+        thief.partners[move.partnerNumber].tokensTaken = 0
     }
 
     if(state.city[state.districtResolved!].name === DistrictName.Jail){

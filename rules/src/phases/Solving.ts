@@ -36,7 +36,7 @@ export default class Solving extends PhaseRules {
         } else if (this.state.city[this.state.districtResolved!].name === DistrictName.Tavern) {
           return thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined
         } else {
-          return thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === undefined) !== undefined
+          return thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined
         }
       }
     }
@@ -94,7 +94,7 @@ export default class Solving extends PhaseRules {
           return harborMoves
         } else {
           const jailMoves: TakeToken[] = []
-          if (thief.partners.find(p => p.district === DistrictName.Jail && (p.tokensTaken === undefined))) {
+          if (thief.partners.find(p => p.district === DistrictName.Jail && (p.tokensTaken === 0))) {
             const takeableTokens: TokenAction[] = getTokensInBank(thief)
             for (let i = 0; i < takeableTokens.length; i++) {
               jailMoves.push({type: MoveType.TakeToken, role: thief.role, token: takeableTokens[i]})
@@ -286,6 +286,7 @@ export default class Solving extends PhaseRules {
           const partnersOnJail: Partner[] = []
           this.getThieves().forEach(p => p.partners.forEach(part => part.district === actualDistrict.name && partnersOnJail.push(part)))
           if (partnersOnJail.every(p => p.tokensTaken === 1)) {
+            console.log("end Jail")
             return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved}
           } else if (partnersOnJail.every(p => p.solvingDone === true)) {
             return  // Partner made a 2 or 3 and must take a token
