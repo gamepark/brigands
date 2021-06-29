@@ -1,8 +1,9 @@
 import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasStealToken} from '../Brigands'
 import GameState from '../GameState'
 import GameView, {getPrince, isGameView} from '../GameView'
-import {isThiefState} from '../PlayerState'
+import {isThief, isThiefState} from '../PlayerState'
 import DistrictName from '../types/DistrictName'
+import {getPartners, isPartner} from '../types/Partner'
 import MoveType from './MoveType'
 
 type ArrestPartners = {
@@ -14,9 +15,9 @@ export default ArrestPartners
 export function arrestPartners(state:GameState | GameView){
 
     const prince = getPrince(state)
-    const thieves = isGameView(state) ? state.players.filter(isThiefState) : state.players.filter(isThiefState)
+    const thieves = isGameView(state) ? state.players.filter(isThief) : state.players.filter(isThiefState)
 
-    thieves.forEach(p => p.partners.forEach((part, index) => {
+    thieves.forEach(p => getPartners(p).filter(isPartner).forEach((part, index) => {
         if (part.district === state.city[state.districtResolved!].name){
             part.district = DistrictName.Jail ;
             prince.victoryPoints++

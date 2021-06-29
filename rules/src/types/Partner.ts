@@ -19,7 +19,7 @@ export type PartnerView = {
 }
 
 export function isPartner(partner: Partner | PartnerView): partner is Partner {
-    return (partner as Partner).district !== undefined
+    return (partner as PartnerView).card === undefined
 }
 
 export function isPartnerView(partner: Partner | PartnerView): partner is PartnerView {
