@@ -2,7 +2,7 @@ import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasSt
 import GameState from '../GameState'
 import GameView, {getPrince, isGameView} from '../GameView'
 import {isThief, isThiefState} from '../PlayerState'
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import {getPartners, isPartner} from '../types/Partner'
 import MoveType from './MoveType'
 

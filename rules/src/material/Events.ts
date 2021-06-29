@@ -1,4 +1,4 @@
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import Event from '../types/Event'
 
 const Event1: Event = {

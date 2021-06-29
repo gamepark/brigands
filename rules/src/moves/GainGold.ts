@@ -1,7 +1,7 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
 import {isThief, isThiefState, ThiefState} from '../PlayerState'
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import {isPartnerView} from '../types/Partner'
 import Move from './Move'
 import MoveType from './MoveType'

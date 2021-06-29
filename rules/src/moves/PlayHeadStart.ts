@@ -1,7 +1,7 @@
 import GameState from "../GameState";
 import GameView, {getPrince} from '../GameView'
 import { isPrinceState, PrinceState } from "../PlayerState";
-import DistrictName from "../types/DistrictName";
+import DistrictName from "../districts/DistrictName";
 import MoveType from "./MoveType";
 
 type PlayHeadStart = {

@@ -1,5 +1,5 @@
 import PlayerState from './PlayerState'
-import District from './types/District'
+import District from './districts/District'
 import Phase from './phases/Phase'
 
 type GameState = {

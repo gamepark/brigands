@@ -1,6 +1,6 @@
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import {isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'

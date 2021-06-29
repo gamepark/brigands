@@ -1,7 +1,7 @@
 import GameState from '../GameState'
 import GameView, {getPrince} from '../GameView'
 import {EventArray} from '../material/Events'
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import Phase from '../phases/Phase'
 import Move from './Move'
 import MoveType from './MoveType'

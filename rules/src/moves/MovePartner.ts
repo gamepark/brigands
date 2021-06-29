@@ -1,7 +1,7 @@
 import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '../Brigands'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import DistrictName from '../types/DistrictName'
+import DistrictName from '../districts/DistrictName'
 import {getPartners, isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import MoveType from './MoveType'

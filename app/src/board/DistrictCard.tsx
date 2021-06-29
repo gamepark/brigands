@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
-import DistrictName from "@gamepark/brigands/types/DistrictName";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Partner, { PartnerView } from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { usePlay, usePlayerId } from "@gamepark/react-client";

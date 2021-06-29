@@ -4,7 +4,7 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import PlacePartner from "@gamepark/brigands/moves/PlacePartner";
 import PlaceToken from "@gamepark/brigands/moves/PlaceToken";
-import DistrictName from "@gamepark/brigands/types/DistrictName";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Partner, { isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";

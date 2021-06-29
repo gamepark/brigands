@@ -2,8 +2,8 @@
 
 import { css } from "@emotion/react";
 import { PrinceState } from "@gamepark/brigands/PlayerState";
-import District from "@gamepark/brigands/types/District";
-import DistrictName from "@gamepark/brigands/types/DistrictName";
+import District from "@gamepark/brigands/districts/District";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Partner from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import { FC, HTMLAttributes } from "react";

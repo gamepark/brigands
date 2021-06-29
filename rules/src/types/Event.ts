@@ -1,13 +1,11 @@
-import DistrictName from "./DistrictName"
+import DistrictName from '../districts/DistrictName'
 
 type Event = {
-    district:DistrictName
-    goldForTreasure:number
-    goldForPrince:number
-    positionOfCaptain:number
-    numberOfDice?:number
-    //add function for action later here
-
+  district: DistrictName
+  goldForTreasure: number
+  goldForPrince: number
+  positionOfCaptain: number
+  numberOfDice?: number
 }
 
 export default Event
