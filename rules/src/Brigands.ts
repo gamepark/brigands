@@ -67,7 +67,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   isOver(): boolean {
-    return princeWin(this.state) || lastTurnIsOver(this.state)
+    return this.state.phase === undefined
   }
 
   isActive(playerId: PlayerRole): boolean {
@@ -289,7 +289,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   getAutomaticMove(): void | Move {
 
-    if (this.isOver() && this.state.phase !== undefined) {
+    if ((princeWin(this.state) || lastTurnIsOver(this.state)) && this.state.phase !== undefined) {
       return {type: MoveType.RevealGolds}
     }
 
