@@ -5,7 +5,7 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
-import Phase from "@gamepark/brigands/types/Phase";
+import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";

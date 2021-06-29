@@ -5,7 +5,7 @@ import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/types/District";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Partner from "@gamepark/brigands/types/Partner";
-import Phase from "@gamepark/brigands/types/Phase";
+import Phase from "@gamepark/brigands/phases/Phase";
 import { FC, HTMLAttributes } from "react";
 import DistrictTile from "./DistrictTile";
 

@@ -2,7 +2,7 @@ import GameState from "../GameState"
 import GameView from "../GameView"
 import { isThief } from "../PlayerState"
 import Partner from "../types/Partner"
-import Phase from "../types/Phase"
+import Phase from "../phases/Phase"
 import MoveType from "./MoveType"
 
 type RevealPartnersDistricts = {

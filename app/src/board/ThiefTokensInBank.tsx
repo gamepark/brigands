@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import { ThiefState } from "@gamepark/brigands/PlayerState";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
-import Phase from "@gamepark/brigands/types/Phase";
+import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";

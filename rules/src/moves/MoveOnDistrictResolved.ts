@@ -1,7 +1,7 @@
 import GameState from '../GameState'
 import GameView, {getPrince, getThieves} from '../GameView'
 import {isThiefState, PrinceState, ThiefState} from '../PlayerState'
-import Phase from '../types/Phase'
+import Phase from '../phases/Phase'
 import MoveType from './MoveType'
 
 type MoveOnDistrictResolved = {

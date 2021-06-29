@@ -6,7 +6,7 @@ import PlacePartner from "@gamepark/brigands/moves/PlacePartner";
 import PlaceToken from "@gamepark/brigands/moves/PlaceToken";
 import DistrictName from "@gamepark/brigands/types/DistrictName";
 import Partner, { isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
-import Phase from "@gamepark/brigands/types/Phase";
+import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";

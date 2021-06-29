@@ -1,6 +1,6 @@
 import PlayerState from './PlayerState'
 import District from './types/District'
-import Phase from './types/Phase'
+import Phase from './phases/Phase'
 
 type GameState = {
   players: PlayerState[]

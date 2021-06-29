@@ -1,6 +1,6 @@
 import GameState from "../GameState";
 import GameView from "../GameView";
-import Phase from "../types/Phase";
+import Phase from "../phases/Phase";
 import Move from "./Move";
 import MoveType from "./MoveType";
 
