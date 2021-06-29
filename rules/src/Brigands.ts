@@ -197,11 +197,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           }
         }
       case MoveType.RevealPartnersDistricts: {
-        const partnersArray: Partner[][] = []
+        const partnersObject: {partners:Partner[], role:PlayerRole}[] = []
         this.getThieves().forEach(player => {
-          partnersArray.push(player.partners)
+          partnersObject.push({partners:player.partners, role:player.role})
         })
-        return {type: MoveType.RevealPartnersDistricts, partnersArray}
+        return {type: MoveType.RevealPartnersDistricts, partnersObject}
       }
 
       case MoveType.KickOrNot:
