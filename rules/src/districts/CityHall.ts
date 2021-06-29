@@ -3,19 +3,17 @@ import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import Event from '../types/Event'
-import Partner from '../types/Partner'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class CityHall extends DistrictRules {
   getAutomaticMove(): Move | void {
-    const partnersOnCityHall: Partner[] = []
-    this.getThieves().forEach(p => p.partners.forEach(part => part.district === DistrictName.CityHall && partnersOnCityHall.push(part)))
-    let countPartnersOnCityHall: number = partnersOnCityHall.length
-    if (countPartnersOnCityHall === 0) {
+    const partners = this.getDistrictPartners()
+    if (partners.length === 0) {
       return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
-    } else if (this.district.dice === undefined) {
-      if (partnersOnCityHall.every(p => p.solvingDone === true)) {
+    }
+    if (this.district.dice === undefined) {
+      if (partners.every(partner => partner.solvingDone === true)) {
         return {
           type: MoveType.TakeBackPartner,
           thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.CityHall))!,
@@ -29,14 +27,14 @@ export default class CityHall extends DistrictRules {
           district: DistrictName.CityHall
         }
       }
-    } else if (partnersOnCityHall.every(p => p.solvingDone === true)) {
+    } else if (partners.every(p => p.solvingDone === true)) {
       return {
-        type: MoveType.SpareGoldOnTreasure, gold: this.district.dice.reduce((acc, cv) => acc + cv) % countPartnersOnCityHall,
+        type: MoveType.SpareGoldOnTreasure, gold: this.district.dice.reduce((acc, cv) => acc + cv) % partners.length,
         district: DistrictName.CityHall
       }
     } else {
       return {
-        type: MoveType.GainGold, gold: Math.floor(this.district.dice.reduce((acc, cv) => acc + cv) / countPartnersOnCityHall),
+        type: MoveType.GainGold, gold: Math.floor(this.district.dice.reduce((acc, cv) => acc + cv) / partners.length),
         player: this.getThieves().find(p => p.partners.filter(part => part.district === DistrictName.CityHall).some(part => part.solvingDone !== true))!,
         district: DistrictName.CityHall
       }

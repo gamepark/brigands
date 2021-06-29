@@ -1,5 +1,4 @@
 import {rollDice} from '../material/Dice'
-import {EventArray} from '../material/Events'
 import BetGold from '../moves/BetGold'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
@@ -25,23 +24,26 @@ export default class Tavern extends DistrictRules {
   }
 
   getAutomaticMove(): Move | void {
-    // Actually simultaneous Phase, but can be better if sequatialized for animations ?
-    if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern)) === undefined) {
+    // Actually simultaneous Phase, but can be better if sequential for animations ?
+    const thief = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern))
+    if (!thief) {
       return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+    }
+    const thiefWithBet = this.getThieves().find(thief => thief.partners.find(partner => partner.district === DistrictName.Tavern && partner.goldForTavern !== undefined))
+    if (thiefWithBet === undefined) {
+      return
+    }
+    if (this.district.dice === undefined) {
+      return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Tavern}
+    }
+    const partner = thiefWithBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!
+    if (partner.solvingDone) {
+      return {type: MoveType.TakeBackPartner, thief: thiefWithBet, district: DistrictName.Tavern}
     } else {
-      const anyThiefWhoBet = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined))
-      if (anyThiefWhoBet === undefined) {
-        return
-      } else if (this.district.dice === undefined) {
-        return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Tavern}
-      } else if (anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.solvingDone) {
-        return {type: MoveType.TakeBackPartner, thief: anyThiefWhoBet, district: DistrictName.Tavern}
-      } else {
-        return {
-          type: MoveType.GainGold,
-          gold: betResult(anyThiefWhoBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!.goldForTavern!, this.district.dice[0], EventArray[this.state.event].district === DistrictName.Tavern),
-          player: anyThiefWhoBet, district: DistrictName.Tavern
-        }
+      return {
+        type: MoveType.GainGold,
+        gold: betResult(partner.goldForTavern!, this.district.dice[0], this.isDistrictEvent()),
+        player: thiefWithBet, district: DistrictName.Tavern
       }
     }
   }

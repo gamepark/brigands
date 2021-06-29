@@ -33,4 +33,8 @@ export abstract class DistrictRules {
     const event: Event = EventArray[this.state.event]
     return event.district === this.district.name
   }
+
+  getDistrictPartners() {
+    return this.getThieves().flatMap(thief => thief.partners.filter(partner => partner.district === this.district.name))
+  }
 }

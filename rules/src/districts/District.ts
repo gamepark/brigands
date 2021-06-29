@@ -1,9 +1,9 @@
-import DistrictName from "./DistrictName";
+import DistrictName from './DistrictName'
 
 type District = {
-    name : DistrictName
-    gold?:number
-    dice?:number[]
+  name: DistrictName
+  gold?: number
+  dice?: number[]
 }
 
 export default District

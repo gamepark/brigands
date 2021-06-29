@@ -25,17 +25,17 @@ export default class Harbor extends DistrictRules {
   }
 
   getAutomaticMove(): Move | void {
-    if (this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor)) === undefined) {
+    if (!this.getThieves().some(p => p.partners.some(part => part.district === DistrictName.Harbor))) {
       return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
-    } else {
-      const anyThiefWhoTookTokens = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Harbor && part.tokensTaken === (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))
-      const anyThiefWhoCantTakeAnymore = this.getThieves().find(p => getTokensInBank(p).length === 0 && p.partners.find(part => part.district === DistrictName.Harbor))
-      if (anyThiefWhoTookTokens) {
-        return {type: MoveType.TakeBackPartner, thief: anyThiefWhoTookTokens, district: DistrictName.Harbor}
-      }
-      if (anyThiefWhoCantTakeAnymore) {
-        return {type: MoveType.TakeBackPartner, thief: anyThiefWhoCantTakeAnymore, district: DistrictName.Harbor}
-      }
+    }
+    const tokensToTake = this.isDistrictEvent() ? 3 : 2
+    const thiefWithPartnerDone = this.getThieves().find(thief => {
+      const partners = thief.partners.filter(part => part.district === DistrictName.Harbor)
+      if (partners.length) return false
+      return partners.some(partner => partner.tokensTaken === tokensToTake) || getTokensInBank(thief).length === 0
+    })
+    if (thiefWithPartnerDone) {
+      return {type: MoveType.TakeBackPartner, thief: thiefWithPartnerDone, district: DistrictName.Harbor}
     }
   }
 }
