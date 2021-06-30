@@ -35,7 +35,7 @@ export default class Harbor extends DistrictRules {
       return partners.some(partner => partner.tokensTaken === tokensToTake) || getTokensInBank(thief).length === 0
     })
     if (thiefWithPartnerDone) {
-      return {type: MoveType.TakeBackPartner, thief: thiefWithPartnerDone, district: DistrictName.Harbor}
+      return {type: MoveType.TakeBackPartner, thief: thiefWithPartnerDone.role, district: DistrictName.Harbor}
     }
   }
 }

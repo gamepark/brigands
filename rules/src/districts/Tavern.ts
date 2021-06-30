@@ -38,7 +38,7 @@ export default class Tavern extends DistrictRules {
     }
     const partner = thiefWithBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!
     if (partner.solvingDone) {
-      return {type: MoveType.TakeBackPartner, thief: thiefWithBet, district: DistrictName.Tavern}
+      return {type: MoveType.TakeBackPartner, thief: thiefWithBet.role, district: DistrictName.Tavern}
     } else {
       return {
         type: MoveType.GainGold,

@@ -17,7 +17,7 @@ export default class Market extends DistrictRules {
     if (!partner.solvingDone) {
       return {type: MoveType.GainGold, gold: this.district.dice.reduce((acc, vc) => acc + vc), thief: thief.role, district: DistrictName.Market}
     } else {
-      return {type: MoveType.TakeBackPartner, thief: thief, district: DistrictName.Market}
+      return {type: MoveType.TakeBackPartner, thief: thief.role, district: DistrictName.Market}
     }
   }
 }

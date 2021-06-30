@@ -17,7 +17,7 @@ export default class Palace extends DistrictRules {
     if (!partner.solvingDone) {
       return {type: MoveType.GainGold, gold: 5, thief: thief.role, district: DistrictName.Palace}
     } else {
-      return {type: MoveType.TakeBackPartner, thief: thief, district: DistrictName.Palace}
+      return {type: MoveType.TakeBackPartner, thief: thief.role, district: DistrictName.Palace}
     }
   }
 

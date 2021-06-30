@@ -14,7 +14,7 @@ export default class Convoy extends DistrictRules {
       if (partners.every(p => p.solvingDone === true)) {
         return {
           type: MoveType.TakeBackPartner,
-          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Convoy))!,
+          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Convoy))!.role,
           district: DistrictName.Convoy
         }
       } else {

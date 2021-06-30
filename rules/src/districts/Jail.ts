@@ -39,7 +39,7 @@ export default class Jail extends DistrictRules {
     if (this.district.dice[0] === 4) {
       return {
         type: MoveType.TakeBackPartner,
-        thief,
+        thief: thief.role,
         district: DistrictName.Jail
       }
     } else {

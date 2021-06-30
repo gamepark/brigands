@@ -12,7 +12,7 @@ export default class Treasure extends DistrictRules {
     if (partners.every(partner => partner.solvingDone === true)) {
       return {
         type: MoveType.TakeBackPartner,
-        thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!,
+        thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!.role,
         district: DistrictName.Treasure
       }
     } else {
