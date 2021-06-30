@@ -19,13 +19,13 @@ export default class Treasure extends DistrictRules {
       if (this.district.dice === undefined) {
         return {
           type: MoveType.GainGold, gold: Math.floor(this.district.gold! / partners.length),
-          player: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!,
+          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!.role,
           district: DistrictName.Treasure
         }
       } else {
         return {
           type: MoveType.GainGold, gold: this.district.dice[0],
-          player: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure && part.solvingDone !== true))!,
+          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure && part.solvingDone !== true))!.role,
           district: DistrictName.Treasure
         }
       }

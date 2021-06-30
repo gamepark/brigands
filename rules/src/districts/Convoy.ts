@@ -31,7 +31,7 @@ export default class Convoy extends DistrictRules {
     } else {
       return {
         type: MoveType.GainGold, gold: Math.floor(this.district.dice.reduce((acc, cv) => acc + cv) / partners.length),
-        player: this.getThieves().find(p => p.partners.filter(part => part.district === DistrictName.Convoy).some(part => part.solvingDone !== true))!,
+        thief: this.getThieves().find(p => p.partners.filter(part => part.district === DistrictName.Convoy).some(part => part.solvingDone !== true))!.role,
         district: DistrictName.Convoy
       }
     }

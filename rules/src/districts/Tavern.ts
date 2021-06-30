@@ -43,7 +43,7 @@ export default class Tavern extends DistrictRules {
       return {
         type: MoveType.GainGold,
         gold: betResult(partner.goldForTavern!, this.district.dice[0], this.isDistrictEvent()),
-        player: thiefWithBet, district: DistrictName.Tavern
+        thief: thiefWithBet.role, district: DistrictName.Tavern
       }
     }
   }

@@ -140,7 +140,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
             </div>}
 
-        {animationGainGold && (animationGainGold.move.player.role === player.role)
+        {animationGainGold && (animationGainGold.move.thief === player.role)
             && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
                 [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration)]} draggable={false} />))
         }

@@ -15,7 +15,7 @@ export default class Market extends DistrictRules {
     }
     const partner = thief.partners.find(partner => partner.district === DistrictName.Market)!
     if (!partner.solvingDone) {
-      return {type: MoveType.GainGold, gold: this.district.dice.reduce((acc, vc) => acc + vc), player: thief, district: DistrictName.Market}
+      return {type: MoveType.GainGold, gold: this.district.dice.reduce((acc, vc) => acc + vc), thief: thief.role, district: DistrictName.Market}
     } else {
       return {type: MoveType.TakeBackPartner, thief: thief, district: DistrictName.Market}
     }

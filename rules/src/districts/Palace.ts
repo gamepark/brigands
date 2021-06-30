@@ -15,7 +15,7 @@ export default class Palace extends DistrictRules {
     const thief = this.getThieves().find(thief => thief.partners.some(partner => partner.district === DistrictName.Palace))!
     const partner = thief.partners.find(part => part.district === DistrictName.Palace)!
     if (!partner.solvingDone) {
-      return {type: MoveType.GainGold, gold: 5, player: thief, district: DistrictName.Palace}
+      return {type: MoveType.GainGold, gold: 5, thief: thief.role, district: DistrictName.Palace}
     } else {
       return {type: MoveType.TakeBackPartner, thief: thief, district: DistrictName.Palace}
     }
