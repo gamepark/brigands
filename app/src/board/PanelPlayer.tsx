@@ -6,7 +6,7 @@ import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
 import Move from '@gamepark/brigands/moves/Move'
 import MoveType from '@gamepark/brigands/moves/MoveType'
-import {isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
+import {isThief, isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import Partner, {getPartnersView, isPartnerView} from '@gamepark/brigands/types/Partner'
@@ -61,6 +61,9 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
     }
 
     const play = usePlay<Move>()
+
+    console.log("display button : ", player.role === playerId, phase === Phase.Solving, isThiefState(player), isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
+    , thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
@@ -186,7 +189,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         }   
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
-        && thieves.every(p => isThiefState(p) && p.partners.every((part, index) => part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index)))
+        && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index)))
         &&  <div>
                 <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
