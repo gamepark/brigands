@@ -11,14 +11,14 @@ export default MoveOnNextPhase
 
 export function moveOnNextPhase(state: GameState | GameView) {
   switch (state.phase) {
-    case Phase.NewDay :
+    case Phase.NewDay:
       state.phase = Phase.Planning
       break
-    case Phase.Planning :
+    case Phase.Planning:
       state.phase = Phase.Patrolling
       state.players.forEach(p => p.isReady = false)
       break
-    case Phase.Patrolling :
+    case Phase.Patrolling:
       state.phase = Phase.Solving
       state.players.forEach(p => p.isReady = false)
       break

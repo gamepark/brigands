@@ -1,18 +1,16 @@
-import GameState from "../GameState";
+import GameState from '../GameState'
 import GameView, {getPrince} from '../GameView'
-import { isPrinceState, PrinceState } from "../PlayerState";
-import DistrictName from "../districts/DistrictName";
-import MoveType from "./MoveType";
+import MoveType from './MoveType'
 
 type PlayHeadStart = {
-    type:MoveType.PlayHeadStart
-    district:number
+  type: MoveType.PlayHeadStart
+  district: number
 }
 
 export default PlayHeadStart
 
-export function playHeadStart(state:GameState | GameView, move:PlayHeadStart){
-    const prince = getPrince(state)
-    prince.gold -=2
-    prince.abilities[1] = move.district
+export function playHeadStart(state: GameState | GameView, move: PlayHeadStart) {
+  const prince = getPrince(state)
+  prince.gold -= 2
+  prince.abilities[1] = move.district
 }
