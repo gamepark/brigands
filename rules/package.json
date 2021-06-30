@@ -1,6 +1,6 @@
 {
   "name": "@gamepark/brigands",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Brigands rules for Game Park",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
