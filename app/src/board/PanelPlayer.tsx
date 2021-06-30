@@ -62,9 +62,6 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
     const play = usePlay<Move>()
 
-    console.log("display button : ", player.role === playerId, phase === Phase.Solving, isThiefState(player), isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
-    , thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
-
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
         canDrop: (item: ThiefTokenInBank) => {

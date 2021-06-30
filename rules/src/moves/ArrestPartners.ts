@@ -26,7 +26,7 @@ export function arrestPartners(state:GameState | GameView){
             } else if (isThisPartnerHasKickToken(p, index)){
                 p.tokens.kick.splice(p.tokens.kick.findIndex(tk => tk === index),1)
             } else if (isThisPartnerHasMoveToken(p, index)){
-                p.tokens.steal.splice(p.tokens.move.findIndex(tm => tm === index),1)
+                p.tokens.move.splice(p.tokens.move.findIndex(tm => tm === index),1)
             }
         }
     }))
