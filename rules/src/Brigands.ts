@@ -296,7 +296,7 @@ function setupEventDeck(): number[] {
   return result.slice(0, 6)
 }
 
-export function getTokensInBank(thief: ThiefState): TokenAction[] {
+export function getTokensInBank(thief: ThiefState | ThiefView): TokenAction[] {
   const result: TokenAction[] = []
   for (let i = 0; i < 2 - thief.tokens.steal.length; i++) {
     result.push(TokenAction.Stealing)

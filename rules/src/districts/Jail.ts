@@ -46,7 +46,7 @@ export default class Jail extends DistrictRules {
       // Jailed Partners have to take a token
       return {
         type: MoveType.SolvePartner,
-        thief,
+        thief: thief.role,
         partnerNumber: thief.partners.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!
       }
     }
