@@ -72,7 +72,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
                 <h1 css={titleDistrictStyle}>{t(getDistrictName(district.name))}</h1>
 
-                {phase === Phase.Planning && district.name !== DistrictName.Jail && nbPartners && nbPartners !== 0 && 
+                {phase === Phase.Planning && district.name !== DistrictName.Jail && 
                     [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={temporaryPartnerPosition(i)} /> )
                 }
 
