@@ -19,7 +19,7 @@ const AvatarPanel : FC<Props> = ({playerInfo, role}) => {
 
         <div css={avatarStyle}>
             {playerInfo?.avatar 
-                ? <Avatar css={avatarStyle} avatarStyle="Circle" {...playerInfo.avatar}/> 
+                ? <Avatar css={alternativeAvatarStyle} avatarStyle="Circle" {...playerInfo.avatar}/> 
                 : <img alt={t('Player avatar')} src={getAlternativeAvatar(role)} css={alternativeAvatarStyle} draggable={false}/>
             }
         </div>

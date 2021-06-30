@@ -1253,14 +1253,6 @@
     "@datadog/browser-core" "2.8.1"
     tslib "^1.10.0"
 
-"@dicebear/avatars@^3.0.6":
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/@dicebear/avatars/-/avatars-3.1.4.tgz#299924e4b920b0a0d1a052f55e3d28218e4ff8fb"
-  integrity sha512-ka6MbOGrcoXZwrjbdWBzroMc/mYXPlIAiSB80Y1azkaYqeR4wht8AYq43DA4vekF6/d0yq1GV/2jkuo5OqvrzA==
-  dependencies:
-    pure-color "^1.3.0"
-    seedrandom "^2.4.3"
-
 "@emotion/cache@^11.4.0":
   version "11.4.0"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-11.4.0.tgz#293fc9d9a7a38b9aad8e9337e5014366c3b09ac0"
@@ -3840,14 +3832,6 @@ available-typed-arrays@^1.0.2:
   integrity sha512-XWX3OX8Onv97LMk/ftVyBibpGwY5a8SmuxZPzeOxqmuEqUCOM9ZE+uIaD1VNJ5QnvU2UQusvmKbuM1FR8QWGfQ==
   dependencies:
     array-filter "^1.0.0"
-
-avataaars@^1.2.1:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/avataaars/-/avataaars-1.2.2.tgz#f3619075baa33610eeedb0677fc0f4fd0fe87990"
-  integrity sha512-cX12MRjt92hWKPff+hNHW7xZ4UAs/gcNN9gf/RSRs6VO1C4oEh6//jhF4JmboO40LZGZRJNS3b8G/9SNaptUpQ==
-  dependencies:
-    lodash ">=4.17.11"
-    prop-types "^15.6.0"
 
 aws-sign2@~0.7.0:
   version "0.7.0"
@@ -9719,7 +9703,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@>=4.17.11, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5, lodash@^4.7.0:
+"lodash@>=3.5 <5", lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.5, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -12197,7 +12181,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.5.8, prop-types@^15.6.0, prop-types@^15.7.2:
+prop-types@^15.5.8, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -12290,11 +12274,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
-
-pure-color@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/pure-color/-/pure-color-1.3.0.tgz#1fe064fb0ac851f0de61320a8bf796836422f33e"
-  integrity sha1-H+Bk+wrIUfDeYTIKi/eWg2Qi8z4=
 
 pusher-js@^7.0.0:
   version "7.0.3"
@@ -12442,14 +12421,6 @@ react-app-rewired@^2.1.8:
   integrity sha512-wjXPdKPLscA7mn0I1de1NHrbfWdXz4S1ladaGgHVKdn1hTgKK5N6EdGIJM0KrS6bKnJBj7WuqJroDTsPKKr66Q==
   dependencies:
     semver "^5.6.0"
-
-react-avataaars@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/react-avataaars/-/react-avataaars-0.2.3.tgz#5b497356184fe771a2eda8f6f038fb71ff2b3aaf"
-  integrity sha512-aZNweZh+Y1pyae80+KG9f5g543ofvQX+dpEK5Hv1I1RxQu2Z/TlMw4Frzu/x7kJi72gbBANb5zl9yZGV17ZebQ==
-  dependencies:
-    "@dicebear/avatars" "^3.0.6"
-    avataaars "^1.2.1"
 
 react-dev-utils@^11.0.3:
   version "11.0.4"
@@ -13356,11 +13327,6 @@ schema-utils@^3.0.0:
     "@types/json-schema" "^7.0.6"
     ajv "^6.12.5"
     ajv-keywords "^3.5.2"
-
-seedrandom@^2.4.3:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-2.4.4.tgz#b25ea98632c73e45f58b77cfaa931678df01f9ba"
-  integrity sha512-9A+PDmgm+2du77B5i0Ip2cxOqqHjgNxnBgglxLcX78A2D6c2rTo61z4jnVABpF4cKeDMDG+cmXXvdnqse2VqMA==
 
 seek-bzip@^1.0.5:
   version "1.0.6"
