@@ -179,7 +179,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
 
   getPlayerView(playerId: PlayerRole): GameView {
-    console.log(playerId)
     return this.getView(playerId)
   }
 
