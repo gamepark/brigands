@@ -35,7 +35,7 @@ export function moveOnDistrictResolved(state:GameState | GameView, move:MoveOnDi
 }
 
 function cleanAbilities(prince:PrinceState){
-    prince.abilities.forEach(a => a = false)
+    prince.abilities = [false, false, false]
 }
 
 function takeBackPatrols(prince:PrinceState){
@@ -55,17 +55,17 @@ function cleanPartners(thieves:ThiefState[]){
 export function cleanTokens(thieves:ThiefState[]){
     thieves.forEach(p => {
         for (let i = 0 ; i < p.tokens.steal.length ; i++){
-            if (p.tokens.steal[i] > 0){
+            if (p.tokens.steal[i] >= 0){
                 p.tokens.steal.splice(i,1)
             }
         }
         for (let i = 0 ; i < p.tokens.kick.length ; i++){
-            if (p.tokens.kick[i] > 0){
+            if (p.tokens.kick[i] >= 0){
                 p.tokens.kick.splice(i,1)
             }
         }
         for (let i = 0 ; i < p.tokens.move.length ; i++){
-            if (p.tokens.move[i] > 0){
+            if (p.tokens.move[i] >= 0){
                 p.tokens.move.splice(i,1)
             }
         }
