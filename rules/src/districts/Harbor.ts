@@ -31,7 +31,7 @@ export default class Harbor extends DistrictRules {
     const tokensToTake = this.isDistrictEvent() ? 3 : 2
     const thiefWithPartnerDone = this.getThieves().find(thief => {
       const partners = thief.partners.filter(part => part.district === DistrictName.Harbor)
-      if (partners.length) return false
+      if (partners.length === 0) return false
       return partners.some(partner => partner.tokensTaken === tokensToTake) || getTokensInBank(thief).length === 0
     })
     if (thiefWithPartnerDone) {
