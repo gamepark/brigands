@@ -159,13 +159,13 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
                                             : partner.district === DistrictName.Jail
-                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
+                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.32 : 1)
                                                 : partnerHandPosition(positionForPartners, index, numberOfThieves)        
                                         : isPartnerView(partner)
                                             ? test
                                             : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.85 : 1)
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.32 : 1)
                                      
                                             ]}
                               role={player.role}
@@ -321,13 +321,13 @@ const validationButtonPosition = css`
     position:absolute;
     width:15%;
     height:25%;
-    top:-125%;
-    right:16%;
+    top:-136%;
+    right:28.5%;
     font-size:4em;
 `
 
 const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
-top:${prince*(-80)+index*8}%;
+top:${prince*(-100)+index*8}%;
 left:${1.0+district*12.5+positionForPartners*2}%;
 
 ${transitionPartner};

@@ -51,9 +51,10 @@ outline:red 0.5em solid;
 `
 
 const districtSize = css`
-width:12.6%;
+width:11.3%;
 height:100%;
-box-shadow: 0em 0em 0.2em 0.1em black;
+margin: 0 0.25em;
+box-shadow: 0em 0em 0.3em 0.15em black;
 `
 
 

@@ -95,30 +95,30 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
 }
 
 const headStartOnHand = (isPrince:number) => css`
-top:${33+isPrince*55}%;
-left:58%;
+top:${31+isPrince*60}%;
+left:60.1%;
 `
 
 const headStartOnDistrict = (district:number) => css`
-top:51%;
-left:${10+(district*11.25)}%;
+top:52%;
+left:${8+(district*11.25)}%;
 `
 
 const headStartSize = css`
 position:absolute;
-height:8%;
-width:4%;
+height:6%;
+width:3%;
 z-index:1;
 `
 
 const validationButtonPosition = css`
 position:absolute;
 z-index: 1;
-width:15%;
-height:7%;
-top:88%;
-right:13.5%;
-font-size:4em;
+width:12%;
+height:6%;
+top:90.4%;
+right:21.5%;
+font-size:3.5em;
 `
 
 const coinPosition = (firstI:number, secondI:number) => css`
@@ -180,7 +180,7 @@ position:absolute;
 top:0%;
 left:-60%;
 width:58%;
-height:25%;
+height:28%;
 border: 0.5em solid white;
 border-radius:10% / 35%;
 `
@@ -191,13 +191,13 @@ const patrolCanceled = (isPrince:number) => css`
 `
 
 const patrolInHand = (index:number, isPrince:number) => css`
-    top:${8+isPrince*55}%;
-    left:${index !== 2 ? 32+index*28 : 46}%;
+    top:${8+isPrince*58}%;
+    left:${index !== 2 ? 36.6+index*24 : 46}%;
 `
 
 const patrolInDistrict = (district:number) => css`
-    top:55.5%;
-    left:${5.1+(district*11.25)}%;
+    top:51.8%;
+    left:${4+(district*11.6)}%;
 `
 
 const patrolTokenSize = css`

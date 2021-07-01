@@ -1,24 +1,30 @@
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
-import DrawEvent, {DrawEventView, isDrawEvent} from "@gamepark/brigands/moves/DrawEvent";
-import { useAnimation } from "@gamepark/react-client";
+import District from "@gamepark/brigands/districts/District";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
+import { EventArray } from "@gamepark/brigands/material/Events";
+import {DrawEventView, isDrawEvent} from "@gamepark/brigands/moves/DrawEvent";
+import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { useAnimation, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import Images from "../utils/Images";
 
 type Props = {
     event:number
     eventDeck:number
+    city:District[]
 } & HTMLAttributes<HTMLDivElement>
 
-const WeekCardsPanel : FC<Props> = ({event, eventDeck, ...props}) => {
+const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
 
     const animationDrawEvent = useAnimation<DrawEventView>(animation => isDrawEvent(animation.move))
+    const playerId = usePlayerId<PlayerRole>()
 
     return (
 
         <div {...props} css={weekCardsPanelStyle}>
 
-            <div css={[revealedCardPosition, revealedCardStyle(getWeekCardImage(event))]}></div>
+            <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(event))]}></div>
             
             
             {animationDrawEvent 
@@ -79,10 +85,10 @@ const backCard = css`
 backface-visibility:hidden;
 `
 
-const revealedCardPosition = css`
+const revealedCardPosition = (districtPosition:number, isPrinceView:boolean) => css`
 position:absolute;
-bottom:0%;
-right:2%;
+top:${isPrinceView ? -147 : 137}%;
+left:${isPrinceView ? -31+districtPosition*52.5 : -47+districtPosition*58}%;
 width:40%;
 height:100%;
 
@@ -100,7 +106,7 @@ border-radius:15% / 10%;
 const hiddenCardPosition = css`
 position:absolute;
 bottom:0%;
-right:45%;
+right:0%;
 width:40%;
 height:100%;
 `
@@ -147,6 +153,10 @@ function getWeekCardImage(image:number):string{
         default :
             return 'error : no week Card founded'
     }
+}
+
+function getPositionOfDistrict(city:District[], district:DistrictName):number{
+    return city.findIndex(d => d.name === district)
 }
 
 export default WeekCardsPanel

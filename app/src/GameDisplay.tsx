@@ -54,7 +54,8 @@ export default function GameDisplay({game}: Props) {
 
         <WeekCardsPanel css = {[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}
                         event = {game.event} 
-                        eventDeck = {game.eventDeck} />
+                        eventDeck = {game.eventDeck} 
+                        city = {game.city} />
 
         <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank ]}
                            players = {players.filter(isThief)}
@@ -74,8 +75,7 @@ export default function GameDisplay({game}: Props) {
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
-          <TavernPopUp position={game.city.findIndex(d => d.name === DistrictName.Tavern)}
-                       player = {players.find(isThiefState)!}
+          <TavernPopUp player = {players.find(isThiefState)!}
           />
         }
 
@@ -145,23 +145,23 @@ height:25%;
 `
 
 const displayBottomBank = css`
-left:70%;
-top:62%;
+left:66%;
+top:66%;
 `
 
 const displayTopBank = css`
 left:65%;
-top:10%;
+top:7%;
 `
 
 const displayBottomWeekCard = css`
-top:72%;
-left:5%;
+top:75%;
+left:12%;
 `
 
 const displayTopWeekCard = css`
 top:16%;
-left:6.5%;
+left:14%;
 transform:scale(0.9,0.9);
 `
 
@@ -170,11 +170,11 @@ top:65%;
 `
 
 const displayTopThieves = css`
-top:8%;
+top:7%;
 `
 
 const displayBottomPrince = css`
-top:62%;
+top:66%;
 `
 
 const displayTopPrince = css`
@@ -189,23 +189,23 @@ height:100%;
 
 const weekCardsPanelPosition = css`
   position:absolute;
-  width:25%;
-  height:25%;
+  width:22%;
+  height:22%;
 `
 
 const cityPosition = css`
   position:absolute;
-  top:41.5%;
-  left:5%;
-  width:90%;
+  top:38%;
+  left:0%;
+  width:100%;
   height:20%;
 `
 
 const princePanelPosition = css`
   position:absolute;
-  left:30%;
-  width:35%;
-  height:35%;
+  left:34.5%;
+  width:31%;
+  height:31%;
 `
 
 export const getPlayersStartingWith = (game: GameView, playerId?: PlayerRole) => {

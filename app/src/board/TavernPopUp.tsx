@@ -9,17 +9,16 @@ import { FC, HTMLAttributes } from "react";
 import Images from '../utils/Images'
 
 type Props = {
-    position:number
     player:ThiefState
 } & HTMLAttributes<HTMLDivElement>
 
-const TavernPopUp : FC<Props> = ({position, player, ...props}) => {
+const TavernPopUp : FC<Props> = ({player, ...props}) => {
 
     const play = usePlay<Move>()
     const onClick = (move:BetGold) => {play(move)}
 
     return(
-        <div {...props} css={[tavernPopUpSize, tavernPopUpPosition(position), tavernPopUpStyle]}>
+        <div {...props} css={[tavernPopUpSize, tavernPopUpPosition, tavernPopUpStyle]}>
 
             <div css={[xStyle, betSize(0)]} onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role})} > <span>X</span> </div>
             {[...Array(player.gold < 5 ? player.gold : 5)].map((_, i) => 
@@ -71,10 +70,10 @@ width:30%;
 height:12%;
 `
 
-const tavernPopUpPosition = (position:number) => css`
+const tavernPopUpPosition = css`
 position:absolute;
-top:28%;
-left:32.5%;
+top:25%;
+left:35%;
 z-index:99;
 `
 
