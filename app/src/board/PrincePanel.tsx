@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { getPlayerName } from "@gamepark/brigands/BrigandsOptions";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
@@ -29,13 +29,17 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     const {t} = useTranslation()
     const play = usePlay<Move>()
 
-    function isDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
+    function isPatrolDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
         if (patrolIndex !== 2){
             return phase === Phase.Patrolling && role === playerId && statePatrol !== -2
         } else {
             return player.gold > 4 && player.abilities[2] === false && phase === Phase.Patrolling && role === playerId && statePatrol !== -2   
         }
         
+    }
+
+    function isHeadStartTokenDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+        return phase === Phase.Patrolling && player.role === playerId && player.gold>1 && player.abilities[1] === false
     }
  
     return(
@@ -64,12 +68,12 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
 
         {player.patrols.map((patrol,index) => 
             <PatrolToken key={index}
-                         css={[patrolTokenSize, 
+                         css={[patrolTokenSize, isPatrolDraggable(phase, player.role, patrol, index) && glowingPrince,
                                patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
                                
                         ]}
                          isMercenary={index===2}
-                         draggable={isDraggable(phase, player.role, patrol, index)}
+                         draggable={isPatrolDraggable(phase, player.role, patrol, index)}
                          type={'PatrolInHand'}
                          draggableItem={{patrolNumber:index}}
                          />
@@ -80,8 +84,8 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         }   
 
         
-        <HeadStart css={[headStartSize, player.abilities[1] === false ? headStartOnHand(playerId === PlayerRole.Prince ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
-                   draggable={phase === Phase.Patrolling && player.role === playerId && player.gold>1 && player.abilities[1] === false}
+        <HeadStart css={[headStartSize, isHeadStartTokenDraggable(phase, player.role) && glowingPrince, player.abilities[1] === false ? headStartOnHand(playerId === PlayerRole.Prince ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
+                   draggable={isHeadStartTokenDraggable(phase, player.role)}
                    type={'HeadStartToken'}
                    draggableItem={{}}
         />
@@ -93,6 +97,19 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     )
 
 }
+
+const glowingWhiteKeyframes = keyframes`
+    0% {
+        filter:drop-shadow(0 0 1.1em white);
+    }
+    80%, 100% {
+        filter:drop-shadow(0 0 0.2em white);
+    }
+`
+
+const glowingPrince = css`
+    animation: ${glowingWhiteKeyframes} 1s infinite alternate;
+`
 
 const headStartOnHand = (isPrince:number) => css`
 top:${31+isPrince*60}%;
@@ -109,6 +126,7 @@ position:absolute;
 height:6%;
 width:3%;
 z-index:1;
+filter:drop-shadow(0 0 0.5em black);
 `
 
 const validationButtonPosition = css`

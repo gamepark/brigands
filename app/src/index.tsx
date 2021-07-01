@@ -44,7 +44,7 @@ const style = css`
     background-image: url(${Images.background});
     background-color: white;
     background-size: cover;
-    background-position: center;
+    background-position: center top;
     color: #eee;
 
     &:before {
