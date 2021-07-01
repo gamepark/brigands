@@ -61,6 +61,7 @@ export default function GameDisplay({game}: Props) {
                            players = {players.filter(isThief)}
                            phase={game.phase}
                            resolvedDistrict={game.districtResolved && game.city[game.districtResolved].name}
+                           event={game.event}
         />
                         
 
