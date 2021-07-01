@@ -210,7 +210,7 @@ const patrolCanceled = (isPrince:number) => css`
 
 const patrolInHand = (index:number, isPrince:number) => css`
     top:${8+isPrince*58}%;
-    left:${index !== 2 ? 36.6+index*24 : 46}%;
+    left:${index !== 2 ? 36.6+index*24 : 48.5}%;
 `
 
 const patrolInDistrict = (district:number) => css`
