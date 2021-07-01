@@ -24,10 +24,11 @@ type Props = {
     phase:Phase | undefined
     nbPlayers:number
     nbPartners?:number
+    isPlayerReady?:boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -71,7 +72,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
             <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && 
-                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={temporaryPartnerPosition(i)} /> )
+                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
                 }
 
                 {district.gold !== undefined 
@@ -93,11 +94,17 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
 }
 
+const blurEffect = css`
+filter:blur(10em);
+transition:filter 1s ease-in;
+`
+
 const temporaryPartnerPosition = (index:number) => css`
 position:absolute;
 top:20%;
 left:${20+index*20}%;
 height:20%;
+transition:filter 1s ease-in;
 `
 
 const dropSize = css`

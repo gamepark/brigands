@@ -3,7 +3,6 @@
 import { css } from "@emotion/react";
 import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/districts/District";
-import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Partner from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import { FC, HTMLAttributes } from "react";
@@ -17,10 +16,11 @@ type Props = {
     districtResolved:number|undefined
     nbPlayers:number
     partnersOfPlayerId?:Partner[]
+    isPlayerReady?:boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, ...props}) => {
 
     return(
 
@@ -35,7 +35,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               prince={prince}   
                               nbPlayers={nbPlayers}
                               nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
-
+                              isPlayerReady={isPlayerReady}
                 />
             
             )}

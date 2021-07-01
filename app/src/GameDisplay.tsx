@@ -72,7 +72,7 @@ export default function GameDisplay({game}: Props) {
               districtResolved = {game.districtResolved}
               nbPlayers = {game.players.length}
               partnersOfPlayerId = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince) ? partnersOfPlayerId : undefined}
-        
+              isPlayerReady = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince) ? players.find(p => p.role === playerId)!.isReady : undefined}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
