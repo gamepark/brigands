@@ -80,9 +80,9 @@ export default function GameDisplay({game}: Props) {
           />
         }
 
-        {game.districtResolved !== undefined && game.districtResolved !== DistrictName.Treasure && game.city[game.districtResolved].dice &&
-          <DicePopUp dice={game.city[game.districtResolved].dice} 
-          />}
+        {game.districtResolved !== undefined && game.districtResolved !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice) &&
+          <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice} 
+        />}
 
         <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
 

@@ -30,7 +30,7 @@ height:8%;
 
 const dicePopUpPosition = css`
 position:absolute;
-top:33%;
+top:30%;
 left:63%;
 display:flex;
 flex-direction:row;
