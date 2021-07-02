@@ -20,7 +20,7 @@ export function movePartner(state: GameState | GameView, move: MovePartner) {
   const nextDistrict: DistrictName = state.city[state.districtResolved! + 1].name
   const thieves = getThieves(state)
   const thief = move.runner ? thieves.find(p => p.role === move.runner)! : thieves.find(p => p.role === move.role)!
-  const movingPartnerIndex = thief.partners.filter(isPartner).findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(thief, index))
+  const movingPartnerIndex = thief && thief.partners.filter(isPartner).findIndex((part, index) => part.district === actualDistrict && isThisPartnerHasMoveToken(thief, index))
   if (move.role === false) {
     if (move.runner) {
       if (movingPartnerIndex !== -1) {

@@ -206,16 +206,19 @@ border-radius:10% / 35%;
 const patrolCanceled = (isPrince:number) => css`
     top:${24+isPrince*55}%;
     left:41.8%;
+    transition : top 1s ease-in-out, left 1s ease-in-out;
 `
 
 const patrolInHand = (index:number, isPrince:number) => css`
     top:${8+isPrince*58}%;
     left:${index !== 2 ? 36.6+index*24 : 48.5}%;
+    transition : top 1s ease-in-out, left 1s ease-in-out;
 `
 
 const patrolInDistrict = (district:number) => css`
     top:51.8%;
     left:${4+(district*11.6)}%;
+    transition : top 1s ease-in-out, left 1s ease-in-out;
 `
 
 const patrolTokenSize = css`

@@ -159,13 +159,13 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
                                             : partner.district === DistrictName.Jail
-                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.32 : 1)
+                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1)
                                                 : partnerHandPosition(positionForPartners, index, numberOfThieves)        
                                         : isPartnerView(partner)
                                             ? test
                                             : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), playerId === PlayerRole.Prince ? -1.32 : 1)
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId == undefined) ? -1.32 : 1)
                                      
                                             ]}
                               role={player.role}

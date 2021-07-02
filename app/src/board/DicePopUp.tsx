@@ -1,5 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import Images from "../utils/Images";
 
@@ -9,9 +11,11 @@ type Props = {
 
 const DicePopUp : FC<Props> = ({dice, ...props}) => {
 
+    const playerId = usePlayerId<PlayerRole>()
+
     return(
 
-        <div {...props} css={[dicePopUpPosition, dicePopUpSize]}>
+        <div {...props} css={[dicePopUpPosition(playerId === PlayerRole.Prince || playerId === undefined), dicePopUpSize]}>
 
             {dice !== undefined && dice.map((die, index) => 
                 <div key={index} css={[dieStyle(getDiceFace(die))]} > </div>
@@ -28,9 +32,9 @@ width:29%;
 height:8%;
 `
 
-const dicePopUpPosition = css`
+const dicePopUpPosition = (isPrinceView:boolean) => css`
 position:absolute;
-top:30%;
+top:${isPrinceView ? 90 : 30}%;
 left:63%;
 display:flex;
 flex-direction:row;
