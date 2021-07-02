@@ -71,7 +71,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
             <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
-                {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && 
+                {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
                     [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
                 }
 

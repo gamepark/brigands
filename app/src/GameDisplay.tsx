@@ -33,7 +33,7 @@ export default function GameDisplay({game}: Props) {
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
 
-  const partnersOfPlayerId = playerId !== PlayerRole.Prince ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partners as Partner[] : undefined
+  const partnersOfPlayerId = (playerId !== PlayerRole.Prince && playerId !== undefined) ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partners as Partner[] : undefined
 
   function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined, prince:PrinceState){    
     return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
@@ -71,8 +71,8 @@ export default function GameDisplay({game}: Props) {
               prince = {players.find(isPrinceState)!}
               districtResolved = {game.districtResolved}
               nbPlayers = {game.players.length}
-              partnersOfPlayerId = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince) ? partnersOfPlayerId : undefined}
-              isPlayerReady = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince) ? players.find(p => p.role === playerId)!.isReady : undefined}
+              partnersOfPlayerId = {game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
+              isPlayerReady = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
@@ -84,7 +84,7 @@ export default function GameDisplay({game}: Props) {
           <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice} 
         />}
 
-        <div css={[panelPlayerPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayTopThieves : displayBottomThieves]}>
+        <div css={[panelPlayerPosition, (playerId === undefined || playerId === PlayerRole.Prince) ? displayTopThieves : displayBottomThieves]}>
 
           {players.filter(isThief).map((p, index) =>
             

@@ -69,7 +69,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         {player.patrols.map((patrol,index) => 
             <PatrolToken key={index}
                          css={[patrolTokenSize, isPatrolDraggable(phase, player.role, patrol, index) && glowingPrince,
-                               patrol === -1 ? patrolInHand(index, playerId === PlayerRole.Prince ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
+                               patrol === -1 ? patrolInHand(index, (playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
                                
                         ]}
                          isMercenary={index===2}
@@ -84,7 +84,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         }   
 
         
-        <HeadStart css={[headStartSize, isHeadStartTokenDraggable(phase, player.role) && glowingPrince, player.abilities[1] === false ? headStartOnHand(playerId === PlayerRole.Prince ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
+        <HeadStart css={[headStartSize, isHeadStartTokenDraggable(phase, player.role) && glowingPrince, player.abilities[1] === false ? headStartOnHand((playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
                    draggable={isHeadStartTokenDraggable(phase, player.role)}
                    type={'HeadStartToken'}
                    draggableItem={{}}
