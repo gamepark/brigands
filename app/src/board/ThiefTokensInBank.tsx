@@ -59,7 +59,7 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event,
                     </div>
                 )}
                 {getArray(player.tokens.steal).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, , isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
                                     draggable={isDraggable(phase, (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}

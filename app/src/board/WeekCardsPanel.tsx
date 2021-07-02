@@ -29,8 +29,8 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
             
             {animationDrawEvent 
             ? <div css={[hiddenCardPosition]}>
-                    <div css={[frontCard, card, drawEventAnimationFront(animationDrawEvent.duration), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
-                    <div css={[backCard, card, drawEventAnimationBack(animationDrawEvent.duration), hiddenCardStyle]}></div>
+                    <div css={[frontCard, card, drawEventAnimationFront(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
+                    <div css={[backCard, card, drawEventAnimationBack(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), hiddenCardStyle]}></div>
               </div> 
             : <div css={[hiddenCardPosition]}>
                     <div css={[frontCard, card]}></div>
@@ -47,33 +47,73 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
 
 }
 
-const drawEventKeyFramesFront = keyframes`
-    from{}
+const drawEventKeyFramesFront = (districtPosition:number, isPrinceView:boolean) => keyframes`
+    from{        
+        top:0%;
+        left:0%;
+    }
+    15%{
+        top:0%;
+        left:0%;
+        transform:translateZ(18em) rotateY(-90deg);
+    }
+    30%,50%{
+        top:0%;
+        left:0%;
+        transform:translateZ(0em) rotateY(0deg);
+    }
+    75%{
+        top:${isPrinceView ? -147 : 137}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        transform:translateZ(0em) rotateY(0deg);
+    }
     to{
-        transform-origin:left;
-        transform:translateX(19em) rotateY(0deg);
+        transform:translateZ(0em) rotateY(0deg);
+        top:${isPrinceView ? -147 : 137}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+
     }
 `
-const drawEventKeyFramesBack = keyframes`
-    from{}
+const drawEventKeyFramesBack = (districtPosition:number, isPrinceView:boolean) => keyframes`
+    from{
+        top:0%;
+        left:0%;
+    }
+    15%{
+        top:0%;
+        left:0%;
+        transform:translateZ(18em) rotateY(90deg);
+    }
+    30%,50%{        
+        top:0%;
+        left:0%;
+        transform:translateZ(0em) rotateY(180deg);
+    }
+    75%{
+        top:${isPrinceView ? -147 : 137}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        transform:translateZ(0em) rotateY(180deg);
+    }
     to{
-        transform-origin:right;
-        transform:translateX(2em) rotateY(180deg);
+        transform:translateZ(0em) rotateY(180deg);
+        top:${isPrinceView ? -147 : 137}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
     }
 `
 
-const drawEventAnimationFront = (duration:number) => css`
-animation:${drawEventKeyFramesFront} ${duration}s ease-in-out;
+const drawEventAnimationFront = (duration:number, districtPosition:number, isPrinceView:boolean) => css`
+animation:${drawEventKeyFramesFront(districtPosition, isPrinceView)} ${duration}s ease-in-out;
 `
 
-const drawEventAnimationBack = (duration:number) => css`
-animation:${drawEventKeyFramesBack} ${duration}s ease-in-out;
+const drawEventAnimationBack = (duration:number, districtPosition:number, isPrinceView:boolean) => css`
+animation:${drawEventKeyFramesBack(districtPosition, isPrinceView)} ${duration}s ease-in-out;
 `
 
 const card = css`
 position:absolute;
 width:100%;
 height:100%;
+
 `
 
 const frontCard = css`
@@ -105,8 +145,8 @@ border-radius:15% / 10%;
 
 const hiddenCardPosition = css`
 position:absolute;
-bottom:0%;
-right:0%;
+top:0%;
+left:60%;
 width:40%;
 height:100%;
 `

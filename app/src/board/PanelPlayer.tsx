@@ -135,7 +135,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
                 {[...Array(cardsPlayed)].map((_,index) => <DistrictCard key={index}
                                                                         color={player.role}
-                                                                        district={partnersForCards && [... new Set(partnersForCards)].filter(part => part.district !== DistrictName.Jail)[index].district}
+                                                                        district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
                 />)}
 
             </div>}
@@ -207,6 +207,14 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
     )
 
+}
+
+function getUniquePartnersDistrict(partnersForCards:Partner[]):DistrictName[]{
+    const result:DistrictName[] = []
+    for(const elem of partnersForCards){
+        if(elem.district){result.push(elem.district)} 
+    }
+    return [...new Set(result)]
 }
 
 export const glowingColoredKeyframes = (color:string) => keyframes`
