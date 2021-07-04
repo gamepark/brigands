@@ -51,15 +51,15 @@ export default class Tavern extends DistrictRules {
 
 function betResult(goldBet: number, dice: number, isEvent: boolean): number {
   if (isEvent) {
-    return dice[0] === 2 ? 0 : goldBet * 3
+    return dice === 2 ? 0 : goldBet * 3
   } else {
-    switch (dice[0]) {
+    switch (dice) {
       case 2 :
         return 0
       case 3:
         return goldBet * 2
       case 4:
-        return goldBet * 4
+        return goldBet * 3
       default:
         return 0
     }
