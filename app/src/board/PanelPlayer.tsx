@@ -214,7 +214,7 @@ function getUniquePartnersDistrict(partnersForCards:Partner[]):DistrictName[]{
     for(const elem of partnersForCards){
         if(elem.district){result.push(elem.district)} 
     }
-    return [...new Set(result)]
+    return [...new Set(result)].filter(d => d !==DistrictName.Jail)
 }
 
 export const glowingColoredKeyframes = (color:string) => keyframes`
@@ -324,7 +324,7 @@ const moveButtonPosition = css`
     position:absolute;
     width:15%;
     height:25%;
-    top:-125%;
+    top:-137%;
     right:20%;
     font-size:3em;
 `
@@ -333,7 +333,7 @@ const dontMoveButtonPosition = css`
     position:absolute;
     width:15%;
     height:25%;
-    top:-125%;
+    top:-137%;
     right:4%;
     font-size:3em;
 `
@@ -434,6 +434,9 @@ height:3.5em;
 `
 
 const nameStyle = css`
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
     font-size:2.5em;
     font-family:'Mulish', sans-serif;
     margin : 0.2em 1em;

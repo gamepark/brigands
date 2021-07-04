@@ -7,6 +7,7 @@ import {DrawEventView, isDrawEvent} from "@gamepark/brigands/moves/DrawEvent";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { useAnimation, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
+import { useTranslation } from "react-i18next";
 import Images from "../utils/Images";
 
 type Props = {
@@ -19,24 +20,32 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
 
     const animationDrawEvent = useAnimation<DrawEventView>(animation => isDrawEvent(animation.move))
     const playerId = usePlayerId<PlayerRole>()
+    const {t} = useTranslation()
 
     return (
 
         <div {...props} css={weekCardsPanelStyle}>
 
-            <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(event))]}></div>
+            <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district), playerId === PlayerRole.Prince || playerId === undefined), 
+                       revealedCardStyle(getWeekCardImage(event)),
+                       shadow,
+                       animationDrawEvent && fadeOut(animationDrawEvent.duration)]}></div>
             
             
             {animationDrawEvent 
             ? <div css={[hiddenCardPosition]}>
-                    <div css={[frontCard, card, drawEventAnimationFront(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
-                    <div css={[backCard, card, drawEventAnimationBack(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), hiddenCardStyle]}></div>
+                    <div css={[frontCard, shadow, card, drawEventAnimationFront(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
+                    <div css={[backCard, shadow, card, drawEventAnimationBack(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), hiddenCardStyle]}></div>
               </div> 
-            : <div css={[hiddenCardPosition]}>
-                    <div css={[frontCard, card]}></div>
-                    <div css={[backCard, card, hiddenCardStyle]}></div>
+            : eventDeck > 0 && <div css={[hiddenCardPosition, shadow]}>
+                    <div css={[frontCard, shadow, card]}></div>
+                    <div css={[backCard, shadow, card, hiddenCardStyle]}></div>
               </div> 
             }
+
+            {eventDeck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t("Last Turn")}</p></div>}
+
+            {eventDeck > 1 && [...Array(eventDeck-1)].map((_, i) => <img key={i} alt={t('deck')} src={Images.weekCardBack} css={[backCard, hiddenCardStyle, offsetDeck(i+1), shadow]} draggable={false} />)}
 
 
            
@@ -46,6 +55,43 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
     )
 
 }
+
+const lastTurnStyle = css`
+border:white 0.8em dashed;
+border-radius:15% / 10%;
+z-index:-2;
+text-align:center;
+
+p{
+    font-size:4.2em;
+}
+
+
+`
+
+const fadeOutKeyFrames = keyframes`
+from{opacity:1};
+10%, to{opacity:0};
+`
+
+const fadeOut = (duration:number) => css`
+animation:${fadeOutKeyFrames} ${duration}s ease-in;
+`
+
+const shadow = css`
+box-shadow:0 0 0.2em 0.1em black;
+border-radius:15% / 10%;
+`
+
+const offsetDeck = (index:number) => css`
+width:38%;
+height:100%;
+position:absolute;
+top:0%;
+left:${60-index*5}%;
+z-index:${-1-index};
+
+`
 
 const drawEventKeyFramesFront = (districtPosition:number, isPrinceView:boolean) => keyframes`
     from{        
@@ -113,7 +159,6 @@ const card = css`
 position:absolute;
 width:100%;
 height:100%;
-
 `
 
 const frontCard = css`
@@ -129,7 +174,7 @@ const revealedCardPosition = (districtPosition:number, isPrinceView:boolean) => 
 position:absolute;
 top:${isPrinceView ? -147 : 137}%;
 left:${isPrinceView ? -31+districtPosition*52.5 : -47+districtPosition*58}%;
-width:40%;
+width:38%;
 height:100%;
 
 `
@@ -147,7 +192,7 @@ const hiddenCardPosition = css`
 position:absolute;
 top:0%;
 left:60%;
-width:40%;
+width:38%;
 height:100%;
 `
 
