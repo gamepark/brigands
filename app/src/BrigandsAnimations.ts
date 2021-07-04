@@ -23,7 +23,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.TakeToken){
             return action.playerId === playerId ? 0 : 2
         } else if (move.type === MoveType.ThrowDice){
-            return 30
+            return 2
         } else if (move.type === MoveType.ResolveStealToken){
             return 2
         } else if (move.type === MoveType.MovePartner){

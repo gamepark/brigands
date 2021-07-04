@@ -12,6 +12,7 @@ import ThiefToken from "./ThiefToken";
 import { getGlowingPlayerColor, glowingBrigand } from "./PanelPlayer";
 import { isPartnerView } from "@gamepark/brigands/types/Partner";
 import { EventArray } from "@gamepark/brigands/material/Events";
+import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
 
 type Props = {
     players:(ThiefState | ThiefView)[]
@@ -24,10 +25,35 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event,
 
     const playerId = usePlayerId<PlayerRole>()
 
-    function isDraggable(phase:Phase | undefined, isHarborOrJail:boolean, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
+    function isDraggable(phase:Phase | undefined, resolvedDistrict:DistrictName|undefined, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
 
-        return phase === Phase.Solving && isHarborOrJail && playerRole === playerId && (players.find(p => p.role === playerRole)! as ThiefState).partners.some(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[event].district === DistrictName.Harbor ? 3 : 2)) || (p.district === DistrictName.Jail && p.tokensTaken === 0 && p.solvingDone === true && players.every(player => player.partners.filter(part => !isPartnerView(part) && part.district === DistrictName.Jail).every(part => part.solvingDone === true))))
+        return phase === Phase.Solving 
+        && (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail) 
+        && playerRole === playerId 
+        && (canTakeTokenInHarbor(findThiefState(players, playerRole)) || canTakeTokenInJail(findThiefState(players, playerRole), players))
+        && noTokenOnDistrict(players, resolvedDistrict)
 
+    }
+
+    function noTokenOnDistrict(players:(ThiefState | ThiefView)[], district:DistrictName):boolean{
+        return players.every(p => p.partners.every((part, index) => !isPartnerView(part) && (part.district !== district || !isThisPartnerHasAnyToken(p, index))))
+    }
+
+    function findThiefState(players:(ThiefState | ThiefView)[] , role:PlayerRole):ThiefState{
+        return (players.find(p => p.role === role)! as ThiefState)
+    }
+
+
+    function canTakeTokenInHarbor(thief:ThiefState):boolean{
+        return thief.partners.some(p => p.district === DistrictName.Harbor && (!p.tokensTaken || p.tokensTaken < (EventArray[event].district === DistrictName.Harbor ? 3 : 2)))
+    }
+
+    function canTakeTokenInJail(thief:ThiefState, players:(ThiefState | ThiefView)[]):boolean{
+        return thief.partners.some(p => p.district === DistrictName.Jail 
+                && p.tokensTaken === 0 && p.solvingDone === true 
+                && players.every(player => player.partners.filter(part => !isPartnerView(part) 
+                    && part.district === DistrictName.Jail).every(part => part.solvingDone === true))
+            )
     }
 
     return(
@@ -38,10 +64,10 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event,
 
             <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToStart]} key={indexP}>
                 {getArray(player.tokens.kick).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
-                                    draggable={isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
+                                    draggable={isDraggable(phase,resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Kicking}}
 
@@ -49,20 +75,20 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event,
                     </div>
                 )}
                 {getArray(player.tokens.move).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
-                                    draggable={isDraggable(phase, (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
+                                    draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Fleeing}}
                         />
                     </div>
                 )}
                 {getArray(player.tokens.steal).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,(resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
-                                    draggable={isDraggable(phase, (resolvedDistrict === DistrictName.Harbor || resolvedDistrict === DistrictName.Jail), player.role, players)}
+                                    draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Stealing}}
                         />
