@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import BetGold from "@gamepark/brigands/moves/BetGold";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
@@ -15,20 +16,33 @@ type Props = {
 const TavernPopUp : FC<Props> = ({player, ...props}) => {
 
     const play = usePlay<Move>()
-    const onClick = (move:BetGold) => {play(move)}
+    const onClick = (move:BetGold, player:ThiefState) => {
+        if (player.partners.every(part => part.district !== DistrictName.Tavern || part.goldForTavern === undefined))
+        play(move)
+    }
+
+    function disablePopUp(player:ThiefState):boolean{
+        return player.partners.some(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)
+    }
 
     return(
-        <div {...props} css={[tavernPopUpSize, tavernPopUpPosition, tavernPopUpStyle]}>
+        <div {...props} css={[tavernPopUpSize, tavernPopUpPosition, tavernPopUpStyle, disablePopUp(player) && disablePopUpStyle]}>
 
-            <div css={[xStyle, betSize(0)]} onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role})} > <span>X</span> </div>
+            <div css={[xStyle, betSize(0)]} onClick={() => onClick({type:MoveType.BetGold, gold:0, role:player.role}, player)} > <span>0</span> </div>
             {[...Array(player.gold < 5 ? player.gold : 5)].map((_, i) => 
-                <div key={i} css={[betStyle(i+1), betSize(i+1, player.gold)]} onClick={() => onClick({type:MoveType.BetGold, gold:i+1, role:player.role})} >  </div>
+                <div key={i} css={[betStyle(i+1), betSize(i+1, player.gold)]} onClick={() => onClick({type:MoveType.BetGold, gold:i+1, role:player.role}, player)} >  </div>
             )}
 
         </div>
     )
 
 }
+
+const disablePopUpStyle = css`
+transform:scale(0,0);
+transition:transform 0.7s cubic-bezier(0.05, -1.5, 1, 1);
+transform-origin:bottom;
+`
 
 const betSize = (position:number, goldMax?:number) => css`
 width:16%;
@@ -68,6 +82,8 @@ background: 50% 50% / 95% no-repeat url(${Images.coin5})`}
 const tavernPopUpSize = css`
 width:30%;
 height:12%;
+transition:transform 0.7s cubic-bezier(0.42, 0, 0.52, 2.16);
+transform-origin:bottom;
 `
 
 const tavernPopUpPosition = css`

@@ -5,7 +5,7 @@ import GameView from '@gamepark/brigands/GameView'
 import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
 import {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
-import Partner, {isPartnerView} from '@gamepark/brigands/types/Partner'
+import Partner, {isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
 import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
@@ -36,7 +36,10 @@ export default function GameDisplay({game}: Props) {
   const partnersOfPlayerId = (playerId !== PlayerRole.Prince && playerId !== undefined) ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partners as Partner[] : undefined
 
   function isTavernPopUpDisplay(playerList:(ThiefState|ThiefView)[], role:PlayerRole | undefined, phase:Phase | undefined, districtResolved:DistrictName | undefined, prince:PrinceState){    
-    return (phase === Phase.Solving && districtResolved === DistrictName.Tavern && role !== undefined && role !== PlayerRole.Prince && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
+    return (phase === Phase.Solving 
+    && districtResolved === DistrictName.Tavern 
+    && role !== undefined && role !== PlayerRole.Prince 
+    && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
     && playerList.filter(p => p.partners.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
     && prince.patrols.some(pat => pat === DistrictName.Tavern) === false)
   }
@@ -98,7 +101,10 @@ export default function GameDisplay({game}: Props) {
             numberOfThieves = {players.filter(isThief).length}
             districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
             thieves = {game.players.filter(isThief)}
-            partnersForCards = {revealPartnersAnimation && revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners}
+            partnersForCards = {revealPartnersAnimation 
+                                  ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners 
+                                  : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
+                                }
             />
 
           )}

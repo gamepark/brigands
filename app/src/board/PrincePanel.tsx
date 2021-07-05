@@ -57,7 +57,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
             </div>
 
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
-            {[...Array(Math.floor(6))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
+            {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
             
             {decomposeGold(player.gold).map((coin, index) =>
                 [...Array(coin)].map((_, i) => <img key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} draggable={false} />)
