@@ -105,6 +105,7 @@ top:20%;
 left:${20+index*20}%;
 height:20%;
 transition:filter 1s ease-in;
+z-index:1;
 `
 
 const dropSize = css`

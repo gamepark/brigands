@@ -57,7 +57,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
             </div>
 
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
-            {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={victoryTokenPosition(i)} draggable={false} />)}
+            {[...Array(Math.floor(6))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
             
             {decomposeGold(player.gold).map((coin, index) =>
                 [...Array(coin)].map((_, i) => <img key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} draggable={false} />)
@@ -112,7 +112,7 @@ const glowingPrince = css`
 `
 
 const headStartOnHand = (isPrince:number) => css`
-top:${31+isPrince*60}%;
+top:${31.5+isPrince*60}%;
 left:60.1%;
 `
 
@@ -123,7 +123,7 @@ left:${8+(district*11.25)}%;
 
 const headStartSize = css`
 position:absolute;
-height:6%;
+height:5%;
 width:3%;
 z-index:1;
 filter:drop-shadow(0 0 0.5em black);
@@ -152,11 +152,16 @@ box-shadow: 0 0 1em 0.2em black;
 
 const victoryTokenPosition = (points:number) => css`
 position:absolute;
-bottom:${10+7.5*(Math.floor(points/2)+points%2)}%;
+bottom:${20+7.5*(Math.floor(points/2)+points%2)}%;
 right:${10+5*(points%2)}%;
 width:8.25%;
 height:15%;
 border-radius:100%;
+`
+
+const shadow = css`
+border-radius:100%;
+box-shadow:0 0 0.5em 0.2em black;
 `
 
 const victoryPointStyle = css`
