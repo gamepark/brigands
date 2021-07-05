@@ -42,7 +42,7 @@ type Props = {
 const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
-    const thiefId = playerId !== PlayerRole.Prince && thieves.find(p => p.role === playerId)!
+    const thiefId = (playerId !== PlayerRole.Prince && playerId !== undefined) && thieves.find(p => p.role === playerId)!
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 

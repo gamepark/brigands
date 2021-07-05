@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { ThiefState } from "@gamepark/brigands/PlayerState";
+import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
@@ -16,12 +16,13 @@ import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
 
 type Props = {
     players:(ThiefState | ThiefView)[]
+    prince:PrinceState
     phase?:Phase
     resolvedDistrict?:DistrictName
     event:number
 } & HTMLAttributes<HTMLDivElement>
 
-const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event, ...props}) => {
+const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict, event, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
 
@@ -32,7 +33,12 @@ const ThiefTokensInBank : FC<Props> = ({players, phase, resolvedDistrict, event,
         && playerRole === playerId 
         && (canTakeTokenInHarbor(findThiefState(players, playerRole)) || canTakeTokenInJail(findThiefState(players, playerRole), players))
         && noTokenOnDistrict(players, resolvedDistrict)
+        && noPatrolOnDistrict(resolvedDistrict, prince)
 
+    }
+
+    function noPatrolOnDistrict(district:DistrictName, prince:PrinceState):boolean{
+        return prince.patrols.every(pat => pat !== district)
     }
 
     function noTokenOnDistrict(players:(ThiefState | ThiefView)[], district:DistrictName):boolean{

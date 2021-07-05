@@ -59,6 +59,7 @@ export default function GameDisplay({game}: Props) {
 
         <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank ]}
                            players = {players.filter(isThief)}
+                           prince = {players.find(isPrinceState)!}
                            phase={game.phase}
                            resolvedDistrict={game.districtResolved && game.city[game.districtResolved].name}
                            event={game.event}
