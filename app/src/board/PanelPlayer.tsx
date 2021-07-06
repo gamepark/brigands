@@ -187,7 +187,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
         && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index)))
-        &&  <div>
+        && <div>
                 <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
             </div>

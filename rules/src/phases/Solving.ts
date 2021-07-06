@@ -15,7 +15,7 @@ import Move from '../moves/Move'
 import MovePartner from '../moves/MovePartner'
 import MoveType from '../moves/MoveType'
 import {createSteals} from '../moves/ResolveStealToken'
-import {ThiefState} from '../PlayerState'
+import {isThief, isThiefState, ThiefState} from '../PlayerState'
 import Partner from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
@@ -30,11 +30,11 @@ export default class Solving extends PhaseRules {
     if (kickerPartners.length > 0) {
       return this.state.readyToKickPartners !== true && kickerPartners.some(part => part.kickOrNot === undefined)
     }
-    if (runnerPartners.length > 0) {
-      return thief.partners.some((part, index) => part.district === district.name && isThisPartnerHasMoveToken(thief, index))
-    }
     if (this.getThieves().some(p => p.partners.some((part, index) => part.district === district.name && p.tokens.kick.some(ts => ts === index)))) {
       return false
+    }
+    if (runnerPartners.length > 0) {
+      return thief.partners.some((part, index) => part.district === district.name && isThisPartnerHasMoveToken(thief, index))
     }
     return this.getDistrictRules(district).isThiefActive(thief)
   }
@@ -62,12 +62,17 @@ export default class Solving extends PhaseRules {
     }
 
     const runnerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.move.some(tm => tm === index))
-    if (runnerPartners.length > 0) {
-      const moveArray: MovePartner[] = []
-      moveArray.push({type: MoveType.MovePartner, role: false, runner: thief.role})
-      moveArray.push({type: MoveType.MovePartner, role: thief.role, runner: thief.role})
-      return moveArray
+    if (this.state.players.filter(isThiefState).some(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))){
+      return []
+    } else {
+      if (runnerPartners.length > 0) {
+        const moveArray: MovePartner[] = []
+        moveArray.push({type: MoveType.MovePartner, role: false, runner: thief.role})
+        moveArray.push({type: MoveType.MovePartner, role: thief.role, runner: thief.role})
+        return moveArray
+      }
     }
+
 
     return this.getDistrictRules(district).getThiefLegalMoves(thief)
   }
@@ -110,21 +115,7 @@ export default class Solving extends PhaseRules {
   }
 
   getKickTokenAutomaticMove(district: District): Move | void {
-    if (this.state.readyToKickPartners) {
-      const kicker = this.getThieves().find(p => p.partners.some((part, index) => part.district === district.name && p.tokens.kick.some(tk => tk === index)))!
-      if (kicker.partners.find((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot !== undefined) {
-        return {
-          type: MoveType.MovePartner,
-          role: kicker.partners.find((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!.kickOrNot!,
-          kicker: kicker.role
-        }
-      } else {
-        return {
-          type: MoveType.RemoveToken, role: kicker.role, tokenAction: TokenAction.Kicking,
-          indexPartner: kicker.partners.findIndex((part, index) => part.district === district.name && kicker.tokens.kick.some(tk => tk === index))!
-        }
-      }
-    } else if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
+    if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
       return {type: MoveType.RevealKickOrNot}
     } else {
       return

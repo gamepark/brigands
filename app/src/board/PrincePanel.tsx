@@ -30,6 +30,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     const play = usePlay<Move>()
 
     function isPatrolDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
+        if (player.isReady === true){return false}
         if (patrolIndex !== 2){
             return phase === Phase.Patrolling && role === playerId && statePatrol !== -2
         } else {
@@ -39,6 +40,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     }
 
     function isHeadStartTokenDraggable(phase:Phase | undefined, role:PlayerRole):boolean{
+        if (player.isReady === true){return false}
         return phase === Phase.Patrolling && player.role === playerId && player.gold>1 && player.abilities[1] === false
     }
  
@@ -79,8 +81,8 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
                          />
         )}
 
-        {player.role === playerId && phase === Phase.Patrolling && player.patrols.every(pat => pat !== -1) 
-        && <Button css={validationButtonPosition} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        {player.role === playerId && phase === Phase.Patrolling && player.patrols.every(pat => pat !== -1) && player.isReady !==true
+        && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
         }   
 
         
