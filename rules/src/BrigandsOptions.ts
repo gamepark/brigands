@@ -1,4 +1,4 @@
-import { OptionsSpec } from '@gamepark/rules-api'
+import {OptionsSpec} from '@gamepark/rules-api'
 import {TFunction} from 'i18next'
 import GameState from './GameState'
 import PlayerRole, {playerRoles} from './types/PlayerRole'
@@ -31,9 +31,9 @@ export function isGameOptions(arg: GameState | BrigandsOptions): arg is Brigands
 export const BrigandsOptionsSpec: OptionsSpec<BrigandsOptions> = {
   players: {
     id: {
-      label: (t: TFunction) => t('Color'),
+      label: t => t('Color'),
       values: playerRoles,
-      valueLabel: getPlayerName,
+      valueSpec: color => ({label: t => getPlayerName(color, t)}),
       mandatory: PlayerRole.Prince
     }
   }
