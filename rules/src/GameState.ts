@@ -9,7 +9,6 @@ type GameState = {
   eventDeck:number[]
   event:number
   districtResolved?:number
-  readyToKickPartners?:true
 }
 
 export default GameState

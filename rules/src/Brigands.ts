@@ -1,6 +1,8 @@
 import {SecretInformation, SimultaneousGame} from '@gamepark/rules-api'
 import {shuffle} from 'lodash'
 import {BrigandsOptions, BrigandsPlayerOptions, isGameOptions} from './BrigandsOptions'
+import District from './districts/District'
+import DistrictName, {districtNames} from './districts/DistrictName'
 import GameState from './GameState'
 import GameView from './GameView'
 import {EventArray} from './material/Events'
@@ -20,7 +22,6 @@ import {placePartner} from './moves/PlacePartner'
 import {placePatrol} from './moves/PlacePatrol'
 import {placeToken} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
-import {removeToken} from './moves/RemoveToken'
 import {resolveStealToken} from './moves/ResolveStealToken'
 import {revealGolds} from './moves/RevealGolds'
 import {revealKickOrNot} from './moves/RevealKickOrNot'
@@ -38,8 +39,6 @@ import {PhaseRules} from './phases/PhaseRules'
 import Planning from './phases/Planning'
 import Solving from './phases/Solving'
 import PlayerState, {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from './PlayerState'
-import District from './districts/District'
-import DistrictName, {districtNames} from './districts/DistrictName'
 import Partner, {getPartnersView} from './types/Partner'
 import PlayerRole from './types/PlayerRole'
 import {ThiefView} from './types/Thief'
@@ -142,8 +141,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return revealKickOrNot(this.state)
       case MoveType.MovePartner :
         return movePartner(this.state, move)
-      case MoveType.RemoveToken :
-        return removeToken(this.state, move)
       case MoveType.JudgePrisoners :
         return judgePrisoners(this.state)
       case MoveType.PlayHeadStart :

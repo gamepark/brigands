@@ -14,8 +14,6 @@ enum MoveType {
   KickOrNot,
   RevealKickOrNot,
   MovePartner,
-  RemoveToken,
-  ResolvePatrols,
   MoveOnDistrictResolved,
   ThrowDice,
   GainGold,

@@ -28,7 +28,7 @@ export default class Solving extends PhaseRules {
     const kickerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.kick.some(t => t === index))
     const runnerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.move.some(t => t === index))
     if (kickerPartners.length > 0) {
-      return this.state.readyToKickPartners !== true && kickerPartners.some(part => part.kickOrNot === undefined)
+      return kickerPartners.some(part => part.kickOrNot === undefined)
     }
     if (this.getThieves().some(p => p.partners.some((part, index) => part.district === district.name && p.tokens.kick.some(ts => ts === index)))) {
       return false

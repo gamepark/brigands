@@ -1,30 +1,29 @@
 import GameView from '@gamepark/brigands/GameView'
-import { arrestPartners } from '@gamepark/brigands/moves/ArrestPartners'
-import { betGold } from '@gamepark/brigands/moves/BetGold'
-import { drawEventInView } from '@gamepark/brigands/moves/DrawEvent'
-import { gainGold } from '@gamepark/brigands/moves/GainGold'
-import { judgePrisoners } from '@gamepark/brigands/moves/JudgePrisoners'
-import { kickOrNotInView } from '@gamepark/brigands/moves/KickOrNot'
-import { moveOnDistrictResolved } from '@gamepark/brigands/moves/MoveOnDistrictResolved'
-import { moveOnNextPhase } from '@gamepark/brigands/moves/MoveOnNextPhase'
-import { movePartner } from '@gamepark/brigands/moves/MovePartner'
+import {arrestPartners} from '@gamepark/brigands/moves/ArrestPartners'
+import {betGold} from '@gamepark/brigands/moves/BetGold'
+import {drawEventInView} from '@gamepark/brigands/moves/DrawEvent'
+import {gainGold} from '@gamepark/brigands/moves/GainGold'
+import {judgePrisoners} from '@gamepark/brigands/moves/JudgePrisoners'
+import {kickOrNotInView} from '@gamepark/brigands/moves/KickOrNot'
+import {moveOnDistrictResolved} from '@gamepark/brigands/moves/MoveOnDistrictResolved'
+import {moveOnNextPhase} from '@gamepark/brigands/moves/MoveOnNextPhase'
+import {movePartner} from '@gamepark/brigands/moves/MovePartner'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
-import { placePartnerInView } from '@gamepark/brigands/moves/PlacePartner'
-import { placePatrol } from '@gamepark/brigands/moves/PlacePatrol'
-import { placeToken } from '@gamepark/brigands/moves/PlaceToken'
-import { playHeadStart } from '@gamepark/brigands/moves/PlayHeadStart'
-import { removeToken } from '@gamepark/brigands/moves/RemoveToken'
-import { resolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
-import { revealGoldsInView } from '@gamepark/brigands/moves/RevealGolds'
-import { revealKickOrNotView } from '@gamepark/brigands/moves/RevealKickOrNot'
-import { revealPartnersDistrictsInView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
-import { solvePartner } from '@gamepark/brigands/moves/SolvePartner'
-import { spareGoldOnTreasure } from '@gamepark/brigands/moves/SpareGoldOnTreasure'
-import { takeBackPartner } from '@gamepark/brigands/moves/TakeBackPartner'
-import { takeToken } from '@gamepark/brigands/moves/TakeToken'
-import { tellYouAreReady } from '@gamepark/brigands/moves/TellYouAreReady'
-import { throwDice } from '@gamepark/brigands/moves/ThrowDice'
+import {placePartnerInView} from '@gamepark/brigands/moves/PlacePartner'
+import {placePatrol} from '@gamepark/brigands/moves/PlacePatrol'
+import {placeToken} from '@gamepark/brigands/moves/PlaceToken'
+import {playHeadStart} from '@gamepark/brigands/moves/PlayHeadStart'
+import {resolveStealToken} from '@gamepark/brigands/moves/ResolveStealToken'
+import {revealGoldsInView} from '@gamepark/brigands/moves/RevealGolds'
+import {revealKickOrNotView} from '@gamepark/brigands/moves/RevealKickOrNot'
+import {revealPartnersDistrictsInView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
+import {solvePartner} from '@gamepark/brigands/moves/SolvePartner'
+import {spareGoldOnTreasure} from '@gamepark/brigands/moves/SpareGoldOnTreasure'
+import {takeBackPartner} from '@gamepark/brigands/moves/TakeBackPartner'
+import {takeToken} from '@gamepark/brigands/moves/TakeToken'
+import {tellYouAreReady} from '@gamepark/brigands/moves/TellYouAreReady'
+import {throwDice} from '@gamepark/brigands/moves/ThrowDice'
 import {Game} from '@gamepark/rules-api'
 
 export default class BrigandsView implements Game<GameView, MoveView> {
@@ -93,8 +92,6 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return revealKickOrNotView(this.state, move)
       case MoveType.MovePartner:
         return movePartner(this.state, move)
-      case MoveType.RemoveToken:
-        return removeToken(this.state, move)
       case MoveType.JudgePrisoners:
         return judgePrisoners(this.state)
       case MoveType.PlayHeadStart :
