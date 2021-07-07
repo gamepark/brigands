@@ -14,7 +14,6 @@ import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
 import HeadStartToken from "src/utils/HeadStartToken"
-import Partner from "@gamepark/brigands/types/Partner"
 
 /** @jsxImportSource @emotion/react */
 

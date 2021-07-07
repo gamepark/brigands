@@ -19,7 +19,7 @@ import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
-import RevealPartnersDistricts, { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
+import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 
 type Props = {
   game: GameView
@@ -126,14 +126,6 @@ height:100%;
 transform-style: preserve-3d;
 transform: perspective(150em) rotateX(10deg) scale(1.13);
 transform-origin: bottom;
-`
-
-const hideTavernPopUp = css`
-display:none;
-`
-
-const displayTavernPopUp = css`
-display:flex;
 `
 
 const thiefTokensInBankPosition = css`

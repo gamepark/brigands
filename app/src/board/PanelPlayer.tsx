@@ -165,7 +165,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                             ? test
                                             : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId == undefined) ? -1.32 : 1)
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1)
                                      
                                             ]}
                               role={player.role}
@@ -186,7 +186,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         }   
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
-        && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index)))
+        && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
         && <div>
                 <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
                 <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
@@ -287,12 +287,6 @@ const betPositionPlayer = (position:number) => css`
 position:absolute;
 top:50%;
 left:${13+position*20}%;
-`
-
-const betPositionDice = css`
-position:absolute;
-top:-165%;
-left:88%;
 `
 
 const betSize = css`

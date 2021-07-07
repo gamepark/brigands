@@ -129,11 +129,6 @@ display:flex;
 flex-direction:column;
 justify-content:start;
 `
-
-const swapJustifyContentToEnd = css`
-justify-content:end;
-`
-
 const swapJustifyContentToStart = css`
 justify-content:start;
 `
