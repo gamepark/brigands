@@ -21,12 +21,13 @@ type Props = {
 export default function HeaderText({loading, game}: Props) {
   const {t} = useTranslation()
   if (loading || !game) return <>{t('Game loading...')}</>
+  return <> {t("game ongoing...")} </>
 
-  if (!game.phase){
-    return <HeaderGameOverText game={game} />
-  } else {
-    return <HeaderOnGoingGameText game={game} />
-  }
+  // if (!game.phase){
+  //   return <HeaderGameOverText game={game} />
+  // } else {
+  //   return <HeaderOnGoingGameText game={game} />
+  // }
 }
 
 function getMaxScoreThief(thieves:(ThiefState | ThiefView)[]):number{
@@ -44,7 +45,8 @@ function getMaxScoreThief(thieves:(ThiefState | ThiefView)[]):number{
 
 function getPseudo(player: PlayerRole, players: PlayerInfo<PlayerRole>[], t: TFunction): string {
   if (players.find(p => p.id === player, t)!.name === undefined) {
-      return getPlayerName(player, t)
+    return getPlayerName(player, t)
+     
   } else {
       return players.find(p => p.id === player, t)!.name!
   }
@@ -229,6 +231,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             }
           }
           case DistrictName.Harbor:{
+            if (playerId === PlayerRole.Prince){
+              return <> {t("prince.wait")} </>
+            }
             if (thief.partners.some(part => isPartner(part) && part.district === district.name && (!part.tokensTaken || part.tokensTaken < (isEvent ? 3 : 2)))){
               return <> {t("solving.harbor.you.take.token")} </>
             } else if (partnersOnDistrict.some(part => isPartner(part) && (!part.tokensTaken || part.tokensTaken < (isEvent ? 3 : 2)))){
@@ -264,6 +269,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             }
           }
           case DistrictName.Tavern:{
+            if (playerId === PlayerRole.Prince){
+              return <> {t("prince.wait")} </>
+            }
             const partnerOnTavern = thief.partners.find(part => isPartner(part) && part.district === district.name)
             if(partnerOnTavern !== undefined){
               if (partnerOnTavern.goldForTavern === undefined){
