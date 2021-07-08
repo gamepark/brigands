@@ -71,7 +71,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
             <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
-                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGrey} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
+                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGreen} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
                 }
 
                 {district.gold !== undefined 
@@ -105,6 +105,7 @@ left:${20+index*20}%;
 height:20%;
 transition:filter 1s ease-in;
 z-index:1;
+filter: grayscale(1);
 `
 
 const dropSize = css`
