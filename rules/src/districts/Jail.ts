@@ -10,7 +10,7 @@ import {DistrictRules} from './DistrictRules'
 
 export default class Jail extends DistrictRules {
   isThiefActive(thief: ThiefState): boolean {
-    return thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined
+    return getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {

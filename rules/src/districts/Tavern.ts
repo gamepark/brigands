@@ -15,7 +15,7 @@ export default class Tavern extends DistrictRules {
     const tavernMoves: BetGold[] = []
     if (thief.partners.find(p => p.district === DistrictName.Tavern)) {
       if (thief.partners.filter(p => p.district === DistrictName.Tavern).find(p => p.goldForTavern === undefined)) {
-        for (let i = 0; i < (this.state.players.find(p => p.role === thief.role)!.gold + 1); i++) {
+        for (let i = 0; i < Math.min(this.state.players.find(p => p.role === thief.role)!.gold + 1, 6); i++) {
           tavernMoves.push({type: MoveType.BetGold, role: thief.role, gold: i})
         }
       }

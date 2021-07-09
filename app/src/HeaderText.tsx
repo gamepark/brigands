@@ -4,13 +4,18 @@ import { getPlayerName } from '@gamepark/brigands/BrigandsOptions'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, { getPrince, getThieves } from '@gamepark/brigands/GameView'
 import { EventArray } from '@gamepark/brigands/material/Events'
+import JudgePrisoners, { isJudgePrisoners } from '@gamepark/brigands/moves/JudgePrisoners'
+import PlacePatrol, { isPlaceCaptain } from '@gamepark/brigands/moves/PlacePatrol'
+import PlayHeadStart, { isPlayHeadStart } from '@gamepark/brigands/moves/PlayHeadStart'
+import { isThrowDice } from '@gamepark/brigands/moves/ThrowDice'
 import Phase from '@gamepark/brigands/phases/Phase'
-import { isThiefState, ThiefState } from '@gamepark/brigands/PlayerState'
+import { isPrinceState, isThiefState, ThiefState } from '@gamepark/brigands/PlayerState'
 import { isPartner } from '@gamepark/brigands/types/Partner'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import { ThiefView } from '@gamepark/brigands/types/Thief'
-import { Player as PlayerInfo, usePlayerId, usePlayers } from '@gamepark/react-client'
+import { Player as PlayerInfo, useAnimation, usePlayerId, usePlayers } from '@gamepark/react-client'
 import { TFunction } from 'i18next'
+import { useEffect, useState } from 'react'
 import {useTranslation} from 'react-i18next'
 
 type Props = {
@@ -21,13 +26,12 @@ type Props = {
 export default function HeaderText({loading, game}: Props) {
   const {t} = useTranslation()
   if (loading || !game) return <>{t('Game loading...')}</>
-  return <> {t("game ongoing...")} </>
 
-  // if (!game.phase){
-  //   return <HeaderGameOverText game={game} />
-  // } else {
-  //   return <HeaderOnGoingGameText game={game} />
-  // }
+  if (!game.phase){
+    return <HeaderGameOverText game={game} />
+  } else {
+    return <HeaderOnGoingGameText game={game} />
+  }
 }
 
 function getMaxScoreThief(thieves:(ThiefState | ThiefView)[]):number{
@@ -68,7 +72,7 @@ function HeaderGameOverText({game}:{game:GameView}){
       return <> {t("game.over.player.win.prince", {player: getPseudo(prince.role,players, t) , score:getPrince(game).victoryPoints})} </>
     }
   } else {
-    const winnerThieves = thieves.filter(p => isThiefState(p) && p.gold === maxScoreThief)
+    const winnerThieves = thieves.filter(p => isThiefState(p) && p.gold + p.tokens.steal.length + p.tokens.kick.length + p.tokens.move.length === maxScoreThief)
     if (winnerThieves.length === 1){
       if (playerId === winnerThieves[0].role){
         return <> {t("game.over.you.win.thief", {score:maxScoreThief})} </>
@@ -107,6 +111,11 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
   const playerId = usePlayerId<PlayerRole>()
   const players = usePlayers<PlayerRole>()
 
+  const judgePrisonersAnimation = useAnimation<JudgePrisoners>(animation => isJudgePrisoners(animation.move))
+  const playHeadStartAnimation = useAnimation<PlayHeadStart>(animation => isPlayHeadStart(animation.move))
+  const moveCaptainAnimation = useAnimation<PlacePatrol>(animation => isPlaceCaptain(animation.move))
+
+
   switch(game.phase){
     case Phase.NewDay:{
       return <> {t("new.day")} </>
@@ -135,8 +144,16 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
       const prince = getPrince(game)
       if (prince.isReady === true){
         return <> {t("patrolling.reveal")} </>
-      } else if (playerId === undefined){
-        return <> {t("patrolling.spec")} </>
+      } else if(judgePrisonersAnimation || playHeadStartAnimation || moveCaptainAnimation){
+        if (judgePrisonersAnimation){
+          return <> {t("patrolling.judging.prisoners", {points : getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === DistrictName.Jail)).length*2})}  </>
+        } else if (playHeadStartAnimation){
+          return <> {t("patrolling.playing.head.start", {district: playHeadStartAnimation.move.district})} </>
+        } else if (moveCaptainAnimation){
+          return <> {t("patrolling.move.captain", {district:moveCaptainAnimation.move.district})} </>
+        } else {
+          return <> {t("no.powers")} </>
+        }
       } else if (playerId === PlayerRole.Prince){
         if (prince.patrols.every(pat => pat !== -1)){
           return <> {t("patrolling.you.clic.ready")} </>
@@ -150,7 +167,7 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
 
     case Phase.Solving:{
       const district=game.city[game.districtResolved!]
-      const thief = getThieves(game).find(p => p.role === playerId)!
+      const thief = getThieves(game).find(p => p.role === playerId)
 
       if(getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length === 0){
         return <> {t("solving.end.of.district")} </>
@@ -161,7 +178,7 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
         if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasStealToken(p, index))).length > 0){
           return <> {t("solving.steal.token")} </>
         } else if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(p, index)))){
-          if (thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index))){
+          if (thief !== undefined && thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index))){
             if (thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined)){
               return <> {t("solving.kick.token.choose", {howManyTimesLeft: thief.partners.filter((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined).length})} </>
             } else {
@@ -171,7 +188,7 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             return <> {t("solving.kick.token.wait")} </>
           }
         } else {
-          if (thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasMoveToken(thief, index))){
+          if (thief !== undefined && thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasMoveToken(thief, index))){
             <> {t("solving.move.token.choose")} </>
           }
           return <> {t("solving.move.token.wait")} </>
@@ -180,7 +197,6 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
       } else if (getPrince(game).patrols.some(pat => pat === district.name)){
         return <> {t("solving.arrest")} </>
       } else {
-        const thief = getThieves(game).find(p => p.role === playerId)!
         const partnersOnDistrict = getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === district.name))
         const isEvent : boolean = EventArray[game.event].district === district.name
         switch(district.name){
@@ -209,9 +225,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             if (district.dice === undefined){
               return <> {t("solving.cityhall.dice")} </>
             } else if (partnersOnDistrict.every(part => part.solvingDone === true)){
-              return <> {t("solving.cityhall.place.gold.on.treasure")} </>
+              return <> {t("solving.cityhall.place.gold.on.treasure", {gold: district.dice.reduce((acc, cv) => acc + cv) % partnersOnDistrict.length})} </>
             } else {
-              return <> {t("solving.cityhall.gain.gold", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role, players, t)})} </>
+              return <> {t("solving.cityhall.gain.gold", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role, players, t), gold : Math.floor(district.dice.reduce((acc, cv) => acc + cv) / partnersOnDistrict.length) })} </>
             }
           }
           case DistrictName.Convoy:{
@@ -232,9 +248,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
           }
           case DistrictName.Harbor:{
             if (playerId === PlayerRole.Prince){
-              return <> {t("prince.wait")} </>
+              return <> {t("solving.harbor.prince.wait")} </>
             }
-            if (thief.partners.some(part => isPartner(part) && part.district === district.name && (!part.tokensTaken || part.tokensTaken < (isEvent ? 3 : 2)))){
+            if (thief !== undefined && thief.partners.some(part => isPartner(part) && part.district === district.name && (!part.tokensTaken || part.tokensTaken < (isEvent ? 3 : 2)))){
               return <> {t("solving.harbor.you.take.token")} </>
             } else if (partnersOnDistrict.some(part => isPartner(part) && (!part.tokensTaken || part.tokensTaken < (isEvent ? 3 : 2)))){
               if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length === 1){
@@ -259,6 +275,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             if (partnersOnDistrict.length > (isEvent ? 3 : getThieves(game).length >=3 ? 2 : 1)){
               return <> {t("solving.palace.fast.arrest")} </>
             } else {
+              if (partnersOnDistrict.length === 0){         // Maybe redundant
+                return <> {t("solving.end.of.district")} </>
+              }
               const actualThief = getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name))!
               const actualPartner = actualThief.partners.find(part => isPartner(part) && part.district === district.name)!
               if (actualPartner.solvingDone !== true){
@@ -269,42 +288,43 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             }
           }
           case DistrictName.Tavern:{
-            if (playerId === PlayerRole.Prince){
-              return <> {t("prince.wait")} </>
-            }
-            const partnerOnTavern = thief.partners.find(part => isPartner(part) && part.district === district.name)
-            if(partnerOnTavern !== undefined){
-              if (partnerOnTavern.goldForTavern === undefined){
-                return <> {t("solving.tavern.you.bet")} </>
-              } else if (district.dice === undefined){
-                return <> {t("solving.tavern.you.roll.dice")} </>
-              } else {
-                if (district.dice[0] === 2){
-                  return <> {t("solving.tavern.you.lost")} </>
-                } else if (district.dice[0] === 3){
-                  return <> {t("solving.tavern.you.double")} </>
-                } else {
-                  return <> {t("solving.tavern.you.triple")} </>
-                }
-              }
-            } else {
-              if (partnersOnDistrict.every(part => !part.goldForTavern)){
-                return <> {t("solving.tavern.thieves.must.bet")} </>
-              } else {
-                const thiefWhoBet = getThieves(game).find(p => p.partners.find(part => isPartner(part) && part.district === district.name && part.goldForTavern !== undefined)!)!
-                if (district.dice === undefined){
-                  return <> {t("solving.tavern.thief.roll.dice", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
+            if (thief !== undefined && thief.partners.find(part => isPartner(part) && part.district === district.name) !== undefined){
+
+              const partnerOnTavern = thief.partners.find(part => isPartner(part) && part.district === district.name)!
+
+                if (partnerOnTavern.goldForTavern === undefined){
+                  return <> {t("solving.tavern.you.bet")} </>
+                } else if (district.dice === undefined){
+                  return <> {t("solving.tavern.you.roll.dice")} </>
                 } else {
                   if (district.dice[0] === 2){
-                    return <> {t("solving.tavern.thief.lost", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
+                    return <> {t("solving.tavern.you.lost", {gold:partnerOnTavern.goldForTavern})} </>
                   } else if (district.dice[0] === 3 && isEvent === false){
-                    return <> {t("solving.tavern.thief.double", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
+                    return <> {t("solving.tavern.you.double", {gold:partnerOnTavern.goldForTavern*2})} </>
                   } else {
-                    return <> {t("solving.tavern.thief.triple", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
+                    return <> {t("solving.tavern.you.triple", {gold:partnerOnTavern.goldForTavern*3})} </>
+                  }
+                }
+              } else {
+                if (partnersOnDistrict.every(part => part.goldForTavern === undefined)){
+                  return <> {t("solving.tavern.thieves.must.bet")} </>
+                } else {
+                  const thiefWhoBet = getThieves(game).find(p => p.partners.find(part => isPartner(part) && part.district === district.name && part.goldForTavern !== undefined)!)!
+                  const partnerWhoBet = thiefWhoBet.partners.find(part => isPartner(part) && part.district === district.name && part.goldForTavern !== undefined)!
+                  if (district.dice === undefined){
+                    return <> {t("solving.tavern.thief.roll.dice", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
+                  } else {
+                    if (district.dice[0] === 2){
+                      return <> {t("solving.tavern.thief.lost", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!})} </>
+                    } else if (district.dice[0] === 3 && isEvent === false){
+                      return <> {t("solving.tavern.thief.double", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!*2})} </>
+                    } else {
+                      return <> {t("solving.tavern.thief.triple", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!*3})} </>
+                    }
                   }
                 }
               }
-            }
+            
           }
           case DistrictName.Treasure:{
             if (partnersOnDistrict.every(part => part.solvingDone === true)){
