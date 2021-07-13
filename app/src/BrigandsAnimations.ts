@@ -11,7 +11,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         if (move.type === MoveType.ArrestPartners){
             return 2
         } else if (move.type === MoveType.BetGold){
-            return action.playerId === playerId ? 0 : 2
+            return 2
         } else if (move.type === MoveType.GainGold){
             return 2
         } else if (move.type === MoveType.MoveOnDistrictResolved){

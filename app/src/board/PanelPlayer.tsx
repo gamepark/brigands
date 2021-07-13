@@ -202,7 +202,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         }  
 
         {animationBetGold && (animationBetGold.move.role === player.role
-        && <div css={[betStyle(animationBetGold.move.gold), betSize, betPositionPlayer(positionForPartners), betGoldAnimation(animationBetGold.duration)]}> </div>)
+        && <div css={[betStyle(animationBetGold.move.gold), betSize, betPositionPlayer(positionForPartners, numberOfThieves), betGoldAnimation(animationBetGold.duration,city.findIndex(d => d.name === districtResolved!.name) , (playerId === PlayerRole.Prince || playerId === undefined))]}> </div>)
         } 
 
         </>
@@ -258,7 +258,7 @@ animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrince
 const getTranslation = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean, scaling:number) => {
     switch (numberOfThieves){
         case 2 : {
-            return css`transform : translate(${-33+districtPos*20.6-playerPos*80}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling}) `
+            return css`transform : translate(${-33+districtPos*21-playerPos*80}em, ${isPrinceView ? 32 : -30}em) scale(${scaling}, ${scaling}) `
         }
         case 3 : {
             return css`transform : translate(${-19+districtPos*20.6-playerPos*53.5}em, ${isPrinceView ? 32: -26}em) scale(${scaling}, ${scaling})`
@@ -286,23 +286,29 @@ box-shadow: 0 0 1em 0.2em black;
 
 `
 
-const betGoldKeyFrames = keyframes`
+const betGoldKeyFrames = (tavernPosition:number, isPrinceView:boolean) => keyframes`
 from{opacity:1;
 }
-80%{
-    top:-165%;
-    left:88%; 
+80%{    
+    top:${isPrinceView ? 140 : -90}%;
+    left:${2 + tavernPosition*12.9}%;
     opacity:1;
 }
 to {
-    top:-165%;
-    left:88%;
+    top:${isPrinceView ? 140 : -90}%;
+    left:${2 + tavernPosition*12.9}%;
     opacity:0;
 }
 `
 
-const betGoldAnimation = (duration:number) => css`
-animation: ${betGoldKeyFrames} ${duration}s ease-in;
+const betPositionPlayerEndTest = (tavernPosition:number, isPrinceView:boolean) => css`
+position:absolute;
+top:${isPrinceView ? 140 : -90}%;
+left:${2 + tavernPosition*12.9}%;
+`
+
+const betGoldAnimation = (duration:number, tavernPosition:number, isPrinceView:boolean) => css`
+animation: ${betGoldKeyFrames(tavernPosition, isPrinceView)} ${duration}s ease-in;
 `
 
 const betStyle = (gold:number) => css`
@@ -318,11 +324,16 @@ ${gold === 5 && `
 background: center center / 100% no-repeat url(${Images.coin5})`}
 `
 
-const betPositionPlayer = (position:number) => css`
+const betPositionPlayer = (position:number, numberOfThieves:number) => css`
 position:absolute;
 top:50%;
-left:${13+position*20}%;
+${numberOfThieves === 2 && `left:${22.5+position*50}%;`}
+${numberOfThieves === 3 && `left:${14+position*33.5}%;`}
+${numberOfThieves === 4 && `left:${10+position*25.2}%;`}
+${numberOfThieves === 5 && `left:${7.8+position*20}%;`}
 `
+
+
 
 const betSize = css`
 width:5%;
