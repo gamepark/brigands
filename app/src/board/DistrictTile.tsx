@@ -24,10 +24,11 @@ type Props = {
     nbPlayers:number
     nbPartners?:number
     isPlayerReady?:boolean
+    isDistrictNotResolved?:boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -68,6 +69,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
         <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name, nbPlayers))]}>
 
+            <div css={districtNotResolvedCache(isDistrictNotResolved)}> </div>
+
             <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
@@ -92,6 +95,14 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
     )
 
 }
+
+const districtNotResolvedCache = (isDistrictNotResolved?:boolean) => css`
+position:absolute;
+width:100%;
+height:100%;
+${isDistrictNotResolved === true ? `background-color:rgba(0,0,0,0.6);` : `background-color:rgba(0,0,0,0);`}
+transition:background-color 0.5s ease-in;
+`
 
 const blurEffect = css`
 filter:blur(10em);

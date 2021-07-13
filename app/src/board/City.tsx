@@ -29,13 +29,14 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
             {city.map((district, index) => 
             
                 <DistrictTile key={index}
-                              css={[districtSize, index === districtResolved && resolvingStyle]}
+                              css={[districtSize]}
                               district={district}
                               phase={phase}
                               prince={prince}   
                               nbPlayers={nbPlayers}
                               nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
                               isPlayerReady={isPlayerReady}
+                              isDistrictNotResolved = {districtResolved ? districtResolved !== index : undefined}
                 />
             
             )}
@@ -45,10 +46,6 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
     )
 
 }
-
-const resolvingStyle = css`
-outline:red 0.5em solid;
-`
 
 const districtSize = css`
 width:11.3%;

@@ -110,13 +110,13 @@ const drawEventKeyFramesFront = (districtPosition:number, isPrinceView:boolean) 
     }
     75%{
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
         transform:translateZ(0em) rotateY(0deg);
     }
     to{
         transform:translateZ(0em) rotateY(0deg);
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
 
     }
 `
@@ -137,13 +137,13 @@ const drawEventKeyFramesBack = (districtPosition:number, isPrinceView:boolean) =
     }
     75%{
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
         transform:translateZ(0em) rotateY(180deg);
     }
     to{
         transform:translateZ(0em) rotateY(180deg);
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*145.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
     }
 `
 
@@ -162,11 +162,13 @@ height:100%;
 `
 
 const frontCard = css`
+transform-style: preserve-3d;
 transform:rotateY(-180deg);
 backface-visibility:hidden;
 `
 
 const backCard = css`
+transform-style: preserve-3d;
 backface-visibility:hidden;
 `
 
@@ -194,6 +196,7 @@ top:0%;
 left:60%;
 width:38%;
 height:100%;
+transform-style: preserve-3d;
 `
 
 const hiddenCardStyle = css`
