@@ -76,7 +76,7 @@ animation:${dieRotationKeyFrames(rotationVector)} ${duration}s ease-out;
 `
 
 const dieRotation = css`
-transform-origin:center;
+transform-origin:center center 2.7em;
 transform:rotate3d(0, 0, 0, 0deg);
 `
 
@@ -205,7 +205,7 @@ function getRandomRotation():number[]{
     return [Math.floor(Math.random() * (maxvector - minVector + 1)) + minVector,
             Math.floor(Math.random() * (maxvector - minVector + 1)) + minVector,
             Math.floor(Math.random() * (maxvector - minVector + 1)) + minVector,
-            Math.floor(Math.random() * (3000 - 300 + 1)) + 300
+            Math.floor(Math.random() * (3000 + 3000 + 1)) - 3000
     ]
 
 }

@@ -138,11 +138,13 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
                                                                         district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
                 />)}
 
-            </div>}
+            </div>
+            
+        }
 
         {animationGainGold && (animationGainGold.move.thief === player.role)
             && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
-                [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration)]} draggable={false} />))
+                [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))
         }
 
         </div>
@@ -230,20 +232,53 @@ export const glowingBrigand = (color:string) => css`
     animation: ${glowingColoredKeyframes(color)} 1s infinite alternate;
 `
 
-const gainGoldKeyFrames = keyframes`
-from{opacity:1; transform:translateZ(200em);}
-80%{opacity:1; transform:translateZ(0em);}
-to{opacity:0; transform:translateZ(0em);}
+const gainGoldKeyFrames = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean) => keyframes`
+from{
+    opacity:0; 
+    ${getTranslation(numberOfThieves, playerPos, districtPos, isPrinceView, 0)}
+}
+30%,50%{
+    opacity:1;
+    ${getTranslation(numberOfThieves, playerPos, districtPos, isPrinceView,1.1)} 
+}
+80%{
+    opacity:1;
+    transform:translateX(0em) translateY(0em) scale(1,1);
+}
+to{
+    opacity:0;
+    transform:translateX(0em) translateY(0em) scale(1,1);
+}
 `
 
-const gainGoldAnimation = (duration:number) => css`
-animation: ${gainGoldKeyFrames} ${duration}s ;
+const gainGoldAnimation = (duration:number, districtPos:number, numberOfThieves:number, playerPos:number, isPrinceView:boolean) => css`
+animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrinceView)} ${duration}s ;
 `
+
+const getTranslation = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean, scaling:number) => {
+    switch (numberOfThieves){
+        case 2 : {
+            return css`transform : translate(${-33+districtPos*20.6-playerPos*80}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling}) `
+        }
+        case 3 : {
+            return css`transform : translate(${-19+districtPos*20.6-playerPos*53.5}em, ${isPrinceView ? 32: -26}em) scale(${scaling}, ${scaling})`
+        }
+        case 4 : {
+            return css`transform : translate(${-12.5+districtPos*20.6-playerPos*40}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling})`
+        }
+        case 5 : {
+            return css`transform : translate(${-8.5+districtPos*20.6-playerPos*32}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling})`
+        }
+        default : {
+            return css``
+        }
+    }
+}
 
 const coinPosition = (index1:number, index2:number) => css`
 position:relative;
 top:${-30+index2}%;
-left:${15+index1*-10}%;
+left:${20+index1*-10 - index2*10}%;
 width:25%;
 height:30%;
 border-radius: 100%;
