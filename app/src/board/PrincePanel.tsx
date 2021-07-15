@@ -15,6 +15,7 @@ import Images from "../utils/Images";
 import AvatarPanel from "./AvatarPanel";
 import HeadStart from "./HeadStart";
 import PatrolToken from "./PatrolToken";
+import { getPlayerColor } from "./PanelPlayer";
 
 type Props = {
     player:PrinceState
@@ -82,7 +83,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
         )}
 
         {player.role === playerId && phase === Phase.Patrolling && player.patrols.every(pat => pat !== -1) && player.isReady !==true
-        && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})} pRole={player.role} >{t('Validate')}</Button>
         }   
 
         
@@ -99,6 +100,19 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
     )
 
 }
+
+export const glowingButtonKeyframes = (color:string) => keyframes`
+    0%, 40% {
+        filter:drop-shadow(0 0 0.1em ${color});
+    }
+    100% {
+        filter:drop-shadow(0 0 0.3em ${color});
+    }
+`
+
+export const glowingButton = (color:string) => css`
+    animation: ${glowingButtonKeyframes(color)} 1s infinite alternate;
+`
 
 const glowingWhiteKeyframes = keyframes`
     0% {

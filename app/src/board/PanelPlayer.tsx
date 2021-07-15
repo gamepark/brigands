@@ -42,7 +42,7 @@ type Props = {
 const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
-    const thiefId = (playerId !== PlayerRole.Prince && playerId !== undefined) && thieves.find(p => p.role === playerId)!
+    const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
 
@@ -128,7 +128,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
             {phase === Phase.Solving && thiefId !== false && isThiefState(thiefId) && thiefId.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined)
             && (player.partners as Partner[]).some(part => part.district === districtResolved!.name && player.role !== playerId)
-            && <Button css={[kickThisPlayerButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:player.role})}>{t("Kick")}</Button>
+            && <Button css={[kickThisPlayerButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:player.role})} pRole={player.role} >{t("Kick")}</Button>
             }  
 
             {(phase === Phase.Planning || phase === Phase.Patrolling) && <div css={cardsPanelPosition}>
@@ -184,20 +184,20 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
         )}
 
         {player.role === playerId && phase === Phase.Planning && player.isReady === false && player.partners.every(part => !isPartnerView(part) && part.district !== undefined)
-        && <Button css={[validationButtonPosition]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})}>{t('Validate')}</Button>
+        && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})} pRole={player.role} >{t('Validate')}</Button>
         }   
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
         && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
         && <div>
-                <Button css={[moveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})}>{t('Move')}</Button>
-                <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})}>{t("Don't Move")}</Button>
+                <Button css={[moveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})} pRole={player.role} >{t('Move')}</Button>
+                <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})} pRole={player.role} >{t("Don't Move")}</Button>
             </div>
         }  
 
         {player.role === playerId && thiefId !== false && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
         &&  <div>
-                <Button css={[dontMoveButtonPosition]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})}>{t("Don't Kick")}</Button>
+                <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})} pRole={player.role} >{t("Don't Kick")}</Button>
             </div>
         }  
 
@@ -229,7 +229,21 @@ export const glowingColoredKeyframes = (color:string) => keyframes`
 `
 
 export const glowingBrigand = (color:string) => css`
+
     animation: ${glowingColoredKeyframes(color)} 1s infinite alternate;
+`
+
+export const glowingButtonKeyframes = (color:string) => keyframes`
+    0%, 40% {
+        filter:drop-shadow(0 0 0.1em ${color});
+    }
+    100% {
+        filter:drop-shadow(0 0 0.3em ${color});
+    }
+`
+
+export const glowingButton = (color:string) => css`
+    animation: ${glowingButtonKeyframes(color)} 1s infinite alternate;
 `
 
 const gainGoldKeyFrames = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean) => keyframes`
@@ -345,9 +359,9 @@ transition:top 1s ease-in-out, left 1s ease-in-out;
 `
 
 const kickThisPlayerButtonPosition = css`
-font-size:3em;
+font-size:2.5em;
 text-align:center;
-margin:0 3em;
+margin:0 4.08em;
 `
 
 const canDropStyle = css`
@@ -380,11 +394,11 @@ const dontMoveButtonPosition = css`
 
 const validationButtonPosition = css`
     position:absolute;
-    width:15%;
-    height:25%;
+    width:13%;
+    height:23%;
     top:-136%;
-    right:17.5%;
-    font-size:4em;
+    right:19.5%;
+    font-size:3.5em;
 `
 
 const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`

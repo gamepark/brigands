@@ -1,66 +1,23 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import {ButtonHTMLAttributes, FC} from 'react'
+import PlayerRole from '@gamepark/brigands/types/PlayerRole'
+import { Player } from '@gamepark/react-client'
+import {ButtonHTMLAttributes, FC, HTMLAttributes} from 'react'
+import { getPlayerColor } from '../board/PanelPlayer'
 
-const Button : FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({children, ...props}) => {
-    return <button css={style} {...props}><span/><span/><span/><span/> {children}</button>
+type Props = {
+  pRole?:PlayerRole
+}
+
+const Button : FC<ButtonHTMLAttributes<HTMLButtonElement> & Props> = ({children, pRole, ...props}) => {
+    return <button css={style(getPlayerColor(pRole === undefined ? PlayerRole.Prince : pRole))} {...props}> <span css={spanBorder(pRole || PlayerRole.Prince)}> {children}</span> </button>
 
 }
 
-const animateHKeyFrames = keyframes`
-  0% {
-  transform:scaleX(0);
-  transform-origin: left;
-  }
-  50%
-  {
-    transform:scaleX(1);
-  transform-origin: left;
-  }
-  50.1%
-  {
-    transform:scaleX(1);
-  transform-origin: right;
-    
-  }
-  
-  100%
-  {
-    transform:scaleX(0);
-  transform-origin: right;
-    
-  } 
-`
 
-const animateVKeyFrames = keyframes`
-  0% {
-  transform:scaleY(0);
-  transform-origin: top;
-  }
-  50%
-  {
-    transform:scaleY(1);
-  transform-origin: top;
-  }
-  50.1%
-  {
-    transform:scaleY(1);
-  transform-origin: bottom;
-    
-  }
-  
-  100%
-  {
-    transform:scaleY(0);
-  transform-origin: bottom;
-    
-  } 
-`
-
-const style = css`
-  background: linear-gradient(-60deg, #d8d8d8 50%, #bfbebe 50%);
+const style = (color:string) => css`
+  ${color === "#FFFFFF" ? ` background-color: #f0c89b` : `background-color: ${color !== "#49cf00" ? color :'#61a420' };`}
   padding: 0.2em 0.4em;
-  margin: 0;
   display: inline-block;
   -webkit-transform: translate(0%, 0%);
   transform: translate(0%, 0%);
@@ -71,107 +28,36 @@ const style = css`
   font-weight: bold;
   text-transform: uppercase;
   text-decoration: none;
-  -webkit-box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  ${color === "#FFFFFF" ? `box-shadow: 0 0 0.1em rgba(0,0,0,0.8) inset, 0em 0.2em 0.1em rgba(0, 0, 0, 1);` : `box-shadow: 0 0 0.1em rgba(255,255,255,0.8) inset, 0em 0.2em 0.1em rgba(0, 0, 0, 1);`};
   outline: 0;
   border-style: none;
+  border-radius:0.5em;
 
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    opacity: 0;
-    -webkit-transition: .2s opacity ease-in-out;
-    transition: .2s opacity ease-in-out;
-  }
-
-  &:hover:before {
-    opacity: 0.4;
-  }
-
-  & > span {
-    position: absolute;
-  }
-
-  & > span:before
-  {
-    content: '';
-    background: #000000;
-    
-  }
-
-  & > span:nth-of-type(1) {
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    transform:rotate(0deg);
-  }
-
-  & > span:nth-of-type(1):before{
-    position: absolute;
-    top: 0;
-    left: 0;
-    width:100%;
-    height: 2px;
-    animation: ${animateHKeyFrames} 8s linear infinite;
-  }
-
-  & > span:nth-of-type(2) {
-    top: 0;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    transform:rotate(0deg);
-  }
-
-  & > span:nth-of-type(2):before{
-    position: absolute;
-    top: 0;
-    right: 0;
-    width:2px;
-    height: 100%;
-    animation: ${animateVKeyFrames} 8s linear infinite;
-  }
-
-  & > span:nth-of-type(3) {
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    transform:rotate(180deg);
-  }
-
-  & > span:nth-of-type(3):before{
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width:100%;
-    height: 2px;
-    animation: ${animateHKeyFrames} 8s linear infinite;
-  }
-
-  & > span:nth-of-type(4) {
-    top: 0%;
-    left: 0%;
-    width: 2px;
-    height: 100%;
-    transform:rotate(180deg);
-  }
-
-  & > span:nth-of-type(4):before{
-    position: absolute;
-    top: 0%;
-    left: 0%;
-    width:2px;
-    height: 100%;
-    animation: ${animateVKeyFrames} 8s linear infinite;
+  &:active {
+    box-shadow: 0 0 0.1em white inset;
+    margin-top: 0.15em;
   }
 
 `
+
+const spanBorder = (color:PlayerRole) => css`
+    ${isDarkColor(color) ? `color:white;` : `color:black;` };
+    margin: 0 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    ${color === PlayerRole.Prince ? `border-top:0.1em solid black;` : `border-top:0.1em solid rgba(255,255,255,0.7);` };
+    border-radius:10%;
+`
+
+function isDarkColor(color:PlayerRole):boolean{
+  if (color === PlayerRole.PurpleThief || color === PlayerRole.RedThief || color === PlayerRole.BlueThief){
+    return true
+  } else {
+    return false
+  }
+}
 
 export default Button
