@@ -3,7 +3,9 @@ import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getPrince, getThieves} from '../GameView'
 import {getPartners, isPartner} from '../types/Partner'
+import Move from './Move'
 import MoveType from './MoveType'
+import MoveView from './MoveView'
 
 type ArrestPartners = {
   type: MoveType.ArrestPartners
@@ -38,3 +40,6 @@ export function arrestPartners(state: GameState | GameView) {
   }
 }
 
+export function isArrestPartners(move: Move | MoveView): move is ArrestPartners {
+  return move.type === MoveType.ArrestPartners
+}

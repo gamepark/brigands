@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
 import {isThisPartnerHasAnyToken} from '@gamepark/brigands/Brigands'
-import GameView from '@gamepark/brigands/GameView'
+import GameView, { getThieves } from '@gamepark/brigands/GameView'
 import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
 import {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
@@ -52,6 +52,7 @@ export default function GameDisplay({game}: Props) {
                      player = {players.find(isPrinceState)!}
                      city={game.city}
                      phase={game.phase}
+                     partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.districtResolved!].name)).length : undefined}
                      />
 
 

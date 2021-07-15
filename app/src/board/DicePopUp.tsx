@@ -200,7 +200,7 @@ function getDiceFaceLeft(face:number):string{
 
 function getRandomRotation():number[]{
     const maxvector:number= 10;
-    const minVector:number=1;
+    const minVector:number=-10;
 
     return [Math.floor(Math.random() * (maxvector - minVector + 1)) + minVector,
             Math.floor(Math.random() * (maxvector - minVector + 1)) + minVector,

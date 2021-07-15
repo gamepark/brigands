@@ -7,7 +7,7 @@ import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/districts/District";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import { usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
+import { useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../utils/Button";
@@ -16,19 +16,23 @@ import AvatarPanel from "./AvatarPanel";
 import HeadStart from "./HeadStart";
 import PatrolToken from "./PatrolToken";
 import { getPlayerColor } from "./PanelPlayer";
+import ArrestPartners, {isArrestPartners} from "@gamepark/brigands/moves/ArrestPartners";
 
 type Props = {
     player:PrinceState
     city:District[]
     phase:Phase|undefined
+    partnersArrestedCount?:number
 }  & HTMLAttributes<HTMLDivElement>
 
-const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
+const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
     const play = usePlay<Move>()
+
+    const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
 
     function isPatrolDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
         if (player.isReady === true){return false}
@@ -60,6 +64,9 @@ const PrincePanel : FC<Props> = ({player, city, phase, ...props}) => {
             </div>
 
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
+
+            {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
+
             {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
             
             {decomposeGold(player.gold).map((coin, index) =>
@@ -122,6 +129,27 @@ const glowingWhiteKeyframes = keyframes`
         filter:drop-shadow(0 0 0.2em white);
     }
 `
+
+const arrestPartnersKeyFrames = keyframes`
+from{opacity:0;}
+10%{opacity:1}
+90%{top:-10%;opacity:1;}
+to{top:-10%;opacity:0}
+
+`
+
+const arrestPartnersHintPosition = (duration:number) => css`
+    height:30%;
+    width:30%;
+    position:absolute;
+    top:5%;
+    left:60%;
+    font-size:7em;
+    margin:0 0;
+    color:green;
+    -webkit-text-stroke:0.02em white;
+    
+    animation: ${arrestPartnersKeyFrames} ${duration}s ease-in`
 
 const glowingPrince = css`
     animation: ${glowingWhiteKeyframes} 1s infinite alternate;
