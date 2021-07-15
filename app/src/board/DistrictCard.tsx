@@ -1,28 +1,97 @@
 /** @jsxImportSource @emotion/react */
 import { css, keyframes } from "@emotion/react";
+import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
+import Move from "@gamepark/brigands/moves/Move";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from "@gamepark/brigands/moves/RevealPartnersDistricts";
+import { ThiefState } from "@gamepark/brigands/PlayerState";
+import Partner, { isPartnerView } from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import { useAnimation } from "@gamepark/react-client";
+import { ThiefView } from "@gamepark/brigands/types/Thief";
+import { useAnimation, usePlay, usePlayerId } from "@gamepark/react-client";
 import { FC } from "react";
+import { useDrop } from "react-dnd";
+import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 
 type Props = {
     district?:DistrictName
+    thief:ThiefState | ThiefView
     color:PlayerRole
+    partners?:Partner[]
 }
 
-const DistrictCard : FC<Props> = ({district, color}) => {
+const DistrictCard : FC<Props> = ({district, thief, color, partners}) => {
+
+    const playerId = usePlayerId<PlayerRole>()
+    const indexOfFirstPartnerOnDistrict:number | undefined = partners !== undefined ? partners.findIndex((part, index) => part.district === district && !isThisPartnerHasAnyToken(thief, index)) : undefined
+
+    const [{canDrop, isOver}, dropRef] = useDrop({
+        accept: ["ThiefTokenInHand"],
+        canDrop: (item: ThiefTokenInHand) => {
+            return playerId === color 
+            && partners !== undefined 
+            && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1
+            && Object.keys(partners[indexOfFirstPartnerOnDistrict]).length !== 0 
+        },
+        collect: monitor => ({
+          canDrop: monitor.canDrop(),
+          isOver: monitor.isOver()
+        }),
+        drop: (item: ThiefTokenInHand) => {
+            return {type:MoveType.PlaceToken,role:playerId, tokenAction:item.tokenAction, partnerNumber:indexOfFirstPartnerOnDistrict}
+        }
+      })
 
     const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
         return(
         <div css={[cardSize]}>
+
+        {canDrop && color === playerId && <div ref={dropRef} css={[fullSize, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}>↓</div>}
+
             <div css = {[back, districtCardBackStyle(getCardBG(undefined), getSeal(color)), revealPartnersAnimation && rotateCardBackAnimation(revealPartnersAnimation.duration)]}></div>
             <div css = {[front, districtCardFrontStyle(getCardBG(district), getSeal(color)), revealPartnersAnimation && rotateCardFrontAnimation(revealPartnersAnimation.duration)]}></div>
         </div>
     )
 }
+
+export const glowingColoredKeyframes = (color:string) => keyframes`
+    0% {
+        filter:drop-shadow(0 0 0.8em ${color});
+    }
+    80%, 100% {
+        filter:drop-shadow(0 0 0.2em ${color});
+    }
+`
+
+export const glowingBrigand = (color:string) => css`
+
+    animation: ${glowingColoredKeyframes(color)} 1s infinite alternate;
+`
+
+const fullSize = css`
+width:31%;
+height:100%;
+font-size:7em;
+text-align:center;
+position:absolute;
+`
+
+const canDropStyle = css`
+border:white solid 0.08em;
+background-color:rgba(0,0,0,0.0);
+transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+
+`
+
+const isOverStyle = css`
+border:white solid 0.08em;
+background-color:rgba(0,0,0,0.7);
+transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+;
+`
 
 const rotateCardFrontKeyFrames = keyframes`
     from{}

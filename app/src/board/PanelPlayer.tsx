@@ -137,7 +137,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
                 {[...Array(cardsPlayed)].map((_,index) => <DistrictCard key={index}
                                                                         color={player.role}
+                                                                        thief={player}
                                                                         district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
+                                                                        partners={partnersForCards}
                 />)}
 
             </div>

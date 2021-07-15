@@ -4,7 +4,7 @@ import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import PlacePartner from "@gamepark/brigands/moves/PlacePartner";
 import PlaceToken from "@gamepark/brigands/moves/PlaceToken";
-import Partner, { PartnerView } from "@gamepark/brigands/types/Partner";
+import Partner, { isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Token from "@gamepark/brigands/types/Token";
@@ -17,6 +17,7 @@ import PartnerInHand from "src/utils/PartnerInHand";
 import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 import ThiefToken from "./ThiefToken";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 
 type Props = {
     role:PlayerRole
@@ -39,22 +40,6 @@ const PartnerComponent : FC<Props> = ({role, partners, tokens, partnerNumber, ph
         play(move)
     }
 
-    const playerId = usePlayerId<PlayerRole>()
-
-    const [{canDrop, isOver}, dropRef] = useDrop({
-        accept: ["ThiefTokenInHand"],
-        canDrop: (item: ThiefTokenInHand) => {
-            return playerId === role && Object.keys(partners[partnerNumber]).length !== 0
-        },
-        collect: monitor => ({
-          canDrop: monitor.canDrop(),
-          isOver: monitor.isOver()
-        }),
-        drop: (item: ThiefTokenInHand) => {
-            return {type:MoveType.PlaceToken,role:playerId, tokenAction:item.tokenAction, partnerNumber:partnerNumber}
-        }
-      })
-
     return (
         <Draggable canDrag={draggable}
                    type={type} 
@@ -64,8 +49,7 @@ const PartnerComponent : FC<Props> = ({role, partners, tokens, partnerNumber, ph
 
                    // TODO : Add the property ref={dropRef} here, on the Draggable element
 
-                   css={[partnerStyle(getPartnerImage(role)),canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
-                       <div ref={dropRef} css={[fullSize(partnerNumber), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}></div>
+                   css={[partnerStyle(getPartnerImage(role))]}>
 
                        {tokens.steal.find(token => token === partnerNumber) !== undefined 
                         && <ThiefToken css={[tokenSize, phase !== Phase.Solving ? tokenPositionForPlanning : tokenPositionForSolving]} 
@@ -84,23 +68,6 @@ const PartnerComponent : FC<Props> = ({role, partners, tokens, partnerNumber, ph
         </Draggable>
     )
 }
-
-const fullSize = (partner:number) => css`
-width:100%;
-height:100%;
-`
-
-const canDropStyle = css`
-background-color:red;
-opacity:0.4;
-transition : opacity 0.5s linear;
-`
-
-const isOverStyle = css`
-background-color:red;
-opacity:0.8;
-transition : opacity 0.5s linear;
-`
 
 const tokenSize = css`
 width:100%;
