@@ -105,6 +105,7 @@ export default function GameDisplay({game}: Props) {
                                   ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners 
                                   : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
                                 }
+            prince={game.players.find(isPrinceState)!}
             />
 
           )}

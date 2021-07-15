@@ -6,7 +6,7 @@ import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
 import Move from '@gamepark/brigands/moves/Move'
 import MoveType from '@gamepark/brigands/moves/MoveType'
-import {isThief, isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
+import {isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import Partner, {getPartnersView, isPartnerView} from '@gamepark/brigands/types/Partner'
@@ -30,6 +30,7 @@ import ThiefToken from './ThiefToken'
 type Props = {
     player:ThiefState | ThiefView
     thieves:(ThiefState | ThiefView)[] 
+    prince:PrinceState
     phase:Phase | undefined
     positionForPartners:number
     city:District[]
@@ -39,7 +40,7 @@ type Props = {
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -128,6 +129,7 @@ const PanelPlayer : FC<Props> = ({player, phase, positionForPartners, city, numb
 
             {phase === Phase.Solving && thiefId !== false && isThiefState(thiefId) && thiefId.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined)
             && (player.partners as Partner[]).some(part => part.district === districtResolved!.name && player.role !== playerId)
+            && prince.abilities[1] !== districtResolved!.name
             && <Button css={[kickThisPlayerButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:player.role})} pRole={player.role} >{t("Kick")}</Button>
             }  
 
