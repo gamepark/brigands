@@ -475,6 +475,7 @@ p{
 
 const goldZonePosition = css`
 height:15%;
+width:100%;
 margin: 1em 0.2em 0.2em 0.2em;
 display:flex;
 flex-direction:row;
