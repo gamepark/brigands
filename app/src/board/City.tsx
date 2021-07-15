@@ -36,7 +36,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               nbPlayers={nbPlayers}
                               nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
                               isPlayerReady={isPlayerReady}
-                              isDistrictNotResolved = {districtResolved ? districtResolved !== index : undefined}
+                              isDistrictNotResolved = {districtResolved !== undefined ? districtResolved !== index : undefined}
                 />
             
             )}
