@@ -26,10 +26,13 @@ import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
 import {decomposeGold, getCoin} from './PrincePanel'
 import ThiefToken from './ThiefToken'
+import ResolveStealToken, { isResolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
+import { resolveStealDurationUnit } from '../BrigandsAnimations'
 
 type Props = {
     player:ThiefState | ThiefView
     thieves:(ThiefState | ThiefView)[] 
+    displayedThievesOrder:PlayerRole[]
     prince:PrinceState
     phase:Phase | undefined
     positionForPartners:number
@@ -40,7 +43,7 @@ type Props = {
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -49,6 +52,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
     const animationBetGold = useAnimation<BetGold>(animation => isBetGold(animation.move))
     const animationGainGold = useAnimation<GainGold>(animation => isGainGold(animation.move))
+    const animationResolveSteal = useAnimation<ResolveStealToken>(animation => isResolveStealToken(animation.move))
 
     const partnersView = isThiefState(player) ? phase !== Phase.Solving ? getPartnersView(player.partners) : player.partners : player.partners
     const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card))+1
@@ -144,12 +148,20 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             </div>
             
-        }
+            }
 
-        {animationGainGold && (animationGainGold.move.thief === player.role)
-            && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
-                [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))
-        }
+            {animationGainGold && (animationGainGold.move.thief === player.role)
+                && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
+                    [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))
+            }
+
+            {animationResolveSteal && (animationResolveSteal.move.steals.find(s => s.victim === player.role))
+                && animationResolveSteal.move.steals.filter(s => s.victim === player.role && s.thief !== player.role).map((steal, stealIndex) => 
+                    decomposeGold(steal.gold).map((coin, coinIndex) => 
+                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex, index), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim))]} draggable={false} />
+                    )
+                )
+            )}
 
         </div>
 
@@ -214,6 +226,39 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     )
 
 }
+
+const translateXKeyFrames = (deltaPositions:number) => keyframes`
+from{}
+10%{}
+90%{transform:translateX(${deltaPositions*32}em);}
+to{transform:translateX(${deltaPositions*32}em);}
+`
+
+const translateZKeyFrames = keyframes`
+from{}
+10%{}
+50%{transform:translateZ(5em);}
+90%{}
+to{}
+`
+
+const translateAnimation = (startIndex:number, positionOfThief:number, positionOfVictim:number) => css`
+opacity:0;
+animation: ${fadeKeyframes} ${resolveStealDurationUnit}s linear ${startIndex*resolveStealDurationUnit}s,
+${translateXKeyFrames(positionOfThief - positionOfVictim)} ${resolveStealDurationUnit}s ease-in-out ${startIndex*resolveStealDurationUnit}s
+`
+//${translateZKeyFrames} ${resolveStealDurationUnit}s cubic-bezier(.17,.31,.79,.92) ${startIndex*resolveStealDurationUnit}s
+
+const fadeKeyframes = keyframes`
+from{opacity:0;}
+10%{opacity:1;}
+90%{opacity:1;}
+to{opacity:0;}
+`
+
+const fadeAnimation = (duration:number, stealIndex:number) => css`
+    animation:${fadeKeyframes} ${resolveStealDurationUnit}s linear ${stealIndex*resolveStealDurationUnit}s ;
+`
 
 function getUniquePartnersDistrict(partnersForCards:Partner[]):DistrictName[]{
     const result:DistrictName[] = []

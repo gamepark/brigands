@@ -4,7 +4,9 @@ import GameView, {getThieves} from '../GameView'
 import {isThief, isThiefState, ThiefState} from '../PlayerState'
 import {isPartnerView} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
+import Move from './Move'
 import MoveType from './MoveType'
+import MoveView from './MoveView'
 
 type ResolveStealToken = {
   type: MoveType.ResolveStealToken
@@ -15,7 +17,7 @@ export type ResolveStealTokenView = ResolveStealToken & {
   steals: Steal[]
 }
 
-type Steal = {
+export type Steal = {
   thief: PlayerRole
   victim: PlayerRole
   gold: number
@@ -89,4 +91,8 @@ export function createSteals(state: GameState): Steal[] {
   })
 
   return resultArray
+}
+
+export function isResolveStealToken(move: Move | MoveView): move is ResolveStealToken {
+  return move.type === MoveType.ResolveStealToken
 }

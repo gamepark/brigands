@@ -25,7 +25,6 @@ type Props = {
 const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict, event, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
-
     function isDraggable(phase:Phase | undefined, resolvedDistrict:DistrictName|undefined, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
 
         return phase === Phase.Solving 

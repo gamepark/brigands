@@ -65,7 +65,7 @@ export default function GameDisplay({game}: Props) {
                            players = {players.filter(isThief)}
                            prince = {players.find(isPrinceState)!}
                            phase={game.phase}
-                           resolvedDistrict={game.districtResolved && game.city[game.districtResolved].name}
+                           resolvedDistrict={game.districtResolved !== undefined ? game.city[game.districtResolved].name : undefined}
                            event={game.event}
         />
                         
@@ -102,6 +102,7 @@ export default function GameDisplay({game}: Props) {
             numberOfThieves = {players.filter(isThief).length}
             districtResolved = {game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
             thieves = {game.players.filter(isThief)}
+            displayedThievesOrder = {players.filter(isThief).map((p) => p.role)}
             partnersForCards = {revealPartnersAnimation 
                                   ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners 
                                   : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined

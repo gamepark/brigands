@@ -3,6 +3,7 @@ import MoveType from "@gamepark/brigands/moves/MoveType";
 import MoveView from "@gamepark/brigands/moves/MoveView";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { Animations } from "@gamepark/react-client";
+import {Steal} from "@gamepark/brigands/moves/ResolveStealToken"
 
 const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
 
@@ -25,7 +26,13 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.ThrowDice){
             return 2
         } else if (move.type === MoveType.ResolveStealToken){
-            return 2
+            const stealResult : Steal[] = []
+            move.steals.forEach(s => {
+                if (stealResult.find(sr => sr.thief === s.thief) === undefined){
+                    stealResult.push(s)
+                }
+            })
+            return resolveStealDurationUnit * stealResult.length
         } else if (move.type === MoveType.MovePartner){
             return 0
         } else if (move.type === MoveType.DrawEvent){
@@ -46,5 +53,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
     }
 
 }
+
+export const resolveStealDurationUnit:number = 2
 
 export default brigandsAnimations
