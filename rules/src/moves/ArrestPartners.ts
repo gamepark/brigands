@@ -21,6 +21,7 @@ export function arrestPartners(state: GameState | GameView) {
   thieves.forEach(thief => getPartners(thief).filter(isPartner).forEach((partner, index) => {
     if (partner.district === district.name) {
       partner.district = DistrictName.Jail
+      delete partner.kickOrNot
       prince.victoryPoints++
       if (isThisPartnerHasStealToken(thief, index)) {
         thief.tokens.steal.splice(thief.tokens.steal.findIndex(ts => ts === index), 1)

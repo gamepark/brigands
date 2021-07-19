@@ -41,7 +41,7 @@ export function revealKickOrNot(state: GameState | GameView) {
           }
         }
         p.tokens.kick.splice(p.tokens.kick.indexOf(index), 1)
-        delete part.kickOrNot
+        //delete part.kickOrNot
       }
     })
   })
@@ -57,5 +57,6 @@ export function revealKickOrNotView(state: GameView, move: RevealKickOrNotView) 
       }
     }
   })
+
   revealKickOrNot(state)
 }

@@ -2,6 +2,7 @@ import GameState from '../GameState'
 import GameView, {getPrince, getThieves} from '../GameView'
 import Phase from '../phases/Phase'
 import {isThiefState, PrinceState, ThiefState} from '../PlayerState'
+import { isPartner } from '../types/Partner'
 import MoveType from './MoveType'
 
 type MoveOnDistrictResolved = {
@@ -13,15 +14,7 @@ export default MoveOnDistrictResolved
 
 export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOnDistrictResolved) {
   const district = state.city[move.districtResolved]
-  if (move.districtResolved === 0) {
-    for (const thief of getThieves(state).filter(isThiefState)) {
-      for (const partner of thief.partners) {
-        if (partner.district === district.name) {
-          delete partner.solvingDone
-        }
-      }
-    }
-  }
+
   if (move.districtResolved === 7) {
     const prince = getPrince(state)
     const thieves = getThieves(state).filter(isThiefState)
@@ -33,6 +26,12 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
     state.players.forEach(p => p.isReady = false)
     state.phase = Phase.NewDay
   } else {
+    getThieves(state).forEach(p => p.partners.filter(part => isPartner(part) && part.district === district.name).forEach(part => {
+      isPartner(part) && delete part.kickOrNot ;
+      delete part.solvingDone ;
+      delete part.tokensTaken ;
+    }))
+
     delete district.dice
     state.districtResolved!++
   }
