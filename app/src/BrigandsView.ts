@@ -1,3 +1,4 @@
+import canUndo from '@gamepark/brigands/canUndo'
 import GameView from '@gamepark/brigands/GameView'
 import {arrestPartners} from '@gamepark/brigands/moves/ArrestPartners'
 import {betGold} from '@gamepark/brigands/moves/BetGold'
@@ -24,9 +25,10 @@ import {takeBackPartner} from '@gamepark/brigands/moves/TakeBackPartner'
 import {takeToken} from '@gamepark/brigands/moves/TakeToken'
 import {tellYouAreReady} from '@gamepark/brigands/moves/TellYouAreReady'
 import {throwDice} from '@gamepark/brigands/moves/ThrowDice'
-import {Game} from '@gamepark/rules-api'
+import PlayerRole from '@gamepark/brigands/types/PlayerRole'
+import {Action, Game, Undo} from '@gamepark/rules-api'
 
-export default class BrigandsView implements Game<GameView, MoveView> {
+export default class BrigandsView implements Game<GameView, MoveView>, Undo<GameView, MoveView, PlayerRole> {
   state: GameView
 
   constructor(state: GameView) {
@@ -100,6 +102,10 @@ export default class BrigandsView implements Game<GameView, MoveView> {
         return revealGoldsInView(this.state, move)
       
     }
+  }
+
+  canUndo(action: Action<MoveView, PlayerRole>, consecutiveActions: Action<MoveView, PlayerRole>[]): boolean {
+    return canUndo(action, consecutiveActions)
   }
 
 }
