@@ -1,6 +1,7 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
 import {isThief, ThiefState} from '../PlayerState'
+import Thief from '../types/Thief'
 import MoveType from './MoveType'
 
 type RevealGolds = {
@@ -24,3 +25,6 @@ export function revealGoldsInView(state: GameView, move: RevealGoldsView) {
   })
 }
 
+export function getRevealGoldsView(thieves: Thief[]): RevealGoldsView {
+  return {type: MoveType.RevealGolds, goldArray: thieves.map(thief => thief.gold)}
+}

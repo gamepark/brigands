@@ -2,8 +2,9 @@ import {isThisPartnerHasAnyToken} from '../Brigands'
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import {isPrinceState, PrinceState} from '../PlayerState'
+import {isPrinceState, PrinceState, ThiefState} from '../PlayerState'
 import Partner, {isPartner} from '../types/Partner'
+import Thief from '../types/Thief'
 import MoveType from './MoveType'
 
 type RevealKickOrNot = {
@@ -21,8 +22,8 @@ export function revealKickOrNot(state: GameState | GameView) {
   const thieves = getThieves(state)
   const districtResolved: DistrictName = state.city[state.districtResolved!].name
 
-  thieves.forEach(p => {
-    p.partners.forEach((part, index) => {
+  thieves.forEach(thief => {
+    thief.partners.forEach((part, index) => {
       if (isPartner(part) && part.kickOrNot !== undefined) {
         if (part.kickOrNot !== false) {
           const victimThief = thieves.find(p => p.role === part.kickOrNot)!
@@ -40,8 +41,8 @@ export function revealKickOrNot(state: GameState | GameView) {
             (state.players.find(isPrinceState)! as PrinceState).victoryPoints++
           }
         }
-        p.tokens.kick.splice(p.tokens.kick.indexOf(index), 1)
-        //delete part.kickOrNot
+        thief.tokens.kick.splice(thief.tokens.kick.indexOf(index), 1)
+        delete part.kickOrNot
       }
     })
   })
@@ -57,6 +58,9 @@ export function revealKickOrNotView(state: GameView, move: RevealKickOrNotView) 
       }
     }
   })
-
   revealKickOrNot(state)
+}
+
+export function getRevealKickOrNotView(thieves: ThiefState[]): RevealKickOrNotView {
+  return {type: MoveType.RevealKickOrNot, partnersArray: thieves.map(thief => thief.partners)}
 }

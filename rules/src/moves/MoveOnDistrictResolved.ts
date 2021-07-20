@@ -27,9 +27,8 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
     state.phase = Phase.NewDay
   } else {
     getThieves(state).forEach(p => p.partners.filter(part => isPartner(part) && part.district === district.name).forEach(part => {
-      isPartner(part) && delete part.kickOrNot ;
-      delete part.solvingDone ;
-      delete part.tokensTaken ;
+      delete part.solvingDone
+      delete part.tokensTaken
     }))
 
     delete district.dice

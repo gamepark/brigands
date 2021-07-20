@@ -1,8 +1,8 @@
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView from '../GameView'
-import {isThiefState} from '../PlayerState'
-import Partner, {PartnerView} from '../types/Partner'
+import {isThiefState, ThiefState} from '../PlayerState'
+import Partner, {getPartnersView, PartnerView} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import Move from './Move'
 import MoveType from './MoveType'
@@ -45,3 +45,7 @@ export function isPlacePartner(move: Move | MoveView): move is PlacePartner {
   return move.type === MoveType.PlacePartner
 }
 
+export function getPlacePartnerView(thief: ThiefState, move: PlacePartner): PlacePartnerView {
+  const partners = thief.partners.map((partner, index) => index === move.partnerNumber ? {...partner, district: move.district} : partner)
+  return {type: MoveType.PlacePartner, playerId: move.playerId, partner: getPartnersView(partners)}
+}

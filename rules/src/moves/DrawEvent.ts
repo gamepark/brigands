@@ -38,3 +38,7 @@ function applyEvent(state: GameState | GameView) {
 export function isDrawEvent(move: Move | MoveView): move is DrawEvent {
   return move.type === MoveType.DrawEvent
 }
+
+export function getDrawEventView(state: GameState): DrawEventView {
+  return {type: MoveType.DrawEvent, event: state.eventDeck[state.eventDeck.length - 1]}
+}

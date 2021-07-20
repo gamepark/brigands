@@ -9,7 +9,7 @@ import GameView from './GameView'
 import {EventArray} from './material/Events'
 import {arrestPartners} from './moves/ArrestPartners'
 import {betGold} from './moves/BetGold'
-import {drawEvent} from './moves/DrawEvent'
+import {drawEvent, getDrawEventView} from './moves/DrawEvent'
 import {gainGold} from './moves/GainGold'
 import {judgePrisoners} from './moves/JudgePrisoners'
 import {kickOrNot} from './moves/KickOrNot'
@@ -19,14 +19,14 @@ import {moveOnNextPhase} from './moves/MoveOnNextPhase'
 import {movePartner} from './moves/MovePartner'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
-import {placePartner} from './moves/PlacePartner'
+import {getPlacePartnerView, placePartner} from './moves/PlacePartner'
 import {placePatrol} from './moves/PlacePatrol'
 import {placeToken} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
 import {resolveStealToken} from './moves/ResolveStealToken'
-import {revealGolds} from './moves/RevealGolds'
-import {revealKickOrNot} from './moves/RevealKickOrNot'
-import {revealPartnersDistricts} from './moves/RevealPartnersDistricts'
+import {getRevealGoldsView, revealGolds} from './moves/RevealGolds'
+import {getRevealKickOrNotView, revealKickOrNot} from './moves/RevealKickOrNot'
+import {getRevealPartnersDistrictView, revealPartnersDistricts} from './moves/RevealPartnersDistricts'
 import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
 import {takeBackPartner} from './moves/TakeBackPartner'
@@ -40,7 +40,7 @@ import {PhaseRules} from './phases/PhaseRules'
 import Planning from './phases/Planning'
 import Solving from './phases/Solving'
 import PlayerState, {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from './PlayerState'
-import Partner, {getPartnersView} from './types/Partner'
+import {getPartnersView} from './types/Partner'
 import PlayerRole from './types/PlayerRole'
 import {ThiefView} from './types/Thief'
 import TokenAction from './types/TokenAction'
@@ -183,23 +183,17 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   getMoveView(move: Move, playerId?: PlayerRole): MoveView {
     switch (move.type) {
       case MoveType.DrawEvent:
-        return {...move, event: this.state.event}
+        return getDrawEventView(this.state)
+
       case MoveType.PlacePartner :
         if (playerId === move.playerId) {
           return move
         } else {
-          return {
-            type: MoveType.PlacePartner, playerId: move.playerId,
-            partner: getPartnersView(this.getThieves().find(p => p.role === move.playerId)!.partners)
-          }
+          return getPlacePartnerView(this.getThieves().find(p => p.role === move.playerId)!, move)
         }
-      case MoveType.RevealPartnersDistricts: {
-        const partnersObject: {partners:Partner[], role:PlayerRole}[] = []
-        this.getThieves().forEach(player => {
-          partnersObject.push({partners:player.partners, role:player.role})
-        })
-        return {type: MoveType.RevealPartnersDistricts, partnersObject}
-      }
+
+      case MoveType.RevealPartnersDistricts:
+        return getRevealPartnersDistrictView(this.getThieves())
 
       case MoveType.KickOrNot:
         if (playerId === move.kickerRole) {
@@ -208,22 +202,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           return {type: MoveType.KickOrNot, kickerRole: move.kickerRole}
         }
 
-      case MoveType.RevealKickOrNot: {
-        const partnersArray: Partner[][] = []
-        this.getThieves().forEach(player => {
-          partnersArray.push(player.partners)
-        })
-        return {type: MoveType.RevealKickOrNot, partnersArray}
-      }
+      case MoveType.RevealKickOrNot:
+        return getRevealKickOrNotView(this.getThieves())
 
       case MoveType.RevealGolds:
-        const goldArray: number[] = []
-        this.state.players.forEach(p => {
-          if (isThief(p)) {
-            goldArray.push(p.gold)
-          }
-        })
-        return {type: MoveType.RevealGolds, goldArray}
+        return getRevealGoldsView(this.getThieves())
 
       default:
         return move
@@ -282,7 +265,6 @@ function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
   }
 
 }
-
 
 
 function setupCity(): District[] {

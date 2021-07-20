@@ -1,7 +1,7 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
 import Phase from '../phases/Phase'
-import {isThief} from '../PlayerState'
+import {isThief, ThiefState} from '../PlayerState'
 import Partner from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import Move from './Move'
@@ -12,8 +12,10 @@ type RevealPartnersDistricts = {
   type: typeof MoveType.RevealPartnersDistricts
 }
 
+type PartnerObject = { partners: Partner[], role: PlayerRole }
+
 export type RevealPartnersDistrictsView = RevealPartnersDistricts & {
-  partnersObject: { partners: Partner[], role: PlayerRole }[]
+  partnersObject: PartnerObject[]
 }
 
 export default RevealPartnersDistricts
@@ -33,4 +35,8 @@ export function revealPartnersDistrictsInView(state: GameView, move: RevealPartn
 
 export function isRevealPartnersDistrict(move: Move | MoveView): move is RevealPartnersDistricts {
   return move.type === MoveType.RevealPartnersDistricts
+}
+
+export function getRevealPartnersDistrictView(thieves: ThiefState[]): RevealPartnersDistrictsView {
+  return {type: MoveType.RevealPartnersDistricts, partnersObject: thieves.map(thief => ({partners: thief.partners, role: thief.role}))}
 }
