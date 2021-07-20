@@ -9,6 +9,8 @@ import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Jail extends DistrictRules {
+
+  
   isThiefActive(thief: ThiefState): boolean {
     return getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined
   }
@@ -26,6 +28,7 @@ export default class Jail extends DistrictRules {
 
   getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
+    const isTutorial = this.state.tutorial
     if (partners.every(p => p.tokensTaken === 1)) {
       return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
     }
@@ -33,7 +36,17 @@ export default class Jail extends DistrictRules {
       return // Partner made a 2 or 3 and must take a token
     }
     if (this.district.dice === undefined) {
-      return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Jail}
+
+      // --- --- TO DO : Delete parts linked to Tutorial when scripting random will be implemented --- ---
+
+      if (!isTutorial || this.state.eventDeck.length !== 5){
+        return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Jail}
+      } else {
+        return partners.every(p => p.solvingDone === false) ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail}
+      }
+
+      // --- --- END TO DO --- --- 
+
     }
     const thief = this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Jail && part.solvingDone !== true))!
     if (this.district.dice[0] === 4) {

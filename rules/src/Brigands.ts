@@ -59,7 +59,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         phase: Phase.NewDay,
         eventDeck: setupEventDeck(),
         event: -1,
-        districtResolved: undefined
+        districtResolved: undefined,
+        tutorial:false
       }
       game.city.find(d => d.name === DistrictName.Treasure)!.gold = 0
 
@@ -237,7 +238,7 @@ function lastTurnIsOver(state: GameState): boolean {
 
 }
 
-function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
+export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
 
   if (players.every(p => p.id !== PlayerRole.Prince)) {
     throw 'ERROR : No Prince in the composition !'       // Renvoyer une erreur

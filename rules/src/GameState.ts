@@ -9,6 +9,7 @@ type GameState = {
   eventDeck:number[]
   event:number
   districtResolved?:number
+  tutorial:boolean
 }
 
 export default GameState

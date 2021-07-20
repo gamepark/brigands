@@ -9,6 +9,7 @@ import App from './App'
 import brigandsAnimations from './BrigandsAnimations'
 import BrigandsView from './BrigandsView'
 import translations from './translations.json'
+import BrigandsTutorial from './tutorial/Tutorial'
 import Images from './utils/Images'
 
 setupTranslation(translations,{debug:false})
@@ -67,6 +68,7 @@ ReactDOM.render(
                   RulesView={BrigandsView} 
                   optionsSpec={BrigandsOptionsSpec}
                   animations={brigandsAnimations}
+                  tutorial={BrigandsTutorial}
                   >
       <App/>
     </GameProvider>

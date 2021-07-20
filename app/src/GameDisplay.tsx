@@ -9,7 +9,7 @@ import Partner, {isPartner, isPartnerView} from '@gamepark/brigands/types/Partne
 import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
-import {useAnimation, usePlayerId} from '@gamepark/react-client'
+import {useAnimation, usePlayerId, useTutorial} from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
 import {useMemo} from 'react'
 import City from './board/City'
@@ -20,12 +20,15 @@ import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
+import TutorialPopup from './tutorial/TutorialPopUp'
 
 type Props = {
   game: GameView
 } 
 
 export default function GameDisplay({game}: Props) {
+
+  const tutorial = useTutorial()
 
   const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
   const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
@@ -115,6 +118,9 @@ export default function GameDisplay({game}: Props) {
         </div>
 
       </div>
+
+      {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
+
     </Letterbox>
   )
 }
