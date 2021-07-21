@@ -4,6 +4,7 @@ import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken from '../moves/TakeToken'
 import {ThiefState} from '../PlayerState'
+import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -12,7 +13,7 @@ export default class Jail extends DistrictRules {
 
   
   isThiefActive(thief: ThiefState): boolean {
-    return getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined
+    return (getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined) || (this.state.tutorial === true && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
@@ -23,14 +24,25 @@ export default class Jail extends DistrictRules {
         jailMoves.push({type: MoveType.TakeToken, role: thief.role, token: availableTokens[i]})
       }
     }
-    return jailMoves
+    if (this.state.tutorial === true && jailMoves.length === 0){
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+    } else {
+      return jailMoves
+    }
   }
 
   getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
     const isTutorial = this.state.tutorial
     if (partners.every(p => p.tokensTaken === 1)) {
-      return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+
+        // TO DO : Delete when we can control AutoMoves in Tutorial
+
+        return
+      } else {
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      }
     }
     if (partners.every(p => p.solvingDone === true)) {
       return // Partner made a 2 or 3 and must take a token

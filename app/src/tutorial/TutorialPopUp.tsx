@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {Tutorial, useActions, useFailures, usePlayerId} from "@gamepark/react-client";
+import {Tutorial, useActions, useFailures, usePlay, usePlayerId} from "@gamepark/react-client";
 import {TFunction} from "i18next";
 import {FC, useEffect, useRef, useState} from "react";
 import {Trans, useTranslation} from "react-i18next";
@@ -11,6 +11,7 @@ import GameView from "@gamepark/brigands/GameView";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Move from "@gamepark/brigands/moves/Move";
 import Button from "../utils/Button";
+import MoveType from "@gamepark/brigands/moves/MoveType";
 
 
 const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}) => {
@@ -30,12 +31,29 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     const platformUri = process.env.REACT_APP_PLATFORM_URI ?? 'https://game-park.com'
     const discordUri = 'https://discord.gg/nMSDRag'
 
+    const play = usePlay<Move>()
+
     const moveTutorial = (deltaMessage: number) => {
+      console.log("tutoIndex : ", tutorialIndex)
+      console.log("AC : ", actions?.length)
       setTutorialIndex(tutorialIndex + deltaMessage)
       setTutorialDisplay(true)
+      playMoves()
     }
 
-
+    function playMoves():void{
+      if (actions && actions.length === 11 && tutorialIndex === 6){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:0})
+      }
+      if (actions && actions.length === 10 && tutorialIndex === 4){
+        tutorial.playNextMoves(1)
+      } else if (actions && actions.length === 8){
+        tutorial.playNextMoves(2)
+      } else if (actions && actions.length === 7){
+        tutorial.playNextMoves(1)
+      } 
+        
+    }
     
     const resetTutorialDisplay = () => {
       if (game.phase !== undefined){
@@ -78,14 +96,12 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
         }
     }, [actionsNumber, failures])
 
-
     useEffect(() => {
-        console.log("actionNumber : ", actionsNumber)
         if (actionsNumber === 4){
-            console.log("dans le useEffect")
             tutorial.playNextMoves(3)
         }
     }, [actionsNumber])
+
 
     const currentMessage = tutorialMessage(tutorialIndex)
 
@@ -330,21 +346,21 @@ const tutorialDescription:TutorialStepDescription[][] = [
         {
           title: (t: TFunction) => t('title.your.thief'),
           text: 'tuto.your.thief',
-          boxTop: 78,
-          boxLeft: 42,
+          boxTop: 53,
+          boxLeft: 35,
           boxWidth: 50,
           arrow: {
-            angle: 270,
-            top: 72,
-            left: 5
+            angle: 180,
+            top: 53,
+            left: 15
           }
         },
         {
             title: (t: TFunction) => t('title.opponents'),
             text: 'tuto.your.opponents',
-            boxTop: 78,
-            boxLeft: 42,
-            boxWidth: 50
+            boxTop: 60,
+            boxLeft: 25,
+            boxWidth: 30
         },
         {
             title: (t: TFunction) => t('title.asymetric.game'),
@@ -465,10 +481,92 @@ const tutorialDescription:TutorialStepDescription[][] = [
             boxTop: 78,
             boxLeft: 42,
             boxWidth: 50
+        }
+
+    ],
+    [
+        {
+            title: (t: TFunction) => t('title.opponent.played'),
+            text: 'tuto.opponent.played',
+            boxTop: 78,
+            boxLeft: 42,
+            boxWidth: 50,
+            arrow: {
+                angle: 270,
+                top: 72,
+                left: 5
+            }
         },
 
-
-    ]
+        {
+            title: (t: TFunction) => t('title.patrolling.phase'),
+            text: 'tuto.patrolling.phase',
+            boxTop: 78,
+            boxLeft: 42,
+            boxWidth: 50,
+            arrow: {
+                angle: 270,
+                top: 72,
+                left: 5
+            }
+        },
+        {
+          title: (t: TFunction) => t('title.prince.placed.patrols'),
+          text: 'tuto.prince.placed.patrols',
+          boxTop: 78,
+          boxLeft: 42,
+          boxWidth: 50,
+          arrow: {
+              angle: 0,
+              top: 72,
+              left: 5
+          }
+        },
+        {
+          title: (t: TFunction) => t('title.start.solving'),
+          text: 'tuto.start.solving',
+          boxTop: 78,
+          boxLeft: 42,
+          boxWidth: 50
+        },
+        {
+          title: (t: TFunction) => t('title.market'),
+          text: 'tuto.market',
+          boxTop: 78,
+          boxLeft: 42,
+          boxWidth: 50,
+          arrow: {
+              angle: 0,
+              top: 72,
+              left: 5
+          }
+        },
+        {
+          title: (t: TFunction) => t('title.cityhall1'),
+          text: 'tuto.cityhall',
+          boxTop: 78,
+          boxLeft: 42,
+          boxWidth: 50,
+          arrow: {
+              angle: 0,
+              top: 72,
+              left: 5
+          }
+        },
+        {
+          title: (t: TFunction) => t('title.cityhall2'),
+          text: 'tuto.cityhall2',
+          boxTop: 78,
+          boxLeft: 42,
+          boxWidth: 50,
+          arrow: {
+              angle: 0,
+              top: 72,
+              left: 5
+          }
+        }
+        
+  ],
 ]
 
 const thirdTurnInfo = {

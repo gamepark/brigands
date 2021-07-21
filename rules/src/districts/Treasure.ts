@@ -1,5 +1,7 @@
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
+import { ThiefState } from '../PlayerState'
+import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
@@ -7,7 +9,14 @@ export default class Treasure extends DistrictRules {
   getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
     if (partners.length === 0) {
-      return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+
+        // TO DO : Delete when we can control AutoMoves in Tutorial
+
+        return
+      } else {
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      }
     }
     if (partners.every(partner => partner.solvingDone === true)) {
       return {
@@ -30,5 +39,21 @@ export default class Treasure extends DistrictRules {
         }
       }
     }
+  }
+
+  getThiefLegalMoves(thief: ThiefState): Move[] {
+
+    // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
+
+    if (this.state.tutorial === true){
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+    } else return []
+  }
+
+  isThiefActive(thief: ThiefState): boolean {
+
+  // TO DO : Delete isThiefActive when we can control AutoMoves in Tutorial
+
+    return this.state.tutorial === true && thief.role === PlayerRole.YellowThief
   }
 }

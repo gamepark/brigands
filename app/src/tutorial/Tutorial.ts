@@ -45,7 +45,7 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.YellowThief},
 
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:0, district:DistrictName.CityHall},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:1, district:DistrictName.Palace},
+        {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:1, district:DistrictName.Treasure},
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:2, district:DistrictName.Treasure},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.GreenThief},
 
@@ -53,11 +53,13 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
         {type:MoveType.PlacePatrol,patrolNumber:1, district:DistrictName.Treasure},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.Prince},
 
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:0},
+
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Stealing},
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Kicking},
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Fleeing},
 
-        {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Stealing},
+        {type:MoveType.TakeToken, role:PlayerRole.GreenThief, token:TokenAction.Stealing},
 
         // Turn 2
 

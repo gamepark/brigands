@@ -3,12 +3,13 @@ import BetGold from '../moves/BetGold'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import {ThiefState} from '../PlayerState'
+import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Tavern extends DistrictRules {
   isThiefActive(thief: ThiefState): boolean {
-    return thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined
+    return (thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined) || (this.state.tutorial === true && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
@@ -20,14 +21,25 @@ export default class Tavern extends DistrictRules {
         }
       }
     }
-    return tavernMoves
+    if (this.state.tutorial === true && tavernMoves.length === 0){
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+    } else {
+      return tavernMoves
+    }
   }
 
   getAutomaticMove(): Move | void {
     // Actually simultaneous Phase, but can be better if sequential for animations ?
     const thief = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern))
     if (!thief) {
-      return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+
+        // TO DO : Delete when we can control AutoMoves in Tutorial
+
+        return
+      } else {
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      }
     }
     const thiefWithBet = this.getThieves().find(thief => thief.partners.find(partner => partner.district === DistrictName.Tavern && partner.goldForTavern !== undefined))
     if (thiefWithBet === undefined) {

@@ -4,16 +4,18 @@ import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken from '../moves/TakeToken'
 import {ThiefState} from '../PlayerState'
+import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Harbor extends DistrictRules {
   isThiefActive(thief: ThiefState): boolean {
-    return thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) !== undefined
+    return (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) !== undefined) || (this.state.tutorial === true && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
+    
     const harborMoves: TakeToken[] = []
     if (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))) {
       const availableTokens: TokenAction[] = getTokensInBank(thief)
@@ -21,12 +23,26 @@ export default class Harbor extends DistrictRules {
         harborMoves.push({type: MoveType.TakeToken, role: thief.role, token: availableTokens[i]})
       }
     }
-    return harborMoves
+
+    // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
+
+    if (this.state.tutorial === true && harborMoves.length === 0){
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+    } else {
+      return harborMoves
+    }
   }
 
   getAutomaticMove(): Move | void {
     if (!this.getThieves().some(p => p.partners.some(part => part.district === DistrictName.Harbor))) {
-      return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+
+        // TO DO : Delete when we can control AutoMoves in Tutorial
+
+        return
+      } else {
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+      }
     }
     const tokensToTake = this.isDistrictEvent() ? 3 : 2
     const thiefWithPartnerDone = this.getThieves().find(thief => {
