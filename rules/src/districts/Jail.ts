@@ -54,7 +54,8 @@ export default class Jail extends DistrictRules {
       if (!isTutorial || this.state.eventDeck.length !== 5){
         return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Jail}
       } else {
-        return partners.every(p => p.solvingDone === false) ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail}
+        console.log("roll special tuto")
+        return partners.length === 2 ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail}
       }
 
       // --- --- END TO DO --- --- 

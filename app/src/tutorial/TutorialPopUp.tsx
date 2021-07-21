@@ -42,6 +42,28 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     }
 
     function playMoves():void{
+      if (actions && actions.length === 22 && tutorialIndex === 1){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:7})
+      }
+      if (actions && actions.length === 20 && tutorialIndex === 4){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:6})
+        tutorial.playNextMoves(1)
+      }
+      if (actions && actions.length === 19 && tutorialIndex === 1){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:5})
+      }
+      if (actions && actions.length === 18){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:4})
+      }
+      if (actions && actions.length === 17){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:3})
+      }
+      if (actions && actions.length === 16){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:2})
+      }
+      if (actions && actions.length === 12){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:1})
+      }
       if (actions && actions.length === 11 && tutorialIndex === 6){
         play({type:MoveType.MoveOnDistrictResolved, districtResolved:0})
       }
@@ -543,7 +565,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
         },
         {
           title: (t: TFunction) => t('title.cityhall1'),
-          text: 'tuto.cityhall',
+          text: 'tuto.cityhall1',
           boxTop: 78,
           boxLeft: 42,
           boxWidth: 50,
@@ -564,9 +586,290 @@ const tutorialDescription:TutorialStepDescription[][] = [
               top: 72,
               left: 5
           }
-        }
-        
+        } 
   ],
+  [
+    {
+      title: (t: TFunction) => t('title.harbor'),
+      text: 'tuto.harbor',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.types.of.token'),
+      text: 'tuto.types.of.tokens',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+    },
+    {
+      title: (t: TFunction) => t('title.harbor.event'),
+      text: 'tuto.harbor.event',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.take.steal.token'),
+      text: 'tuto.take.steal.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.take.kick.token'),
+      text: 'tuto.take.kick.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],[
+    {
+      title: (t: TFunction) => t('title.take.move.token'),
+      text: 'tuto.take.move.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.convoy.no.arrest'),
+      text: 'tuto.convoy.no.arrest',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.palace.no.arrest'),
+      text: 'tuto.palace.no.arrest',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.tavern.no.action'),
+      text: 'tuto.tavern.no.arrest',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.treasure.effect'),
+      text: 'tuto.treasure.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.treasure.arrest'),
+      text: 'tuto.treasure.arrest',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.jail.passive.effect'),
+      text: 'tuto.jail.passive.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.jail.active.effect'),
+      text: 'tuto.jail.active.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.jail.active.effect.four'),
+      text: 'tuto.jail.active.effect.four',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.jail.active.effect.not.four'),
+      text: 'tuto.jail.active.effect.not.four',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.wincon.prince'),
+      text: 'tuto.wincon.prince',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.end.solving'),
+      text: 'tuto.end.solving',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.start.new.turn'),
+      text: 'tuto.start.new.turn',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.place.convoy'),
+      text: 'tuto.place.convoy',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.tokens.placing.rules'),
+      text: 'tuto.tokens.placing.rules',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.steal.token.effect'),
+      text: 'tuto.steal.token.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.place.steal.token'),
+      text: 'tuto.place.steal.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+  ]
 ]
 
 const thirdTurnInfo = {

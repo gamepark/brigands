@@ -54,20 +54,31 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.Prince},
 
         {type:MoveType.MoveOnDistrictResolved, districtResolved:0},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:1},
 
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Stealing},
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Kicking},
         {type:MoveType.TakeToken, role:PlayerRole.YellowThief, token:TokenAction.Fleeing},
 
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:2},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:3},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:4},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:5},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:6},
+
         {type:MoveType.TakeToken, role:PlayerRole.GreenThief, token:TokenAction.Stealing},
+
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:7},
+
+
 
         // Turn 2
 
         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Convoy},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Palace},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Tavern},
         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Stealing},
+        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Palace},
         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Kicking},
+        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Tavern},
         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Fleeing},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.YellowThief},
 
