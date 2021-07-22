@@ -3,6 +3,7 @@ import GameView, {getPrince, getThieves} from '../GameView'
 import Phase from '../phases/Phase'
 import {isThiefState, PrinceState, ThiefState} from '../PlayerState'
 import { isPartner } from '../types/Partner'
+import { ThiefView } from '../types/Thief'
 import MoveType from './MoveType'
 
 type MoveOnDistrictResolved = {
@@ -17,7 +18,7 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
 
   if (move.districtResolved === 7) {
     const prince = getPrince(state)
-    const thieves = getThieves(state).filter(isThiefState)
+    const thieves = getThieves(state)
     delete state.districtResolved
     takeBackPatrols(prince)
     cleanPartners(thieves)
@@ -46,7 +47,7 @@ function takeBackPatrols(prince: PrinceState) {
   prince.patrols[2] = -1
 }
 
-function cleanPartners(thieves: ThiefState[]) {
+function cleanPartners(thieves: (ThiefState | ThiefView)[]) {
   thieves.forEach(p => p.partners.forEach(part => {
     delete part.goldForTavern
     delete part.solvingDone
@@ -54,7 +55,7 @@ function cleanPartners(thieves: ThiefState[]) {
   }))
 }
 
-export function cleanTokens(thieves: ThiefState[]) {
+export function cleanTokens(thieves: (ThiefState | ThiefView)[]) {
   for (const thief of thieves) {
     for (let i = 0; i < thief.tokens.steal.length; i++) {
       if (thief.tokens.steal[i] >= 0) {
