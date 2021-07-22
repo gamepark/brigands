@@ -77,23 +77,30 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Convoy},
         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Stealing},
         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Palace},
-        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Kicking},
+        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Fleeing},
         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Tavern},
-        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Fleeing},
+        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Kicking},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.YellowThief},
 
-        {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:0, district:DistrictName.Palace},
+        {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:0, district:DistrictName.Tavern},
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:1, district:DistrictName.Convoy},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.GreenThief},
 
-        {type:MoveType.PlacePatrol,patrolNumber:0, district:DistrictName.Market},
+        {type:MoveType.JudgePrisoners},
         {type:MoveType.PlacePatrol,patrolNumber:1, district:DistrictName.Treasure},
         {type:MoveType.PlacePatrol,patrolNumber:2, district:DistrictName.Harbor},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.Prince},
 
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:0},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:1},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:2},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:3},
+        {type:MoveType.MovePartner, role:false, runner:PlayerRole.YellowThief},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:4},
         {type:MoveType.KickOrNot, kickerRole:PlayerRole.YellowThief, playerToKick:PlayerRole.GreenThief},
-        {type:MoveType.MovePartner, role:PlayerRole.YellowThief, runner:PlayerRole.YellowThief},
-        {type:MoveType.BetGold, role:PlayerRole.YellowThief, gold:3}
+        {type:MoveType.BetGold, role:PlayerRole.YellowThief, gold:3},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:5},
+        {type:MoveType.MoveOnDistrictResolved, districtResolved:6}
 
     ]
 

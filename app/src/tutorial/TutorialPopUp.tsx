@@ -25,7 +25,7 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     const [tutorialDisplay, setTutorialDisplay] = useState(tutorialDescription.length > actionsNumber)
     const [failures] = useFailures()
     const [hideLastTurnInfo, setHideLastTurnInfo] = useState(false)
-    const [hideThirdTurnInfo, setHideThirdTurnInfo] = useState(false)
+    const [hideFifthTurnInfo, setHideFifthTurnInfo] = useState(false)
     const [hideEndInfo, setHideEndInfo] = useState(false)
 
     const platformUri = process.env.REACT_APP_PLATFORM_URI ?? 'https://game-park.com'
@@ -42,6 +42,36 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     }
 
     function playMoves():void{
+      if (actions && actions.length === 47 && tutorialIndex === 0){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:7})
+      }
+      if (actions && actions.length === 46 && tutorialIndex === 0){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:6})
+      }
+      if (actions && actions.length === 45 && tutorialIndex === 0){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:5})
+      }
+      if (actions && actions.length === 40 && tutorialIndex === 1){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:3})
+      }
+      if (actions && actions.length === 39 && tutorialIndex === 6){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:2})
+      }
+      if (actions && actions.length === 38){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:1})
+      }
+      if (actions && actions.length === 37){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:0})
+      }
+      if (actions && actions.length === 36 && tutorialIndex === 6){
+        tutorial.playNextMoves(1)
+      }
+      if (actions && actions.length === 34 && tutorialIndex === 3){
+        tutorial.playNextMoves(2)
+      }
+      if (actions && actions.length === 33 && tutorialIndex === 2){
+        tutorial.playNextMoves(1)
+      }
       if (actions && actions.length === 22 && tutorialIndex === 1){
         play({type:MoveType.MoveOnDistrictResolved, districtResolved:7})
       }
@@ -80,7 +110,7 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     const resetTutorialDisplay = () => {
       if (game.phase !== undefined){
         if (game.eventDeck === 2){
-          setHideThirdTurnInfo(false)
+          setHideFifthTurnInfo(false)
         } else if (game.eventDeck === 0){
           setHideLastTurnInfo(false)
         } else {
@@ -119,10 +149,20 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     }, [actionsNumber, failures])
 
     useEffect(() => {
-        if (actionsNumber === 4){
-            tutorial.playNextMoves(3)
-        }
-    }, [actionsNumber])
+      if (game.eventDeck <=3){
+        tutorial.setOpponentsPlayAutomatically(true)
+      }
+
+      if (actionsNumber === 27){
+        play({type:MoveType.MoveOnDistrictResolved, districtResolved:4})
+      }
+      if (actionsNumber === 22){
+        tutorial.playNextMoves(3)
+      }
+      if (actionsNumber === 4){
+        tutorial.playNextMoves(3)
+      }
+    }, [actionsNumber, game.eventDeck])
 
 
     const currentMessage = tutorialMessage(tutorialIndex)
@@ -160,15 +200,34 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
                css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
         }
 
+        {game.eventDeck === 1 && !hideFifthTurnInfo &&
+          <div css={[popupStyle, popupPosition(fifthTurnInfo)]}>
+            <div css={closePopupStyle} onClick={() => setHideFifthTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
+            <h2>{fifthTurnInfo.title(t)}</h2>
+            <p>{t(fifthTurnInfo.text)}</p>
+            <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideFifthTurnInfo(true)}>{t('OK')}</Button>
+          </div>
+        }
+
+        {
+          game.eventDeck === 0 && !hideLastTurnInfo &&
+          <div css={[popupStyle, popupPosition(lastTurnInfo)]}>
+            <div css={closePopupStyle} onClick={() => setHideLastTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
+            <h2>{lastTurnInfo.title(t)}</h2>
+            <p>{t(lastTurnInfo.text)}</p>
+            <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideLastTurnInfo(true)}>{t('OK')}</Button>
+          </div>
+        }
+
         {
           game.phase === undefined && !hideEndInfo &&
-          <div css={[popupStyle, endStyle, popupPosition(tutorialEndGame)]}>
+          <div css={[popupStyle, popupPosition(tutorialEndGame)]}>
             <div css={closePopupStyle} onClick={() => setHideEndInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
             <h2 css={textEndStyle} >{tutorialEndGame.title(t)}</h2>
             <p css={textEndStyle} >{t(tutorialEndGame.text)}</p>
-            <Button css={buttonTutoStyle} onClick={() => resetTutorial()}>{t('Restart the tutorial')}</Button>
-            <Button css={buttonTutoStyle} onClick={() => window.location.href = platformUri}>{t('Play with friends')}</Button>
-            <Button onClick={() => window.location.href = discordUri}>{t('Find players')}</Button>
+            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => resetTutorial()}>{t('Restart the tutorial')}</Button>
+            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => window.location.href = platformUri}>{t('Play with friends')}</Button>
+            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => window.location.href = discordUri}>{t('Find players')}</Button>
           </div>
         }
 
@@ -207,12 +266,13 @@ height:1.5em;
 margin-right: 1em;
 `
 
-const endStyle = css`
-background: url();
+const endSize = css`
+width:auto;
+
 `
 
 const textEndStyle = css`
-color: white;
+color: black;
 `
 
 const popupOverlayStyle = css`
@@ -868,11 +928,466 @@ const tutorialDescription:TutorialStepDescription[][] = [
           top: 72,
           left: 5
       }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.place.palace'),
+      text: 'tuto.place.palace',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.move.token.effect'),
+      text: 'tuto.move.token.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
     },
-  ]
+    {
+      title: (t: TFunction) => t('title.place.move.token'),
+      text: 'tuto.place.move',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.place.tavern'),
+      text: 'tuto.place.tavern',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.kick.token.effect'),
+      text: 'tuto.kick.token.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.place.kick.token'),
+      text: 'tuto.place.kick.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.validate'),
+      text: 'tuto.validate',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.prince.turn'),
+      text: 'tuto.prince.turn',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.prince.abilities'),
+      text: 'tuto.prince.abilities',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.prince.abilities.judge'),
+      text: 'tuto.prince.abilities.judge',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.prince.abilities.captain'),
+      text: 'tuto.prince.abilities.captain',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.prince.abilities.fast.arrest'),
+      text: 'tuto.prince.abilities.fast.arrest',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.start.solving.phase'),
+      text: 'tuto.start.solving.phase',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.market.t2'),
+      text: 'tuto.solving.market.t2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.solving.cityhall.t2'),
+      text: 'tuto.solving.cityhall.t2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.solving.harbor.t2'),
+      text: 'tuto.solving.harbor.t2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.token.rules'),
+      text: 'tuto.solving.token.rules',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+    },
+    {
+      title: (t: TFunction) => t('title.solving.steal.token1'),
+      text: 'tuto.solving.steal.token1',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.steal.token2'),
+      text: 'tuto.solving.steal.token2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.convoy.effect'),
+      text: 'tuto.convoy.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.convoy.condition'),
+      text: 'tuto.convoy.condition',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.convoy.solving'),
+      text: 'tuto.convoy.solving',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.solving.move.token'),
+      text: 'tuto.solving.move.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.move.token.dont.use1'),
+      text: 'tuto.solving.move.token.dont.use1',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.palace.effect'),
+      text: 'tuto.palace.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.palace.condition'),
+      text: 'tuto.palace.condition',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.move.token.dont.use2'),
+      text: 'tuto.solving.move.token.dont.use2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+  ],
+  [],
+  [
+    {
+      title: (t: TFunction) => t('title.solving.kick.token'),
+      text: 'tuto.solving.kick.token',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 0,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.solving.kick.opponent'),
+      text: 'tuto.solving.kick.opponent',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.tavern.effect'),
+      text: 'tuto.tavern.effect',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.tavern.results'),
+      text: 'tuto.tavern.results',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.tavern.bet'),
+      text: 'tuto.tavern.bet',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [    
+    {
+      title: (t: TFunction) => t('title.result.kick'),
+      text: 'tuto.result.kick',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [    
+    {
+      title: (t: TFunction) => t('title.prison.t2'),
+      text: 'tuto.prison.t2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [    
+    {
+      title: (t: TFunction) => t('title.end.t2'),
+      text: 'tuto.end.t2',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
+  [    
+    {
+      title: (t: TFunction) => t('title.end.tuto?'),
+      text: 'tuto.end.tuto?',
+      boxTop: 78,
+      boxLeft: 42,
+      boxWidth: 50,
+      arrow: {
+          angle: 180,
+          top: 72,
+          left: 5
+      }
+    }
+  ],
 ]
 
-const thirdTurnInfo = {
+const fifthTurnInfo = {
   title: (t: TFunction) => t('Two player game'),
   text: 'tuto.2.players',
   boxTop: 50,
@@ -881,8 +1396,8 @@ const thirdTurnInfo = {
 }
 
 const lastTurnInfo = {
-  title: (t: TFunction) => t('Last Season'),
-  text: "tuto.last.season",
+  title: (t: TFunction) => t('Last Turn'),
+  text: "tuto.last.turn",
   boxTop: 50,
   boxLeft: 50,
   boxWidth: 70
