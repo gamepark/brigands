@@ -665,7 +665,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
   [
     {
       title: (t: TFunction) => t('title.types.of.token'),
-      text: 'tuto.types.of.tokens',
+      text: 'tuto.types.of.token',
       boxTop: 78,
       boxLeft: 42,
       boxWidth: 50,
@@ -954,7 +954,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
     },
     {
       title: (t: TFunction) => t('title.place.move.token'),
-      text: 'tuto.place.move',
+      text: 'tuto.place.move.token',
       boxTop: 78,
       boxLeft: 42,
       boxWidth: 50,
@@ -1373,8 +1373,8 @@ const tutorialDescription:TutorialStepDescription[][] = [
   ],
   [    
     {
-      title: (t: TFunction) => t('title.end.tuto?'),
-      text: 'tuto.end.tuto?',
+      title: (t: TFunction) => t('title.end.tuto'),
+      text: 'tuto.end.tuto',
       boxTop: 78,
       boxLeft: 42,
       boxWidth: 50,
