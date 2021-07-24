@@ -2,7 +2,7 @@
 import {css} from "@emotion/react";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {Tutorial, useActions, useFailures, usePlay, usePlayerId} from "@gamepark/react-client";
+import {Tutorial, useActions, useAnimation, useFailures, usePlay, usePlayerId} from "@gamepark/react-client";
 import {TFunction} from "i18next";
 import {FC, useEffect, useRef, useState} from "react";
 import {Trans, useTranslation} from "react-i18next";
@@ -33,6 +33,8 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     const discordUri = 'https://discord.gg/nMSDRag'
 
     const play = usePlay<Move>()
+    const animation = useAnimation<Move>()
+
 
     const moveTutorial = (deltaMessage: number) => {
       console.log("tutoIndex : ", tutorialIndex)
@@ -169,7 +171,7 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
 
     const currentMessage = tutorialMessage(tutorialIndex)
 
-    const displayPopup = tutorialDisplay && currentMessage && !failures.length
+    const displayPopup = tutorialDisplay && !animation && currentMessage && !failures.length
 
     return (
         <>
@@ -406,9 +408,10 @@ vertical-align: bottom;
 const resetStyle = css`
   position: absolute;
   text-align: center;
-  bottom: 36.5%;
-  right: 1%;
+  top: 10%;
+  right: 8%;
   font-size: 3em;
+  width:auto;
 `
 
 type TutorialStepDescription = {
