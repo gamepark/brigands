@@ -2,14 +2,13 @@
 import { css, keyframes } from "@emotion/react";
 import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
-import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from "@gamepark/brigands/moves/RevealPartnersDistricts";
 import { ThiefState } from "@gamepark/brigands/PlayerState";
-import Partner, { isPartnerView } from "@gamepark/brigands/types/Partner";
+import Partner from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
-import { useAnimation, usePlay, usePlayerId } from "@gamepark/react-client";
+import { useAnimation, usePlayerId } from "@gamepark/react-client";
 import { FC } from "react";
 import { useDrop } from "react-dnd";
 import ThiefTokenInHand from "src/utils/ThiefTokenInHand";

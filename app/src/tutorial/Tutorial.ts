@@ -1,5 +1,5 @@
 import District from "@gamepark/brigands/districts/District";
-import DistrictName, { districtNames } from "@gamepark/brigands/districts/DistrictName";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import GameState from "@gamepark/brigands/GameState";
 import Move from "@gamepark/brigands/moves/Move";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
@@ -7,7 +7,6 @@ import { TutorialDescription } from "@gamepark/react-client";
 import {setupPlayers} from "@gamepark/brigands/Brigands"
 import Phase from "@gamepark/brigands/phases/Phase";
 import MoveType from "@gamepark/brigands/moves/MoveType";
-import { placePatrol } from "@gamepark/brigands/moves/PlacePatrol";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 
 const tabCity:District[] = [

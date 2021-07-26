@@ -6,7 +6,7 @@ import {Tutorial, useActions, useAnimation, useFailures, usePlay, usePlayerId} f
 import {TFunction} from "i18next";
 import {FC, useEffect, useRef, useState} from "react";
 import {Trans, useTranslation} from "react-i18next";
-import Arrow from "../tutorial/tutorial-arrow-grey.png"
+import Arrow from "../tutorial/tutorial-arrow-white.png"
 import GameView from "@gamepark/brigands/GameView";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Move from "@gamepark/brigands/moves/Move";

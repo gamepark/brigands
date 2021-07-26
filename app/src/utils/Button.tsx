@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import {css, keyframes} from '@emotion/react'
+import {css} from '@emotion/react'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
-import { Player } from '@gamepark/react-client'
-import {ButtonHTMLAttributes, FC, HTMLAttributes} from 'react'
+import {ButtonHTMLAttributes, FC} from 'react'
 import { getPlayerColor } from '../board/PanelPlayer'
 
 type Props = {

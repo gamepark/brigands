@@ -125,13 +125,6 @@ height:100%;
 position:absolute;
 `
 
-const titleDistrictStyle = css`
-text-align:center;
-font-size:2.5em;
-margin:0.2em 0 ;
-color:black;
-`
-
 const canDropStyle = css`
 background-color:rgba(255,255,255,0.2);
 `
@@ -188,29 +181,6 @@ function getDistrictImage(district:number, nbPlayers:number):string{
             return nbPlayers < 5 ? Images.districtConvoy1 : Images.districtConvoy2
         default :
             return 'error : no BG'
-    }
-}
-
-function getDistrictName(district:number):string{
-    switch(district){
-        case 1:
-            return "Jail"
-        case 2:
-            return "Tavern"
-        case 3:
-            return "Market"
-        case 4:
-            return "Harbor"
-        case 5:
-            return "CityHall"
-        case 6:
-            return "Treasure"
-        case 7:
-            return "Palace"
-        case 8:
-            return "Convoy"
-        default:
-            return 'error:no District Name !'
     }
 }
 

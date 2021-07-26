@@ -1,23 +1,19 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
-import MoveType from "@gamepark/brigands/moves/MoveType";
 import PlacePartner from "@gamepark/brigands/moves/PlacePartner";
 import PlaceToken from "@gamepark/brigands/moves/PlaceToken";
-import Partner, { isPartnerView, PartnerView } from "@gamepark/brigands/types/Partner";
+import Partner, { PartnerView } from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import Token from "@gamepark/brigands/types/Token";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { usePlay, usePlayerId } from "@gamepark/react-client";
+import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
-import { useDrop } from "react-dnd";
 import PartnerInHand from "src/utils/PartnerInHand";
-import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 import ThiefToken from "./ThiefToken";
-import DistrictName from "@gamepark/brigands/districts/DistrictName";
 
 type Props = {
     role:PlayerRole
