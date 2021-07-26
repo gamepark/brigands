@@ -205,16 +205,17 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
         && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
-        && <div>
-                <Button css={[moveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})} pRole={player.role} >{t('Move')}</Button>
-                <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})} pRole={player.role} >{t("Don't Move")}</Button>
-            </div>
+        && <Button css={[moveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})} pRole={player.role} >{t('Move')}</Button>
         }  
 
+        {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
+        && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
+        && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})} pRole={player.role} >{t("Don't Move")}</Button>
+        }  
+
+
         {player.role === playerId && thiefId !== false && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
-        &&  <div>
-                <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})} pRole={player.role} >{t("Don't Kick")}</Button>
-            </div>
+        && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})} pRole={player.role} >{t("Don't Kick")}</Button>
         }  
 
         {animationBetGold && (animationBetGold.move.role === player.role
@@ -226,6 +227,8 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     )
 
 }
+
+
 
 function getStealTranslationLength(numberOfThieves:number):number{
     switch(numberOfThieves){
