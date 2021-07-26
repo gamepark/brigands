@@ -158,7 +158,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
             {animationResolveSteal && (animationResolveSteal.move.steals.find(s => s.victim === player.role))
                 && animationResolveSteal.move.steals.filter(s => s.victim === player.role && s.thief !== player.role).map((steal, stealIndex) => 
                     decomposeGold(steal.gold).map((coin, coinIndex) => 
-                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex, index), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim))]} draggable={false} />
+                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex, index), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim), numberOfThieves)]} draggable={false} />
                     )
                 )
             )}
@@ -227,11 +227,30 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
 }
 
-const translateXKeyFrames = (deltaPositions:number) => keyframes`
+function getStealTranslationLength(numberOfThieves:number):number{
+    switch(numberOfThieves){
+        case 2:
+            return 74
+        case 3:
+            return 57
+        case 4:
+            return 42
+        case 5:
+            return 32
+        default:
+            return 0
+    }
+}
+
+const translateXKeyFrames = (deltaPositions:number, numberOfThieves:number) => keyframes`
 from{}
 10%{}
-90%{transform:translateX(${deltaPositions*32}em);}
-to{transform:translateX(${deltaPositions*32}em);}
+90%{
+    transform:translateX(${deltaPositions*getStealTranslationLength(numberOfThieves)}em);
+}
+to{
+    transform:translateX(${deltaPositions*getStealTranslationLength(numberOfThieves)}em);
+}
 `
 
 const translateZKeyFrames = keyframes`
@@ -242,10 +261,10 @@ from{}
 to{}
 `
 
-const translateAnimation = (startIndex:number, positionOfThief:number, positionOfVictim:number) => css`
+const translateAnimation = (startIndex:number, positionOfThief:number, positionOfVictim:number, numberOfThieves:number) => css`
 opacity:0;
 animation: ${fadeKeyframes} ${resolveStealDurationUnit}s linear ${startIndex*resolveStealDurationUnit}s,
-${translateXKeyFrames(positionOfThief - positionOfVictim)} ${resolveStealDurationUnit}s ease-in-out ${startIndex*resolveStealDurationUnit}s
+${translateXKeyFrames(positionOfThief - positionOfVictim, numberOfThieves)} ${resolveStealDurationUnit}s ease-in-out ${startIndex*resolveStealDurationUnit}s
 `
 //${translateZKeyFrames} ${resolveStealDurationUnit}s cubic-bezier(.17,.31,.79,.92) ${startIndex*resolveStealDurationUnit}s
 
