@@ -41,7 +41,10 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
       console.log("AC : ", actions?.length)
       setTutorialIndex(tutorialIndex + deltaMessage)
       setTutorialDisplay(true)
-      playMoves()
+      if (deltaMessage > 0){
+        playMoves()
+      }
+      
     }
 
     function playMoves():void{
@@ -102,9 +105,9 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
       }
       if (actions && actions.length === 10 && tutorialIndex === 4){
         tutorial.playNextMoves(1)
-      } else if (actions && actions.length === 8){
+      } else if (actions && actions.length === 8 && tutorialIndex === 1){
         tutorial.playNextMoves(2)
-      } else if (actions && actions.length === 7){
+      } else if (actions && actions.length === 7 && tutorialIndex === 0){
         tutorial.playNextMoves(1)
       } 
         
@@ -456,6 +459,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
             boxLeft: 25,
             boxWidth: 30
         },
+        {
+          title: (t: TFunction) => t('title.city'),
+          text: 'tuto.city',
+          boxTop: 75,
+          boxLeft: 50,
+          boxWidth: 70
+      },
         {
             title: (t: TFunction) => t('title.asymetric.game'),
             text: 'tuto.asymetric.game',

@@ -1,22 +1,23 @@
-import GameView from "@gamepark/brigands/GameView";
+import GameView, { getThieves } from "@gamepark/brigands/GameView";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import MoveView from "@gamepark/brigands/moves/MoveView";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { Animations } from "@gamepark/react-client";
 import {Steal} from "@gamepark/brigands/moves/ResolveStealToken"
+import { isPartner } from "@gamepark/brigands/types/Partner";
 
 const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
 
     getAnimationDuration(move:MoveView,{action, state, playerId}){
 
-        if (move.type === MoveType.ArrestPartners){
+        if (move.type === MoveType.ArrestPartners && getThieves(state).some(p => p.partners.some(part => isPartner(part) && part.district === state.city[state.districtResolved!].name))){
             return 2
         } else if (move.type === MoveType.BetGold){
             return 2
         } else if (move.type === MoveType.GainGold){
             return 2
         } else if (move.type === MoveType.MoveOnDistrictResolved){
-            return 2
+            return 1
         } else if (move.type === MoveType.SpareGoldOnTreasure){
             return 2
         } else if (move.type === MoveType.TakeBackPartner){
