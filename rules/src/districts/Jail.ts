@@ -4,6 +4,7 @@ import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken from '../moves/TakeToken'
 import {ThiefState} from '../PlayerState'
+import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
@@ -33,8 +34,9 @@ export default class Jail extends DistrictRules {
 
   getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
+    const thievesOnJail = this.getThieves().filter(p => p.partners.some(part => isPartner(part) && part.district === DistrictName.Jail))
     const isTutorial = this.state.tutorial
-    if (partners.every(p => p.tokensTaken === 1)) {
+    if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || getTokensInBank(p).length === 0)))) {
       if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
 
         // TO DO : Delete when we can control AutoMoves in Tutorial
