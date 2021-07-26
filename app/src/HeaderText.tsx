@@ -146,7 +146,7 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
         return <> {t("patrolling.reveal")} </>
       } else if(judgePrisonersAnimation || playHeadStartAnimation || moveCaptainAnimation){
         if (judgePrisonersAnimation){
-          return <> {t("patrolling.judging.prisoners", {points : getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === DistrictName.Jail)).length*2})}  </>
+          return <> {t("patrolling.judging.prisoners", {score : getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === DistrictName.Jail)).length*2})}  </>
         } else if (playHeadStartAnimation){
           return <> {t("patrolling.playing.head.start", {district: playHeadStartAnimation.move.district})} </>
         } else if (moveCaptainAnimation){

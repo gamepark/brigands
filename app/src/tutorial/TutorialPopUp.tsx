@@ -37,8 +37,6 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
 
 
     const moveTutorial = (deltaMessage: number) => {
-      console.log("tutoIndex : ", tutorialIndex)
-      console.log("AC : ", actions?.length)
       setTutorialIndex(tutorialIndex + deltaMessage)
       setTutorialDisplay(true)
       if (deltaMessage > 0){
