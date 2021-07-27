@@ -11,7 +11,7 @@ import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import {useAnimation, usePlayerId, useTutorial} from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
-import {useMemo} from 'react'
+import {useMemo, useState} from 'react'
 import City from './board/City'
 import DicePopUp from './board/DicePopUp'
 import PanelPlayer from './board/PanelPlayer'
@@ -21,6 +21,7 @@ import ThiefTokensInBank from './board/ThiefTokensInBank'
 import WeekCardsPanel from './board/WeekCardsPanel'
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import TutorialPopup from './tutorial/TutorialPopUp'
+import WelcomePopUp from './board/WelcomePopUp'
 
 type Props = {
   game: GameView
@@ -35,6 +36,7 @@ export default function GameDisplay({game}: Props) {
 
   const playerId = usePlayerId<PlayerRole>()
   const players = useMemo(() => getPlayersStartingWith(game, playerId), [game, playerId])  
+  const player = playerId === PlayerRole.Prince ? game.players.find(isPrinceState) : game.players.find(isThiefState)
 
   const partnersOfPlayerId = (playerId !== PlayerRole.Prince && playerId !== undefined) ? (players.find(p => p.role === playerId)! as ThiefState|ThiefView).partners as Partner[] : undefined
 
@@ -46,6 +48,9 @@ export default function GameDisplay({game}: Props) {
     && playerList.filter(p => p.partners.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
     && prince.patrols.some(pat => pat === DistrictName.Tavern) === false)
   }
+
+  const [welcomePopUpClosed, setWelcomePopUpClosed] = useState(tutorial ? true : playerId === undefined || game.eventDeck < 5)
+  const showWelcomePopup = !welcomePopUpClosed
 
   return (
     <Letterbox css={letterBoxStyle} top={0}>
@@ -92,6 +97,8 @@ export default function GameDisplay({game}: Props) {
           <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice} 
         />}
 
+
+
         <div css={[panelPlayerPosition, (playerId === undefined || playerId === PlayerRole.Prince) ? displayTopThieves : displayBottomThieves]}>
 
           {players.filter(isThief).map((p, index) =>
@@ -120,6 +127,8 @@ export default function GameDisplay({game}: Props) {
       </div>
 
       {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
+
+      {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)} />}
 
     </Letterbox>
   )

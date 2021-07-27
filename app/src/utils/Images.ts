@@ -33,9 +33,9 @@ import coin1 from '../images/Coin1.png'
 import coin2 from '../images/Coin2.png'
 import coin5 from '../images/Coin5.png'
 
-import dice2 from '../images/Dice_2.png'
-import dice3 from '../images/Dice_3.png'
-import dice4 from '../images/Dice_4.png'
+import dice2 from '../images/Dice_2.jpg'
+import dice3 from '../images/Dice_3.jpg'
+import dice4 from '../images/Dice_4.jpg'
 
 import partnerBlue from '../images/PartnerBlue.png'
 import partnerGreen from '../images/PartnerGreen.png'

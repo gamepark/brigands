@@ -93,7 +93,7 @@ const dieStyle = (face:string) => css`
 `
 
 const topOrientation = css`
-transform:translateZ(5.4em);
+transform:translateZ(5.3em);
 `
 
 const bottomOrientation = css`

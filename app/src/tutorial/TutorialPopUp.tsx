@@ -370,8 +370,8 @@ const closePopupStyle = css`
 
 export const popupPosition = ({boxWidth, boxTop, boxLeft, arrow}: TutorialStepDescription) => css`
   transition-property: width, top, left, transform;
-  transition-duration: 0.5s;
-  transition-timing-function: ease;
+  transition-duration: 0.7s;
+  transition-timing-function: ease-in-out;
   width: ${boxWidth}%;
   top: ${boxTop}%;
   left: ${boxLeft}%;
@@ -384,8 +384,8 @@ const arrowStyle = (angle: number) => css`
   will-change: transform;
   z-index: 102;
   transition-property: top, left, transform;
-  transition-duration: 0.5s;
-  transition-timing-function: ease;
+  transition-duration: 0.7s;
+  transition-timing-function: ease-in-out;
 `
 
 const showArrowStyle = (top: number, left: number) => css`
@@ -707,7 +707,8 @@ const tutorialDescription:TutorialStepDescription[][] = [
           angle: 0,
           top: 25,
           left: 57.5
-      }
+      },
+      image:Images.tokenStealYellow
     }
   ],
   [
@@ -721,7 +722,8 @@ const tutorialDescription:TutorialStepDescription[][] = [
           angle: 0,
           top: 11,
           left: 57
-      }
+      },
+      image:Images.tokenKickYellow
     }
   ],[
     {
@@ -734,7 +736,8 @@ const tutorialDescription:TutorialStepDescription[][] = [
           angle: 0,
           top: 15,
           left: 57
-      }
+      },
+      image:Images.tokenMoveYellow
     }
   ],
   [
