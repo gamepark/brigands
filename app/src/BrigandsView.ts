@@ -27,6 +27,9 @@ import {tellYouAreReady} from '@gamepark/brigands/moves/TellYouAreReady'
 import {throwDice} from '@gamepark/brigands/moves/ThrowDice'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Action, Game, Undo} from '@gamepark/rules-api'
+import SetSelectedPartner, { resetSelectedPartner, ResetSelectedPartner, setSelectedPartner } from './localMoves/SetSelectedPartner'
+
+type LocalMove = MoveView | SetSelectedPartner | ResetSelectedPartner
 
 export default class BrigandsView implements Game<GameView, MoveView>, Undo<GameView, MoveView, PlayerRole> {
   state: GameView
@@ -52,7 +55,7 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
    *
    * @param move The move that must be applied in the browser of the player or the spectator
    */
-  play(move: MoveView): void {
+  play(move: LocalMove): void {
     switch (move.type) {
       case MoveType.DrawEvent:
         return drawEventInView(this.state, move)
@@ -100,6 +103,10 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return playHeadStart(this.state, move)
       case MoveType.RevealGolds:
         return revealGoldsInView(this.state, move)
+      case 'SetSelectedPartner':
+        return setSelectedPartner(this.state, move)
+      case 'ResetSelectedPartner':
+        return resetSelectedPartner(this.state)
       
     }
   }

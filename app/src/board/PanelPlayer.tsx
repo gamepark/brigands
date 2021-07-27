@@ -9,7 +9,7 @@ import MoveType from '@gamepark/brigands/moves/MoveType'
 import {isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
-import Partner, {getPartnersView, isPartnerView} from '@gamepark/brigands/types/Partner'
+import Partner, {getPartnersView, isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
 import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
@@ -28,6 +28,7 @@ import {decomposeGold, getCoin} from './PrincePanel'
 import ThiefToken from './ThiefToken'
 import ResolveStealToken, { isResolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
 import { resolveStealDurationUnit } from '../BrigandsAnimations'
+import SetSelectedPartner, { setSelectedPartnerMove } from '../localMoves/SetSelectedPartner'
 
 type Props = {
     player:ThiefState | ThiefView
@@ -40,10 +41,11 @@ type Props = {
     numberOfThieves:number
     districtResolved?:District
     partnersForCards?:Partner[]
+    partnerSelected?:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -66,6 +68,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     }
 
     const play = usePlay<Move>()
+    const playSelectPartner = usePlay<SetSelectedPartner>()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
@@ -168,6 +171,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
         {partnersView.map((partner, index) => 
             <PartnerComponent key={index}
                               css={[partnerSize,
+                                    (partnerSelected === index && player.role === playerId && isSelectedStyle),
                                 (!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase,player.role) : false) && glowingBrigand(getGlowingPlayerColor(player.role)),
                                     phase !== Phase.Solving 
                                         ? isPartnerView(partner) 
@@ -195,6 +199,8 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                               draggable={!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase,player.role) : false}
                               type={"PartnerInHand"}
                               draggableItem={{partnerNumber:index}}
+
+                              onClick = {() => phase === Phase.Planning && player.role === playerId && isPartner(partner) && partner.district === undefined && playSelectPartner(setSelectedPartnerMove(index), {local:true})}
                               
             />
         )}
@@ -323,7 +329,7 @@ to{
 `
 
 const gainGoldAnimation = (duration:number, districtPos:number, numberOfThieves:number, playerPos:number, isPrinceView:boolean) => css`
-animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrinceView)} ${duration}s ;
+animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrinceView)} ${duration}s;
 `
 
 const getTranslation = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean, scaling:number) => {
@@ -404,7 +410,7 @@ height:40%;
 `
 
 const transitionPartner = css`
-transition:top 1s ease-in-out, left 1s ease-in-out;
+transition:top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
 const kickThisPlayerButtonPosition = css`
@@ -535,6 +541,10 @@ const partnerSize = css`
 position:absolute;
 width:3.5em;
 height:3.5em;
+`
+
+const isSelectedStyle = css`
+transform:translateZ(4em);
 `
 
 const nameStyle = css`

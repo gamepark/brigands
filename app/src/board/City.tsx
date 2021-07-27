@@ -7,6 +7,12 @@ import Partner from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import { FC, HTMLAttributes } from "react";
 import DistrictTile from "./DistrictTile";
+import { usePlay, usePlayerId } from "@gamepark/react-client";
+import Move from "@gamepark/brigands/moves/Move";
+import MoveType from "@gamepark/brigands/moves/MoveType";
+import DistrictName from "@gamepark/brigands/districts/DistrictName";
+import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import { ResetSelectedPartner, resetSelectedPartnerMove } from "../localMoves/SetSelectedPartner";
 
 
 type Props = {
@@ -17,10 +23,28 @@ type Props = {
     nbPlayers:number
     partnersOfPlayerId?:Partner[]
     isPlayerReady?:boolean
+    selectedPartner?:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, ...props}) => {
+
+    const play = usePlay<Move>()
+    const playResetSelectPartner = usePlay<ResetSelectedPartner>()
+    const playerId = usePlayerId<PlayerRole>()
+
+
+    function playPlacePartner(selectedPartner:number | undefined, district:DistrictName){
+        if (selectedPartner !== undefined && playerId){
+            play({
+                type:MoveType.PlacePartner,
+                district,
+                partnerNumber:selectedPartner,
+                playerId
+            })
+            playResetSelectPartner(resetSelectedPartnerMove(), {local:true})
+        }
+    }
 
     return(
 
@@ -37,6 +61,9 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
                               isPlayerReady={isPlayerReady}
                               isDistrictNotResolved = {districtResolved !== undefined ? districtResolved !== index : undefined}
+                              
+                              selectedPartner={selectedPartner}
+                              onClick={() => district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
                 />
             
             )}

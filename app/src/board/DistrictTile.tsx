@@ -14,6 +14,7 @@ import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
 import HeadStartToken from "src/utils/HeadStartToken"
+import Jail from "@gamepark/brigands/districts/Jail"
 
 /** @jsxImportSource @emotion/react */
 
@@ -25,10 +26,11 @@ type Props = {
     nbPartners?:number
     isPlayerReady?:boolean
     isDistrictNotResolved?:boolean
+    selectedPartner?:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, selectedPartner, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -71,7 +73,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
             <div css={districtNotResolvedCache(isDistrictNotResolved)}> </div>
 
-            <div css={[dropSize, canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+            <div css={[dropSize, selectedPartner !== undefined && district.name !== DistrictName.Jail && pointerCursor , selectedPartner !== undefined && district.name !== DistrictName.Jail && canClickStyle
+                , canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
                     [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGreen} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
@@ -95,6 +98,10 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
     )
 
 }
+
+const pointerCursor = css`
+cursor:pointer;
+`
 
 const districtNotResolvedCache = (isDistrictNotResolved?:boolean) => css`
 position:absolute;
@@ -127,6 +134,13 @@ position:absolute;
 
 const canDropStyle = css`
 background-color:rgba(255,255,255,0.2);
+`
+
+const canClickStyle = css`
+background-color:rgba(255,255,255,0.2);
+:hover{
+    background-color:rgba(255,255,255,0.5);
+}
 `
 
 const isOverStyle = css`
