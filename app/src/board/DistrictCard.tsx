@@ -2,16 +2,19 @@
 import { css, keyframes } from "@emotion/react";
 import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
+import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from "@gamepark/brigands/moves/RevealPartnersDistricts";
 import { ThiefState } from "@gamepark/brigands/PlayerState";
 import Partner from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
-import { useAnimation, usePlayerId } from "@gamepark/react-client";
+import TokenAction from "@gamepark/brigands/types/TokenAction";
+import { useAnimation, usePlay, usePlayerId } from "@gamepark/react-client";
 import { FC } from "react";
 import { useDrop } from "react-dnd";
-import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
+import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
+import ThiefTokenInHand from "../utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 
 type Props = {
@@ -19,11 +22,13 @@ type Props = {
     thief:ThiefState | ThiefView
     color:PlayerRole
     partners?:Partner[]
+    selectedTokenInHand?:ThiefTokenInHand
 }
 
-const DistrictCard : FC<Props> = ({district, thief, color, partners}) => {
+const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTokenInHand}) => {
 
     const playerId = usePlayerId<PlayerRole>()
+    const play = usePlay<Move>()
     const indexOfFirstPartnerOnDistrict:number | undefined = partners !== undefined ? partners.findIndex((part, index) => part.district === district && !isThisPartnerHasAnyToken(thief, index)) : undefined
 
     const [{canDrop, isOver}, dropRef] = useDrop({
@@ -43,12 +48,36 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners}) => {
         }
       })
 
+    const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
+
+    function playPlaceToken(partnerNumber:number, role:PlayerRole, tokenAction:TokenAction){
+            play({
+                type:MoveType.PlaceToken,
+                partnerNumber,
+                role,
+                tokenAction
+            })
+            playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
+    }
+
+    function canDropSelected():boolean{
+        return playerId === color 
+        && partners !== undefined 
+        && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1
+        && Object.keys(partners[indexOfFirstPartnerOnDistrict]).length !== 0 
+        && selectedTokenInHand !== undefined
+
+    }
+
     const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
         return(
         <div css={[cardSize]}>
 
-        {canDrop && color === playerId && <div ref={dropRef} css={[fullSize, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}>↓</div>}
+        {(canDrop || canDropSelected()) && color === playerId && <div 
+            ref={dropRef} 
+            css={[fullSize, canDropSelected() && canDropSelectedStyle, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}
+            onClick={() => thief.role === playerId && selectedTokenInHand !== undefined && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1 && playPlaceToken(indexOfFirstPartnerOnDistrict, thief.role, selectedTokenInHand.tokenAction)} >↓</div>}
 
             <div css = {[back, districtCardBackStyle(getCardBG(undefined), getSeal(color)), revealPartnersAnimation && rotateCardBackAnimation(revealPartnersAnimation.duration)]}></div>
             <div css = {[front, districtCardFrontStyle(getCardBG(district), getSeal(color)), revealPartnersAnimation && rotateCardFrontAnimation(revealPartnersAnimation.duration)]}></div>
@@ -82,7 +111,18 @@ const canDropStyle = css`
 border:white solid 0.08em;
 background-color:rgba(0,0,0,0.0);
 transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+`
 
+const canDropSelectedStyle = css`
+border:white solid 0.08em;
+background-color:rgba(0,0,0,0.0);
+transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+cursor:pointer;
+:hover{
+    border:white solid 0.08em;
+    background-color:rgba(0,0,0,0.7);
+    transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
+}
 `
 
 const isOverStyle = css`

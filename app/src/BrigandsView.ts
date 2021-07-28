@@ -28,9 +28,10 @@ import {throwDice} from '@gamepark/brigands/moves/ThrowDice'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Action, Game, Undo} from '@gamepark/rules-api'
 import SetSelectedPartner, { resetSelectedPartner, ResetSelectedPartner, setSelectedPartner } from './localMoves/SetSelectedPartner'
+import SetSelectedTokenInHand, { resetSelectedTokenInHand, ResetSelectedTokenInHand, setSelectedTokenInHand } from './localMoves/SetSelectedTokenInHand'
 import SetSelectedTokensInBank, { resetSelectedTokensInBank, ResetSelectedTokensInBank, setSelectedTokensInBank } from './localMoves/SetSelectedTokensInBank'
 
-type LocalMove = MoveView | SetSelectedPartner | ResetSelectedPartner | SetSelectedTokensInBank | ResetSelectedTokensInBank
+type LocalMove = MoveView | SetSelectedPartner | ResetSelectedPartner | SetSelectedTokensInBank | ResetSelectedTokensInBank | SetSelectedTokenInHand | ResetSelectedTokenInHand
 
 export default class BrigandsView implements Game<GameView, MoveView>, Undo<GameView, MoveView, PlayerRole> {
   state: GameView
@@ -112,6 +113,10 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return setSelectedTokensInBank(this.state, move)
       case 'ResetSelectedTokensInBank':
         return resetSelectedTokensInBank(this.state)
+      case 'SetSelectedTokenInHand':
+        return setSelectedTokenInHand(this.state, move)
+      case 'ResetSelectedTokenInHand':
+        return resetSelectedTokenInHand(this.state)
       
     }
   }

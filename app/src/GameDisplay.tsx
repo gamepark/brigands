@@ -123,6 +123,7 @@ export default function GameDisplay({game}: Props) {
             partnerSelected={game.selectedPartner?.partnerNumber}
             tokensInBankSelected={game.selectedTokensInBank}
             eventCard={game.event}
+            tokenInHandSelected={game.selectedTokenInHand}
             />
 
           )}

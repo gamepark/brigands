@@ -1,7 +1,8 @@
-import TokenAction from "@gamepark/brigands/types/TokenAction";
+import TokenAction from "./TokenAction"
 
 type ThiefTokenInHand = {
     tokenAction:TokenAction
+    index?:number
 }
 
 export default ThiefTokenInHand

@@ -31,6 +31,8 @@ import { resolveStealDurationUnit } from '../BrigandsAnimations'
 import SetSelectedPartner, { setSelectedPartnerMove } from '../localMoves/SetSelectedPartner'
 import { EventArray } from '@gamepark/brigands/material/Events'
 import { ResetSelectedTokensInBank, resetSelectedTokensInBankMove } from '../localMoves/SetSelectedTokensInBank'
+import SetSelectedTokenInHand, { setSelectedTokenInHandMove } from '../localMoves/SetSelectedTokenInHand'
+import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
 
 type Props = {
     player:ThiefState | ThiefView
@@ -46,10 +48,11 @@ type Props = {
     partnerSelected?:number
     tokensInBankSelected?:ThiefTokenInBank[]
     eventCard:number
+    tokenInHandSelected?:ThiefTokenInHand
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, tokenInHandSelected,  ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -93,6 +96,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     const play = usePlay<Move>()
     const playSelectPartner = usePlay<SetSelectedPartner>()
     const playResetTokensInBank = usePlay<ResetSelectedTokensInBank>()
+    const playSetTokenInHand = usePlay<SetSelectedTokenInHand>()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
@@ -138,32 +142,38 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             <div css={tokenDivPosition}>
                 {player.tokens.kick.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
                                     draggableItem={{tokenAction:TokenAction.Kicking}}
+                                    onClick = {() => phase === Phase.Planning && player.role === playerId && player.isReady !== true && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Kicking, index), {local:true})}
+
                         />
                     </div>
                 )}
                 {player.tokens.move.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
                                     draggableItem={{tokenAction:TokenAction.Fleeing}}
+                                    onClick = {() => phase === Phase.Planning && player.role === playerId && player.isReady !== true && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Fleeing, index), {local:true})}
+
                         />
                     </div>
                 )}
                 {player.tokens.steal.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
                                     draggableItem={{tokenAction:TokenAction.Stealing}}
+                                    onClick = {() => phase === Phase.Planning && player.role === playerId && player.isReady !== true && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Stealing, index), {local:true})}
+
                         />
                     </div>
                 )}
@@ -182,6 +192,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                                                                         thief={player}
                                                                         district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
                                                                         partners={partnersForCards}
+                                                                        selectedTokenInHand={tokenInHandSelected}
                 />)}
 
             </div>
@@ -615,7 +626,13 @@ const tokenDivPosition = css`
     justify-content:space-around;
 `
 
+const tokenIsSelectedStyle = css`
+transform:translateZ(4em);
+transition:transform 0.2s linear;
+`
+
 const tokenSize = css`
+transition:transform 0.2s linear;
 height:88%;
 width:15%;
 `
