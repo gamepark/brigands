@@ -6,13 +6,15 @@ import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { usePlayerId } from "@gamepark/react-client";
+import { usePlay, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import ThiefToken from "./ThiefToken";
 import { getGlowingPlayerColor, glowingBrigand } from "./PanelPlayer";
-import { isPartnerView } from "@gamepark/brigands/types/Partner";
+import { isPartner, isPartnerView } from "@gamepark/brigands/types/Partner";
 import { EventArray } from "@gamepark/brigands/material/Events";
 import { isThisPartnerHasAnyToken } from "@gamepark/brigands/Brigands";
+import SetSelectedTokensInBank, { setSelectedTokensInBankMove } from "../localMoves/SetSelectedTokensInBank";
+import ThiefTokenInBank from "@gamepark/brigands/types/ThiefTokenInBank";
 
 type Props = {
     players:(ThiefState | ThiefView)[]
@@ -20,9 +22,10 @@ type Props = {
     phase?:Phase
     resolvedDistrict?:DistrictName
     event:number
+    selectedTokensInBank?:ThiefTokenInBank[]
 } & HTMLAttributes<HTMLDivElement>
 
-const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict, event, ...props}) => {
+const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict, event, selectedTokensInBank, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     function isDraggable(phase:Phase | undefined, resolvedDistrict:DistrictName|undefined, playerRole:PlayerRole, players:(ThiefState|ThiefView)[]):boolean{
@@ -61,6 +64,52 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
             )
     }
 
+    function tokenCanBeClicked(districtResolved:DistrictName|undefined, player:ThiefState|ThiefView, event:number, selectedTokens:ThiefTokenInBank[] | undefined, tokenClicked:TokenAction, indexToken:number):boolean{
+        if(districtResolved === undefined || (districtResolved !== DistrictName.Harbor && districtResolved !== DistrictName.Jail)) return false
+        else {
+            if (districtResolved === DistrictName.Harbor){
+                const maxToken = EventArray[event].district === DistrictName.Harbor ? 3 : 2
+                const firstPartner = player.partners.find(part => isPartner(part) && part.district === resolvedDistrict)
+                if (firstPartner !== undefined){
+                    if (selectedTokens === undefined) return true
+                    else {
+                        const tokensAlreadyTaken = firstPartner.tokensTaken === undefined ? 0 : firstPartner.tokensTaken
+                        if (selectedTokens.length === maxToken - tokensAlreadyTaken){
+                            return selectedTokens.find(tok => tok.tokenAction === tokenClicked && tok.index === indexToken) !== undefined
+                        } else if (selectedTokens.length < maxToken - tokensAlreadyTaken){
+                            return true
+                        } else {
+                            return false
+                        }
+                    }
+
+                } else return false
+
+            } else {
+                const partnersJailed = player.partners.filter(part => isPartner(part) && part.district === DistrictName.Jail)
+                const tokensToTake = partnersJailed.length
+                if (partnersJailed.some(part => part.solvingDone !== true)) return false
+                else {
+                    if (partnersJailed.filter(part => part.tokensTaken === 1).length === tokensToTake){
+                        return selectedTokens !== undefined && selectedTokens.find(tok => tok.tokenAction === tokenClicked && tok.index === indexToken) !== undefined
+                    } else if (partnersJailed.filter(part => part.tokensTaken === 1).length < tokensToTake){
+                        const tokensAlreadyTaken = partnersJailed.filter(part => part.tokensTaken === 1).length
+                        const tokensAlreadySelected = selectedTokensInBank === undefined ? 0 : selectedTokensInBank.length
+                        if (tokensAlreadyTaken + tokensAlreadySelected < tokensToTake){
+                            return true
+                        } else {
+                            return selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === tokenClicked && tok.index === indexToken) !== undefined
+
+                        }
+                    } 
+                    else return false
+                }
+            }
+        }
+    }
+
+    const playSelectToken = usePlay<SetSelectedTokensInBank>()
+
     return(
 
         <div {...props} css={bankFlex}>
@@ -69,33 +118,38 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
 
             <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToStart]} key={indexP}>
                 {getArray(player.tokens.kick).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     role={player.role}
                                     draggable={isDraggable(phase,resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Kicking}}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Kicking, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Kicking, indexT), {local:true})}
 
                         />
+                        
                     </div>
                 )}
                 {getArray(player.tokens.move).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Fleeing}}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Fleeing, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Fleeing, indexT), {local:true})}
+
                         />
                     </div>
                 )}
                 {getArray(player.tokens.steal).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ,isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Stealing}}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Stealing, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Stealing, indexT), {local:true})}
                         />
                     </div>
                 )}
@@ -108,6 +162,11 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
     )
 }
 
+const isSelected = css`
+transform:translateZ(2em) translateX(-4em);
+transition:transform 0.2s linear;
+`
+
 const bankFlex = css`
 display:flex;
 flex-direction:row;
@@ -118,6 +177,8 @@ const tokenSize = css`
 height:15%;
 width:100%;
 margin:-0.4em 0em;
+transition:transform 0.2s linear;
+
 `
 
 const tokenPlayerDivPosition = (player:number) => css`

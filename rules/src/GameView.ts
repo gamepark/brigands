@@ -2,6 +2,8 @@ import GameState from './GameState'
 import {isPrinceState, isThief, isThiefState} from './PlayerState'
 import PlayerView from './PlayerView'
 import PartnerInHand from './types/PartnerInHand'
+import ThiefTokenInBank from './types/ThiefTokenInBank'
+import ThiefTokenInHand from './types/ThiefTokenInHand'
 
 /**
  * In here, you describe what a GameView will look like at any time during a game.
@@ -12,6 +14,8 @@ type GameView = Omit<GameState, 'eventDeck' | 'players'> & {
   eventDeck: number,
   players: PlayerView[]
   selectedPartner?:PartnerInHand
+  selectedTokenInHand?: ThiefTokenInHand
+  selectedTokensInBank?: ThiefTokenInBank[]
 }
 
 export default GameView

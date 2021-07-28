@@ -29,6 +29,8 @@ import ThiefToken from './ThiefToken'
 import ResolveStealToken, { isResolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
 import { resolveStealDurationUnit } from '../BrigandsAnimations'
 import SetSelectedPartner, { setSelectedPartnerMove } from '../localMoves/SetSelectedPartner'
+import { EventArray } from '@gamepark/brigands/material/Events'
+import { ResetSelectedTokensInBank, resetSelectedTokensInBankMove } from '../localMoves/SetSelectedTokensInBank'
 
 type Props = {
     player:ThiefState | ThiefView
@@ -42,10 +44,12 @@ type Props = {
     districtResolved?:District
     partnersForCards?:Partner[]
     partnerSelected?:number
+    tokensInBankSelected?:ThiefTokenInBank[]
+    eventCard:number
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -67,8 +71,28 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
         return phase === Phase.Planning && role === playerId && player.isReady !== true && token === -1  
     }
 
+    function isEnoughTokensSelected(player:ThiefState | ThiefView, districtResolved:DistrictName | undefined, tokensInBankSelected:ThiefTokenInBank[] | undefined, eventCard:number):boolean{
+        if (districtResolved === undefined || (districtResolved !== DistrictName.Jail && districtResolved !== DistrictName.Harbor)) return false
+        else {
+            if (districtResolved === DistrictName.Harbor){
+                const firstPartner = player.partners.find(part => isPartner(part) && part.district === DistrictName.Harbor)
+                const maxToTake = EventArray[eventCard].district === DistrictName.Harbor ? 3 : 2
+                if (firstPartner === undefined) return false
+                else {
+                    const tokensAlreadyTaken = firstPartner.tokensTaken === undefined ? 0 : firstPartner.tokensTaken
+                    return tokensInBankSelected !== undefined && tokensInBankSelected.length === maxToTake - tokensAlreadyTaken
+                }
+            } else {
+                const partnersJailed = player.partners.filter(part => isPartner(part) && part.district === DistrictName.Jail)
+                if (partnersJailed.length === 0 || partnersJailed.every(part => part.tokensTaken === 1)) return false
+                else return tokensInBankSelected !== undefined && tokensInBankSelected.length === partnersJailed.length - partnersJailed.filter(part => part.tokensTaken === 1).length
+            }
+        }
+    }
+
     const play = usePlay<Move>()
     const playSelectPartner = usePlay<SetSelectedPartner>()
+    const playResetTokensInBank = usePlay<ResetSelectedTokensInBank>()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
@@ -83,6 +107,17 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
             return {type:MoveType.TakeToken,role:playerId, token:item.tokenAction}
         }
       })
+
+      function playTakeTokens(tokensInBankSelected:ThiefTokenInBank[]){
+        tokensInBankSelected.forEach((tok, i) => {
+            play({
+                type:MoveType.TakeToken,
+                role:player.role,
+                token:tok.tokenAction
+            })
+        })
+        playResetTokensInBank(resetSelectedTokensInBankMove(), {local:true})
+      }
 
     return(
 
@@ -226,6 +261,10 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
         {animationBetGold && (animationBetGold.move.role === player.role
         && <div css={[betStyle(animationBetGold.move.gold), betSize, betPositionPlayer(positionForPartners, numberOfThieves), betGoldAnimation(animationBetGold.duration,city.findIndex(d => d.name === districtResolved!.name) , (playerId === PlayerRole.Prince || playerId === undefined))]}> </div>)
+        } 
+
+        {player.role === playerId && phase === Phase.Solving && isEnoughTokensSelected(player, districtResolved?.name, tokensInBankSelected, eventCard)
+        && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => playTakeTokens(tokensInBankSelected!) } pRole={player.role} >{t('Take')}</Button>
         } 
 
         </>

@@ -75,6 +75,7 @@ export default function GameDisplay({game}: Props) {
                            phase={game.phase}
                            resolvedDistrict={game.districtResolved !== undefined ? game.city[game.districtResolved].name : undefined}
                            event={game.event}
+                           selectedTokensInBank={game.selectedTokensInBank}
         />
                         
 
@@ -120,6 +121,8 @@ export default function GameDisplay({game}: Props) {
                                 }
             prince={game.players.find(isPrinceState)!}
             partnerSelected={game.selectedPartner?.partnerNumber}
+            tokensInBankSelected={game.selectedTokensInBank}
+            eventCard={game.event}
             />
 
           )}
