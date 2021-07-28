@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '@gamepark/brigands/Brigands'
+import {getTokensInBank, isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '@gamepark/brigands/Brigands'
 import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
@@ -83,12 +83,12 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 if (firstPartner === undefined) return false
                 else {
                     const tokensAlreadyTaken = firstPartner.tokensTaken === undefined ? 0 : firstPartner.tokensTaken
-                    return tokensInBankSelected !== undefined && tokensInBankSelected.length === maxToTake - tokensAlreadyTaken
+                    return tokensInBankSelected !== undefined && tokensInBankSelected.length === Math.min(maxToTake - tokensAlreadyTaken, getTokensInBank(player).length) 
                 }
             } else {
                 const partnersJailed = player.partners.filter(part => isPartner(part) && part.district === DistrictName.Jail)
                 if (partnersJailed.length === 0 || partnersJailed.every(part => part.tokensTaken === 1)) return false
-                else return tokensInBankSelected !== undefined && tokensInBankSelected.length === partnersJailed.length - partnersJailed.filter(part => part.tokensTaken === 1).length
+                else return tokensInBankSelected !== undefined && tokensInBankSelected.length === Math.min(partnersJailed.length - partnersJailed.filter(part => part.tokensTaken === 1).length, getTokensInBank(player).length) 
             }
         }
     }
