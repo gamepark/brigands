@@ -13,6 +13,8 @@ import MoveType from "@gamepark/brigands/moves/MoveType";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ResetSelectedPartner, resetSelectedPartnerMove } from "../localMoves/SetSelectedPartner";
+import { ResetSelectedPatrol, resetSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
+import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 
 
 type Props = {
@@ -24,13 +26,15 @@ type Props = {
     partnersOfPlayerId?:Partner[]
     isPlayerReady?:boolean
     selectedPartner?:number
+    selectedPatrol?:PatrolInHand
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedPatrol, ...props}) => {
 
     const play = usePlay<Move>()
     const playResetSelectPartner = usePlay<ResetSelectedPartner>()
+    const playResetSelectPatrol = usePlay<ResetSelectedPatrol>()
     const playerId = usePlayerId<PlayerRole>()
 
 
@@ -43,6 +47,23 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                 playerId
             })
             playResetSelectPartner(resetSelectedPartnerMove(), {local:true})
+        }
+    }
+
+    function playPlacePatrol(district:DistrictName){
+        if (selectedPatrol !== undefined && selectedPatrol.index !== undefined){
+            if (district === DistrictName.Jail){
+                play({
+                    type:MoveType.JudgePrisoners                    
+                })
+            } else {
+                play({
+                    type:MoveType.PlacePatrol,
+                    district,
+                    patrolNumber:selectedPatrol.index,
+                })
+            }
+            playResetSelectPatrol(resetSelectedPatrolMove(), {local:true})
         }
     }
 
@@ -63,7 +84,10 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               isDistrictNotResolved = {districtResolved !== undefined ? districtResolved !== index : undefined}
                               
                               selectedPartner={selectedPartner}
-                              onClick={() => district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
+                              selectedPatrol={selectedPatrol}
+                              onClick={() => playerId === PlayerRole.Prince 
+                                ? phase === Phase.Patrolling && selectedPatrol !== undefined && !prince.patrols.includes(district.name) && (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true ) && playPlacePatrol(district.name) 
+                                : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
                 />
             
             )}

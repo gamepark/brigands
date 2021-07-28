@@ -61,6 +61,7 @@ export default function GameDisplay({game}: Props) {
                      city={game.city}
                      phase={game.phase}
                      partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.districtResolved!].name)).length : undefined}
+                     selectedPatrol={game.selectedPatrol}
                      />
 
 
@@ -88,6 +89,7 @@ export default function GameDisplay({game}: Props) {
               partnersOfPlayerId = {game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
               isPlayerReady = {(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
               selectedPartner = {game.selectedPartner?.partnerNumber}
+              selectedPatrol = {game.selectedPatrol}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&

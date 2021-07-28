@@ -2,6 +2,7 @@ import GameState from './GameState'
 import {isPrinceState, isThief, isThiefState} from './PlayerState'
 import PlayerView from './PlayerView'
 import PartnerInHand from './types/PartnerInHand'
+import PatrolInHand from './types/PatrolInHand'
 import ThiefTokenInBank from './types/ThiefTokenInBank'
 import ThiefTokenInHand from './types/ThiefTokenInHand'
 
@@ -16,6 +17,7 @@ type GameView = Omit<GameState, 'eventDeck' | 'players'> & {
   selectedPartner?:PartnerInHand
   selectedTokenInHand?: ThiefTokenInHand
   selectedTokensInBank?: ThiefTokenInBank[]
+  selectedPatrol?: PatrolInHand
 }
 
 export default GameView

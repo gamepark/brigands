@@ -17,20 +17,24 @@ import HeadStart from "./HeadStart";
 import PatrolToken from "./PatrolToken";
 import { getPlayerColor } from "./PanelPlayer";
 import ArrestPartners, {isArrestPartners} from "@gamepark/brigands/moves/ArrestPartners";
+import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
+import SetSelectedPatrol, { setSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
 
 type Props = {
     player:PrinceState
     city:District[]
     phase:Phase|undefined
     partnersArrestedCount?:number
+    selectedPatrol?:PatrolInHand
 }  & HTMLAttributes<HTMLDivElement>
 
-const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, ...props}) => {
+const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, selectedPatrol, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
     const play = usePlay<Move>()
+    const playSelectPatrol = usePlay<SetSelectedPatrol>()
 
     const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
 
@@ -79,6 +83,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, ..
         {player.patrols.map((patrol,index) => 
             <PatrolToken key={index}
                          css={[patrolTokenSize, isPatrolDraggable(phase, player.role, patrol, index) && glowingPrince,
+                               selectedPatrol?.index === index && patrolIsSelectedStyle,
                                patrol === -1 ? patrolInHand(index, (playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
                                
                         ]}
@@ -86,6 +91,8 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, ..
                          draggable={isPatrolDraggable(phase, player.role, patrol, index)}
                          type={'PatrolInHand'}
                          draggableItem={{patrolNumber:index}}
+
+                         onClick = {() => phase === Phase.Patrolling && player.role === playerId && (index === 2 ? player.abilities[2] !== true && player.gold >=5 : patrol === -1) && playSelectPatrol(setSelectedPatrolMove(patrol, index), {local:true})}
                          />
         )}
 
@@ -261,13 +268,18 @@ const patrolCanceled = (isPrince:number) => css`
 const patrolInHand = (index:number, isPrince:number) => css`
     top:${8+isPrince*58}%;
     left:${index !== 2 ? 36.6+index*24 : 48.5}%;
-    transition : top 1s ease-in-out, left 1s ease-in-out;
+    transition : top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
 const patrolInDistrict = (district:number) => css`
     top:51.8%;
     left:${4+(district*11.6)}%;
-    transition : top 1s ease-in-out, left 1s ease-in-out;
+    transition : top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
+`
+
+const patrolIsSelectedStyle = css`
+transform:translateZ(4em);
+transition:transform 0.2s linear;
 `
 
 const patrolTokenSize = css`
@@ -275,6 +287,7 @@ const patrolTokenSize = css`
     z-index:1;
     height:7%;
     width:3%;
+
 `
 
 const princePanelStyle = css`

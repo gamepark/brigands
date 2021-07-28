@@ -10,11 +10,10 @@ import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
 import PartnerInHand, { isPartnerInHand } from "../utils/PartnerInHand"
-import PatrolInHand, { isPatrolInHand } from "../utils/PatrolInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
 import HeadStartToken from "src/utils/HeadStartToken"
-import Jail from "@gamepark/brigands/districts/Jail"
+import PatrolInHand, { isPatrolInHand } from "@gamepark/brigands/types/PatrolInHand"
 
 /** @jsxImportSource @emotion/react */
 
@@ -27,10 +26,11 @@ type Props = {
     isPlayerReady?:boolean
     isDistrictNotResolved?:boolean
     selectedPartner?:number
+    selectedPatrol?:PatrolInHand
 
 } & HTMLAttributes<HTMLDivElement>
 
-const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, selectedPartner, ...props}) => {
+const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, selectedPartner, selectedPatrol, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
@@ -73,8 +73,11 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
             <div css={districtNotResolvedCache(isDistrictNotResolved)}> </div>
 
-            <div css={[dropSize, selectedPartner !== undefined && district.name !== DistrictName.Jail && pointerCursor , selectedPartner !== undefined && district.name !== DistrictName.Jail && canClickStyle
-                , canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+            <div css={[dropSize,
+                    selectedPartner !== undefined && district.name !== DistrictName.Jail && pointerCursor,
+                    selectedPartner !== undefined && district.name !== DistrictName.Jail && canClickStyle,
+                    selectedPatrol !== undefined && !prince.patrols.includes(district.name) && (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true ) && canClickStyle
+                    , canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
                     [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGreen} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
@@ -138,6 +141,7 @@ background-color:rgba(255,255,255,0.2);
 
 const canClickStyle = css`
 background-color:rgba(255,255,255,0.2);
+cursor:pointer;
 :hover{
     background-color:rgba(255,255,255,0.5);
 }

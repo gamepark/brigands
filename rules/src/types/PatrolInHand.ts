@@ -3,6 +3,7 @@ import PartnerInHand from "./PartnerInHand"
 
 type PatrolInHand = {
     patrolNumber:number
+    index?:number
 }
 
 export default PatrolInHand
