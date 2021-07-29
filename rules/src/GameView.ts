@@ -18,6 +18,7 @@ type GameView = Omit<GameState, 'eventDeck' | 'players'> & {
   selectedTokenInHand?: ThiefTokenInHand
   selectedTokensInBank?: ThiefTokenInBank[]
   selectedPatrol?: PatrolInHand
+  selectedHeadStart?:boolean
 }
 
 export default GameView

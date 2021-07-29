@@ -21,7 +21,7 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
         } else if (move.type === MoveType.SpareGoldOnTreasure){
             return 2
         } else if (move.type === MoveType.TakeBackPartner){
-            return 2
+            return 1
         } else if (move.type === MoveType.TakeToken){
             return action.playerId === playerId ? 0 : 2
         } else if (move.type === MoveType.ThrowDice){

@@ -15,6 +15,9 @@ import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ResetSelectedPartner, resetSelectedPartnerMove } from "../localMoves/SetSelectedPartner";
 import { ResetSelectedPatrol, resetSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
 import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
+import { ResetSelectedHeadStart, resetSelectedHeadStartMove } from "../localMoves/SetSelectedHeadStart";
+import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
+import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
 
 
 type Props = {
@@ -26,20 +29,24 @@ type Props = {
     partnersOfPlayerId?:Partner[]
     isPlayerReady?:boolean
     selectedPartner?:number
+    selectedTokenInHand?:ThiefTokenInHand
     selectedPatrol?:PatrolInHand
+    selectedHeadStart?:boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedPatrol, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand, selectedPatrol, selectedHeadStart, ...props}) => {
 
     const play = usePlay<Move>()
     const playResetSelectPartner = usePlay<ResetSelectedPartner>()
     const playResetSelectPatrol = usePlay<ResetSelectedPatrol>()
+    const playResetSelectHeadStart = usePlay<ResetSelectedHeadStart>()
+    const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
     const playerId = usePlayerId<PlayerRole>()
 
 
     function playPlacePartner(selectedPartner:number | undefined, district:DistrictName){
-        if (selectedPartner !== undefined && playerId){
+        if (selectedPartner !== undefined && playerId !== undefined){
             play({
                 type:MoveType.PlacePartner,
                 district,
@@ -47,6 +54,13 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                 playerId
             })
             playResetSelectPartner(resetSelectedPartnerMove(), {local:true})
+            selectedTokenInHand !== undefined && play({
+                type:MoveType.PlaceToken,
+                partnerNumber:selectedPartner,
+                role:playerId,
+                tokenAction:selectedTokenInHand.tokenAction
+            })
+            playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
         }
     }
 
@@ -67,6 +81,11 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
         }
     }
 
+    function playPlaceHeadStart(district:DistrictName){
+        play({type:MoveType.PlayHeadStart, district})
+        playResetSelectHeadStart(resetSelectedHeadStartMove(), {local:true})
+    }
+
     return(
 
         <div {...props} css={cityStyle}>
@@ -85,8 +104,11 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               
                               selectedPartner={selectedPartner}
                               selectedPatrol={selectedPatrol}
+                              selectedHeadStart={selectedHeadStart}
                               onClick={() => playerId === PlayerRole.Prince 
-                                ? phase === Phase.Patrolling && selectedPatrol !== undefined && !prince.patrols.includes(district.name) && (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true ) && playPlacePatrol(district.name) 
+                                ? phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined 
+                                    ? (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true) && playPlacePatrol(district.name)
+                                    : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
                                 : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
                 />
             

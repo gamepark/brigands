@@ -29,11 +29,12 @@ import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Action, Game, Undo} from '@gamepark/rules-api'
 import SetSelectedPartner, { resetSelectedPartner, ResetSelectedPartner, setSelectedPartner } from './localMoves/SetSelectedPartner'
 import SetSelectedPatrol, { resetSelectedPatrol, ResetSelectedPatrol, setSelectedPatrol } from './localMoves/SetSelectedPatrol'
+import SetSelectedHeadStart, { resetSelectedHeadStart, ResetSelectedHeadStart, setSelectedHeadStart } from './localMoves/SetSelectedHeadStart'
 import SetSelectedTokenInHand, { resetSelectedTokenInHand, ResetSelectedTokenInHand, setSelectedTokenInHand } from './localMoves/SetSelectedTokenInHand'
 import SetSelectedTokensInBank, { resetSelectedTokensInBank, ResetSelectedTokensInBank, setSelectedTokensInBank } from './localMoves/SetSelectedTokensInBank'
 
 type LocalMove = MoveView | SetSelectedPartner | ResetSelectedPartner | SetSelectedTokensInBank | ResetSelectedTokensInBank | SetSelectedTokenInHand | ResetSelectedTokenInHand
-| SetSelectedPatrol | ResetSelectedPatrol
+| SetSelectedPatrol | ResetSelectedPatrol | SetSelectedHeadStart | ResetSelectedHeadStart
 
 export default class BrigandsView implements Game<GameView, MoveView>, Undo<GameView, MoveView, PlayerRole> {
   state: GameView
@@ -123,6 +124,11 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return setSelectedPatrol(this.state, move)
       case 'ResetSelectedPatrol':
         return resetSelectedPatrol(this.state)
+      case 'SetSelectedHeadStart':
+        return setSelectedHeadStart(this.state)
+      case 'ResetSelectedHeadStart':
+        return resetSelectedHeadStart(this.state)
+        
       
     }
   }

@@ -19,6 +19,8 @@ import { getPlayerColor } from "./PanelPlayer";
 import ArrestPartners, {isArrestPartners} from "@gamepark/brigands/moves/ArrestPartners";
 import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 import SetSelectedPatrol, { setSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
+import SetSelectedHeadStart, { setSelectedHeadStartMove } from "../localMoves/SetSelectedHeadStart";
+import HeadStartToken from "@gamepark/brigands/types/HeadStartToken";
 
 type Props = {
     player:PrinceState
@@ -26,22 +28,24 @@ type Props = {
     phase:Phase|undefined
     partnersArrestedCount?:number
     selectedPatrol?:PatrolInHand
+    selectedHeadStart?:boolean
 }  & HTMLAttributes<HTMLDivElement>
 
-const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, selectedPatrol, ...props}) => {
+const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, selectedPatrol, selectedHeadStart, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const playerInfo = usePlayer(player.role)
     const {t} = useTranslation()
     const play = usePlay<Move>()
     const playSelectPatrol = usePlay<SetSelectedPatrol>()
+    const playSelectHeadStart = usePlay<SetSelectedHeadStart>()
 
     const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
 
     function isPatrolDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
         if (player.isReady === true){return false}
         if (patrolIndex !== 2){
-            return phase === Phase.Patrolling && role === playerId && statePatrol !== -2
+            return phase === Phase.Patrolling && role === playerId && statePatrol === -1
         } else {
             return player.gold > 4 && player.abilities[2] === false && phase === Phase.Patrolling && role === playerId && statePatrol !== -2   
         }
@@ -101,10 +105,12 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
         }   
 
         
-        <HeadStart css={[headStartSize, isHeadStartTokenDraggable(phase, player.role) && glowingPrince, player.abilities[1] === false ? headStartOnHand((playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
+        <HeadStart css={[headStartSize, selectedHeadStart === true && hSIsSelected, isHeadStartTokenDraggable(phase, player.role) && glowingPrince, player.abilities[1] === false ? headStartOnHand((playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
                    draggable={isHeadStartTokenDraggable(phase, player.role)}
                    type={'HeadStartToken'}
                    draggableItem={{}}
+                   onClick = {() => phase === Phase.Patrolling && player.role === playerId && player.abilities[1] === false && player.gold >=2 && playSelectHeadStart(setSelectedHeadStartMove(), {local:true})}
+
         />
         
 
@@ -178,6 +184,12 @@ height:5%;
 width:3%;
 z-index:1;
 filter:drop-shadow(0 0 0.5em black);
+transition:transform 0.2s linear;
+`
+
+const hSIsSelected = css`
+transform:translateZ(4em);
+transition:transform 0.2s linear;
 `
 
 const validationButtonPosition = css`
