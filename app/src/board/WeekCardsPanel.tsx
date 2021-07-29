@@ -110,13 +110,13 @@ const drawEventKeyFramesFront = (districtPosition:number, isPrinceView:boolean) 
     }
     75%{
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
         transform:translateZ(0em) rotateY(0deg);
     }
     to{
         transform:translateZ(0em) rotateY(0deg);
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
 
     }
 `
@@ -137,13 +137,13 @@ const drawEventKeyFramesBack = (districtPosition:number, isPrinceView:boolean) =
     }
     75%{
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
         transform:translateZ(0em) rotateY(180deg);
     }
     to{
         transform:translateZ(0em) rotateY(180deg);
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -270+districtPosition*150.5}%;
+        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
     }
 `
 

@@ -12,7 +12,7 @@ import translations from './translations.json'
 import BrigandsTutorial from './tutorial/Tutorial'
 import Images from './utils/Images'
 
-setupTranslation(translations,{debug:false})
+setupTranslation(translations)
 
 const style = css`
   html {
@@ -29,7 +29,7 @@ const style = css`
 
   body {
     margin: 0;
-    font-family: 'Oswald', "Roboto Light", serif;
+    font-family: 'Roboto Condensed', sans-serif;
     font-size: 1vh;
     @media (max-aspect-ratio: 16/9) {
       font-size: calc(9vw / 16);
