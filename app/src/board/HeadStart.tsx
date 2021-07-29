@@ -2,10 +2,10 @@
 import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
 import PlayHeadStart from "@gamepark/brigands/moves/PlayHeadStart";
+import HeadStartToken from "@gamepark/brigands/types/HeadStartToken";
 import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
-import HeadStartToken from "../utils/HeadStartToken";
 import Images from "../utils/Images";
 
 type Props = {

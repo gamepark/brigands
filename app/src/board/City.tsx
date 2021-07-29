@@ -7,7 +7,7 @@ import Partner from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
 import { FC, HTMLAttributes } from "react";
 import DistrictTile from "./DistrictTile";
-import { usePlay, usePlayerId } from "@gamepark/react-client";
+import { usePlay, usePlayerId, useSound } from "@gamepark/react-client";
 import Move from "@gamepark/brigands/moves/Move";
 import MoveType from "@gamepark/brigands/moves/MoveType";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
@@ -18,7 +18,7 @@ import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 import { ResetSelectedHeadStart, resetSelectedHeadStartMove } from "../localMoves/SetSelectedHeadStart";
 import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
 import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
-
+import MoveTokenSound from "../sounds/moveToken.mp3"
 
 type Props = {
     city:District[]
@@ -44,9 +44,11 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
     const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
     const playerId = usePlayerId<PlayerRole>()
 
+    const moveSound = useSound(MoveTokenSound)
 
     function playPlacePartner(selectedPartner:number | undefined, district:DistrictName){
         if (selectedPartner !== undefined && playerId !== undefined){
+            moveSound.play()
             play({
                 type:MoveType.PlacePartner,
                 district,
@@ -71,6 +73,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                     type:MoveType.JudgePrisoners                    
                 })
             } else {
+                moveSound.play()
                 play({
                     type:MoveType.PlacePatrol,
                     district,
@@ -82,6 +85,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
     }
 
     function playPlaceHeadStart(district:DistrictName){
+        moveSound.play()
         play({type:MoveType.PlayHeadStart, district})
         playResetSelectHeadStart(resetSelectedHeadStartMove(), {local:true})
     }

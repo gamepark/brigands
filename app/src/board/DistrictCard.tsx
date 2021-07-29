@@ -9,13 +9,15 @@ import { ThiefState } from "@gamepark/brigands/PlayerState";
 import Partner from "@gamepark/brigands/types/Partner";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { ThiefView } from "@gamepark/brigands/types/Thief";
+import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
-import { useAnimation, usePlay, usePlayerId } from "@gamepark/react-client";
+import { useAnimation, usePlay, usePlayerId, useSound } from "@gamepark/react-client";
 import { FC } from "react";
 import { useDrop } from "react-dnd";
 import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
-import ThiefTokenInHand from "../utils/ThiefTokenInHand";
 import Images from "../utils/Images";
+import MoveTokenSound from "../sounds/moveToken.mp3"
+
 
 type Props = {
     district?:DistrictName
@@ -23,6 +25,7 @@ type Props = {
     color:PlayerRole
     partners?:Partner[]
     selectedTokenInHand?:ThiefTokenInHand
+    
 }
 
 const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTokenInHand}) => {
@@ -30,6 +33,8 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
     const playerId = usePlayerId<PlayerRole>()
     const play = usePlay<Move>()
     const indexOfFirstPartnerOnDistrict:number | undefined = partners !== undefined ? partners.findIndex((part, index) => part.district === district && !isThisPartnerHasAnyToken(thief, index)) : undefined
+
+    const moveSound = useSound(MoveTokenSound)
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInHand"],
@@ -44,6 +49,7 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
           isOver: monitor.isOver()
         }),
         drop: (item: ThiefTokenInHand) => {
+            moveSound.play()
             return {type:MoveType.PlaceToken,role:playerId, tokenAction:item.tokenAction, partnerNumber:indexOfFirstPartnerOnDistrict}
         }
       })
@@ -51,6 +57,7 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
     const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
 
     function playPlaceToken(partnerNumber:number, role:PlayerRole, tokenAction:TokenAction){
+            moveSound.play()
             play({
                 type:MoveType.PlaceToken,
                 partnerNumber,

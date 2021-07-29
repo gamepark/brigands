@@ -5,15 +5,16 @@ import District from "@gamepark/brigands/districts/District"
 import DistrictName from "@gamepark/brigands/districts/DistrictName"
 import Phase from "@gamepark/brigands/phases/Phase"
 import PlayerRole from "@gamepark/brigands/types/PlayerRole"
-import { usePlayerId } from "@gamepark/react-client"
+import { usePlayerId, useSound } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
-import PartnerInHand, { isPartnerInHand } from "../utils/PartnerInHand"
 import Images from "../utils/Images"
 import {decomposeGold, getCoin} from './PrincePanel'
-import HeadStartToken from "src/utils/HeadStartToken"
 import PatrolInHand, { isPatrolInHand } from "@gamepark/brigands/types/PatrolInHand"
+import PartnerInHand, { isPartnerInHand } from "@gamepark/brigands/types/PartnerInHand"
+import HeadStartToken from "@gamepark/brigands/types/HeadStartToken"
+import MoveTokenSound from "../sounds/moveToken.mp3"
 
 /** @jsxImportSource @emotion/react */
 
@@ -35,6 +36,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
+    const moveSound = useSound(MoveTokenSound)
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
@@ -59,10 +61,13 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
         }),
         drop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
             if (isPatrolInHand(item)){
+                moveSound.play()
                 return district.name === DistrictName.Jail ? {type:MoveType.JudgePrisoners} : {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
             } else if (isPartnerInHand(item)){
+                moveSound.play()
                 return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
             } else {
+                moveSound.play()
                 return {type:MoveType.PlayHeadStart, district:district.name}
             }
         }

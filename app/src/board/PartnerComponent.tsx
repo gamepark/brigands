@@ -11,9 +11,9 @@ import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
-import PartnerInHand from "src/utils/PartnerInHand";
 import Images from "../utils/Images";
 import ThiefToken from "./ThiefToken";
+import PartnerInHand from "@gamepark/brigands/types/PartnerInHand";
 
 type Props = {
     role:PlayerRole

@@ -1,5 +1,5 @@
 import GameView from "@gamepark/brigands/GameView";
-import PartnerInHand from "../utils/PartnerInHand";
+import PartnerInHand from "@gamepark/brigands/types/PartnerInHand";
 
 export default interface SetSelectedPartner {
     type: 'SetSelectedPartner'

@@ -7,20 +7,40 @@ import {DndProvider} from 'react-dnd-multi-backend'
 import HTML5ToTouch from 'react-dnd-multi-backend/dist/cjs/HTML5toTouch'
 import GameDisplay from './GameDisplay'
 import HeaderText from './HeaderText'
+import { AudioLoader } from './utils/AudioLoader'
 import Images from './utils/Images'
+import SoundLoader from './utils/SoundLoader'
+
+import GoldCoinSound from './sounds/gold1.mp3'
+import GoldBagSound from './sounds/goldBag.mp3'
+import MoveToken from './sounds/moveToken.mp3'
+import CardFlip from './sounds/cardFlip.mp3'
+import DiceRoll from './sounds/diceRoll.mp3'
+import DiceShake from './sounds/diceShake.mp3'
+import PrisonDoor from './sounds/prisonDoor.mp3'
 
 export default function App() {
   const game = useGame<GameView>()
+
+  const [audioLoader, setAudioLoader] = useState<AudioLoader>()
+  const [isSoundsLoading, setSoundLoading] = useState(true)
+
   const [isJustDisplayed, setJustDisplayed] = useState(true)
   useEffect(() => {
     setTimeout(() => setJustDisplayed(false), 2000)
   }, [])
-  const loading = !game || isJustDisplayed
+  const loading = !game || isJustDisplayed || isSoundsLoading
   return (
     <DndProvider options={HTML5ToTouch}>
-      {game && <GameDisplay game={game}/>}
-      <LoadingScreen display={loading} gameBox={Images.box} author="Florian Boué & Laurène Brosseau" artist="Sylvain Aublin" publisher="Aspic Games" developer="Théo Grégorio"/>
+      {!loading && audioLoader && game && <GameDisplay game={game} audioLoader={audioLoader} />}
+      <LoadingScreen display={loading} 
+                     gameBox={Images.box} 
+                     author="Florian Boué & Laurène Brosseau" 
+                     artist="Sylvain Aublin" 
+                     publisher="Aspic Games" 
+                     developer="Théo Grégorio"/>
       <Header><HeaderText loading={loading} game={game}/></Header>
+      <SoundLoader sounds={[GoldCoinSound, GoldBagSound, MoveToken, CardFlip, DiceRoll, DiceShake, PrisonDoor]} onSoundLoad={() => setSoundLoading(false)} onSoundsPrepared={ (audioLoader) => setAudioLoader(audioLoader) }/>
       <Menu/>
       <FailuresDialog/>
       <FullscreenDialog/>

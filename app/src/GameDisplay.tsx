@@ -22,12 +22,15 @@ import WeekCardsPanel from './board/WeekCardsPanel'
 import { isRevealPartnersDistrict, RevealPartnersDistrictsView } from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import TutorialPopup from './tutorial/TutorialPopUp'
 import WelcomePopUp from './board/WelcomePopUp'
+import BrigandsSounds from './sounds/BrigandsSounds'
+import { AudioLoader } from './utils/AudioLoader'
 
 type Props = {
   game: GameView
+  audioLoader:AudioLoader
 } 
 
-export default function GameDisplay({game}: Props) {
+export default function GameDisplay({game, audioLoader}: Props) {
 
   const tutorial = useTutorial()
 
@@ -140,6 +143,8 @@ export default function GameDisplay({game}: Props) {
       {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
 
       {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)} />}
+
+      <BrigandsSounds audioLoader={ audioLoader } />
 
     </Letterbox>
   )

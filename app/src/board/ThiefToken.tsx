@@ -4,12 +4,12 @@ import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
 import TakeToken from "@gamepark/brigands/moves/TakeToken";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
+import ThiefTokenInBank from "@gamepark/brigands/types/ThiefTokenInBank";
+import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
-import ThiefTokenInBank from "src/utils/ThiefTokenInBank";
-import ThiefTokenInHand from "src/utils/ThiefTokenInHand";
 import Images from "../utils/Images";
 
 type Props = {

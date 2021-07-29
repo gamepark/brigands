@@ -2,10 +2,10 @@
 import { css } from "@emotion/react";
 import Move from "@gamepark/brigands/moves/Move";
 import PlacePatrol from "@gamepark/brigands/moves/PlacePatrol";
+import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 import { usePlay } from "@gamepark/react-client";
 import { Draggable } from "@gamepark/react-components";
 import { FC, HTMLAttributes } from "react";
-import PatrolInHand from "src/utils/PatrolInHand";
 import Images from "../utils/Images";
 
 type Props = {

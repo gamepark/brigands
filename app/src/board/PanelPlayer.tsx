@@ -20,7 +20,6 @@ import {useDrop} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
-import ThiefTokenInBank from '../utils/ThiefTokenInBank'
 import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
@@ -33,6 +32,7 @@ import { EventArray } from '@gamepark/brigands/material/Events'
 import { ResetSelectedTokensInBank, resetSelectedTokensInBankMove } from '../localMoves/SetSelectedTokensInBank'
 import SetSelectedTokenInHand, { setSelectedTokenInHandMove } from '../localMoves/SetSelectedTokenInHand'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
+import ThiefTokenInBank from '@gamepark/brigands/types/ThiefTokenInBank'
 
 type Props = {
     player:ThiefState | ThiefView
