@@ -564,9 +564,9 @@ ${transitionPartner};
 const partnerHandPosition = (positionForPartners:number, index:number, nbThieves:number) => css`
     top:${18}%;
     ${nbThieves === 5 && `left:${6+positionForPartners*20+index*2.5}%;`}
-    ${nbThieves === 4 && `left:${12.5+positionForPartners*25+index*2.5}%;`}
-    ${nbThieves === 3 && `left:${16.5+positionForPartners*33.5+index*2.5}%;`}
-    ${nbThieves === 2 && `left:${25+positionForPartners*50+index*2.5}%;`}
+    ${nbThieves === 4 && `left:${8.5+positionForPartners*25+index*2.5}%;`}
+    ${nbThieves === 3 && `left:${12.5+positionForPartners*33.5+index*2.5}%;`}
+    ${nbThieves === 2 && `left:${21+positionForPartners*50+index*2.5}%;`}
 
     ${transitionPartner};
 `
