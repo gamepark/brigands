@@ -30,26 +30,26 @@ const BrigandsSounds : FC<Props> = ({audioLoader}) => {
 
 
     useEffect(() => {
-        if (gainGoldAnimation) {
-          gainGoldAnimation.move.gold > 5 ? audioLoader.play(GoldBagSound, false, 0.9) : audioLoader.play(GoldCoinSound, false, 0.9);
+        if (gainGoldAnimation && gainGoldAnimation.move.gold > 0) {
+          gainGoldAnimation.move.gold > 5 ? audioLoader.play(GoldBagSound, false, 0.6) : audioLoader.play(GoldCoinSound, false, 0.4);
         }
       }, [gainGoldAnimation?.move]);
 
       useEffect(() => {
         if (drawEventAnimation || revealCardsAnimation) {
-            audioLoader.play(CardFlip,false, 0.9);
+            audioLoader.play(CardFlip,false, 0.4);
         }
       }, [drawEventAnimation?.move, revealCardsAnimation?.move]);
 
       useEffect(() => {
         if (diceRollAnimation) {
-          audioLoader.play(DiceShake, false, 0.9)
+          audioLoader.play(DiceShake, false, 0.4)
         }
       }, [diceRollAnimation?.move]);
 
       useEffect(() => {
         if (arrestPartnersAnimation) {
-          audioLoader.play(PrisonDoor, false, 0.9)
+          audioLoader.play(PrisonDoor, false, 0.4)
         }
       }, [arrestPartnersAnimation?.move]);
 

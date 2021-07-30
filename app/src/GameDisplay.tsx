@@ -24,6 +24,8 @@ import TutorialPopup from './tutorial/TutorialPopUp'
 import WelcomePopUp from './board/WelcomePopUp'
 import BrigandsSounds from './sounds/BrigandsSounds'
 import { AudioLoader } from './utils/AudioLoader'
+import BetGold, { isBetGold } from '@gamepark/brigands/moves/BetGold'
+import GainGold, { gainGold, isGainGold } from '@gamepark/brigands/moves/GainGold'
 
 type Props = {
   game: GameView
@@ -34,7 +36,9 @@ export default function GameDisplay({game, audioLoader}: Props) {
 
   const tutorial = useTutorial()
 
+  const betAnimation = useAnimation<BetGold>(animation => isBetGold(animation.move))
   const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
+  const gainGoldAinmation = useAnimation<GainGold>(animation => isGainGold(animation.move))
   const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
   const playerId = usePlayerId<PlayerRole>()
@@ -50,6 +54,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
     && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
     && playerList.filter(p => p.partners.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
     && prince.patrols.some(pat => pat === DistrictName.Tavern) === false)
+    && !betAnimation && !gainGoldAinmation && !diceAnimation
   }
 
   const [welcomePopUpClosed, setWelcomePopUpClosed] = useState(tutorial ? true : playerId === undefined || game.eventDeck < 5)

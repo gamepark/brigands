@@ -200,17 +200,21 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
             }
 
             {animationGainGold && (animationGainGold.move.thief === player.role)
-                && decomposeGold(animationGainGold.move.gold).map((coin, index) =>
-                    [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index, index2), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))
+                && <div css={flexStyle}> {decomposeGold(animationGainGold.move.gold).map((coin, index) =>
+                    [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))}
+                   </div>
             }
 
             {animationResolveSteal && (animationResolveSteal.move.steals.find(s => s.victim === player.role))
-                && animationResolveSteal.move.steals.filter(s => s.victim === player.role && s.thief !== player.role).map((steal, stealIndex) => 
+                && <div css={flexStyle}>{
+                animationResolveSteal.move.steals.filter(s => s.victim === player.role && s.thief !== player.role).map((steal, stealIndex) => 
                     decomposeGold(steal.gold).map((coin, coinIndex) => 
-                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex, index), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim), numberOfThieves)]} draggable={false} />
+                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim), numberOfThieves)]} draggable={false} />
+                        )
                     )
-                )
-            )}
+                )}
+                </div>
+            }
 
         </div>
 
@@ -257,16 +261,19 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
         && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
+        && prince.abilities[1] !== districtResolved!.name
         && <Button css={[moveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:player.role, runner:player.role})} pRole={player.role} >{t('Move')}</Button>
         }  
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
         && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
+        && prince.abilities[1] !== districtResolved!.name
         && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.MovePartner, role:false, runner:player.role})} pRole={player.role} >{t("Don't Move")}</Button>
         }  
 
 
         {player.role === playerId && thiefId !== false && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
+        && prince.abilities[1] !== districtResolved!.name
         && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.KickOrNot, kickerRole:thiefId.role, playerToKick:false})} pRole={player.role} >{t("Don't Kick")}</Button>
         }  
 
@@ -379,22 +386,22 @@ to{
 `
 
 const gainGoldAnimation = (duration:number, districtPos:number, numberOfThieves:number, playerPos:number, isPrinceView:boolean) => css`
-animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrinceView)} ${duration}s;
+animation: ${gainGoldKeyFrames(numberOfThieves, playerPos, districtPos, isPrinceView)} ${duration}s infinite;
 `
 
 const getTranslation = (numberOfThieves:number, playerPos:number, districtPos:number, isPrinceView:boolean, scaling:number) => {
     switch (numberOfThieves){
         case 2 : {
-            return css`transform : translate(${-33+districtPos*21-playerPos*80}em, ${isPrinceView ? 32 : -30}em) scale(${scaling}, ${scaling}) `
+            return css`transform : translate(${-30.5+districtPos*20.6-playerPos*80}em, ${isPrinceView ? 30 : -28}em) scale(${scaling}, ${scaling}) ; transform-origin:bottom left;`
         }
         case 3 : {
-            return css`transform : translate(${-19+districtPos*20.6-playerPos*53.5}em, ${isPrinceView ? 32: -26}em) scale(${scaling}, ${scaling})`
+            return css`transform : translate(${-16.2+districtPos*20.6-playerPos*53.5}em, ${isPrinceView ? 30: -28}em) scale(${scaling}, ${scaling}) ; transform-origin:bottom left;`
         }
         case 4 : {
-            return css`transform : translate(${-12.5+districtPos*20.6-playerPos*40}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling})`
+            return css`transform : translate(${-10+districtPos*20.6-playerPos*40}em, ${isPrinceView ? 30 : -28}em) scale(${scaling}, ${scaling}); transform-origin:bottom left;`
         }
         case 5 : {
-            return css`transform : translate(${-8.5+districtPos*20.6-playerPos*32}em, ${isPrinceView ? 32 : -26}em) scale(${scaling}, ${scaling})`
+            return css`transform : translate(${-6+districtPos*20.6-playerPos*32}em, ${isPrinceView ? 30 : -28}em) scale(${scaling}, ${scaling}); transform-origin:bottom left;`
         }
         default : {
             return css``
@@ -402,14 +409,23 @@ const getTranslation = (numberOfThieves:number, playerPos:number, districtPos:nu
     }
 }
 
-const coinPosition = (index1:number, index2:number) => css`
+const flexStyle = css`
+display:flex;
+position:absolute;
+top:50%;
+width:17.5%;
+height:40%;
+`
+
+const coinPosition = (index1:number) => css`
 position:relative;
-top:${-30+index2}%;
-left:${20+index1*-10 - index2*10}%;
-width:25%;
-height:30%;
+top:${index1*0.8}em;
+left:4em;
+margin:0em ${-2+index1*0.5}em;
 border-radius: 100%;
 box-shadow: 0 0 1em 0.2em black;
+width:${6+(2-index1*0.8)}em;
+height:${6+(2-index1*0.8)}em;
 
 `
 
