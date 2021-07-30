@@ -20,7 +20,6 @@ import ArrestPartners, {isArrestPartners} from "@gamepark/brigands/moves/ArrestP
 import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 import SetSelectedPatrol, { setSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
 import SetSelectedHeadStart, { setSelectedHeadStartMove } from "../localMoves/SetSelectedHeadStart";
-import HeadStartToken from "@gamepark/brigands/types/HeadStartToken";
 
 type Props = {
     player:PrinceState
@@ -47,7 +46,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
         if (patrolIndex !== 2){
             return phase === Phase.Patrolling && role === playerId && statePatrol === -1
         } else {
-            return player.gold > 4 && player.abilities[2] === false && phase === Phase.Patrolling && role === playerId && statePatrol !== -2   
+            return player.gold > 4 && player.abilities[2] === false && player.abilities[1] !== player.patrols[2] && phase === Phase.Patrolling && role === playerId && statePatrol !== -2   
         }
         
     }
@@ -96,7 +95,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
                          type={'PatrolInHand'}
                          draggableItem={{patrolNumber:index}}
 
-                         onClick = {() => phase === Phase.Patrolling && player.role === playerId && (index === 2 ? player.abilities[2] !== true && player.gold >=5 : patrol === -1) && playSelectPatrol(setSelectedPatrolMove(patrol, index), {local:true})}
+                         onClick = {() => isPatrolDraggable(phase, player.role, patrol, index) && playSelectPatrol(setSelectedPatrolMove(patrol, index), {local:true})}
                          />
         )}
 
