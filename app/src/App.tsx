@@ -9,7 +9,7 @@ import GameDisplay from './GameDisplay'
 import HeaderText from './HeaderText'
 import { AudioLoader } from './utils/AudioLoader'
 import Images from './utils/Images'
-import SoundLoader from './utils/SoundLoader'
+import {SoundLoader} from './utils/SoundLoader'
 
 import GoldCoinSound from './sounds/gold1.mp3'
 import GoldBagSound from './sounds/goldBag.mp3'

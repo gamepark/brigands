@@ -29,4 +29,4 @@ const SoundLoader : FC<Props> = ({sounds, onSoundLoad, onSoundsPrepared}) => {
 
 }
 
-export default SoundLoader
+export {SoundLoader} ;

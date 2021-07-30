@@ -14,7 +14,7 @@ import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import TokenAction from '@gamepark/brigands/types/TokenAction'
-import {useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
+import {PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
 import {useDrop} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
@@ -133,7 +133,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             <AvatarPanel playerInfo={playerInfo} role={player.role} />
             <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
-            <div css={tempoTimer}> 00:00 </div>            {/*<PlayerTimer playerId={player.role} css={[timerStyle]}/>*/}
+            <PlayerTimer playerId={player.role} css={[timerStyle]}/>
             <div css={goldZonePosition}>
 
                 {isThiefState(player) && <div css={goldPanel}><p> {t('Ducats')} : {player.gold}</p></div>}
@@ -563,7 +563,7 @@ ${transitionPartner};
 
 const partnerHandPosition = (positionForPartners:number, index:number, nbThieves:number) => css`
     top:${18}%;
-    ${nbThieves === 5 && `left:${10.5+positionForPartners*20+index*2.5}%;`}
+    ${nbThieves === 5 && `left:${6+positionForPartners*20+index*2.5}%;`}
     ${nbThieves === 4 && `left:${12.5+positionForPartners*25+index*2.5}%;`}
     ${nbThieves === 3 && `left:${16.5+positionForPartners*33.5+index*2.5}%;`}
     ${nbThieves === 2 && `left:${25+positionForPartners*50+index*2.5}%;`}
@@ -624,13 +624,9 @@ const nameStyle = css`
 
 const timerStyle = css`
     display: block;
+    position:relative;
+    left:5em;
     font-size: 2.5em;
-    padding-top: 0.2em;
-`
-
-const tempoTimer = css`
-    display: block;
-    font-size: 2.4em;
     padding-top: 0.2em;
 `
 

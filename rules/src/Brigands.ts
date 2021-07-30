@@ -1,4 +1,4 @@
-import {Action, SecretInformation, SimultaneousGame, Undo} from '@gamepark/rules-api'
+import {Action, GameSpeed, SecretInformation, SimultaneousGame, TimeLimit, Undo} from '@gamepark/rules-api'
 import {shuffle} from 'lodash'
 import {BrigandsOptions, BrigandsPlayerOptions, isGameOptions} from './BrigandsOptions'
 import canUndo from './canUndo'
@@ -46,7 +46,8 @@ import {ThiefView} from './types/Thief'
 import TokenAction from './types/TokenAction'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
-  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>, Undo<GameState, Move, PlayerRole> {
+  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>, Undo<GameState, Move, PlayerRole>,
+  TimeLimit<GameState, Move, PlayerRole> {
 
   constructor(state: GameState)
   constructor(options: BrigandsOptions)
@@ -216,6 +217,19 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   canUndo(action: Action<Move, PlayerRole>, consecutiveActions: Action<Move, PlayerRole>[]): boolean {
     return canUndo(action, consecutiveActions)
+  }
+
+  giveTime(playerId: PlayerRole): number {
+    switch(this.state.phase){
+      case Phase.Planning:
+        return 120
+      case Phase.Patrolling:
+        return 120
+      case Phase.Solving:
+        return 30
+      default:
+        return 0
+    }
   }
 
   getPlayerMoveView(move: Move, playerId: PlayerRole): MoveView {
