@@ -33,6 +33,7 @@ import { ResetSelectedTokensInBank, resetSelectedTokensInBankMove } from '../loc
 import SetSelectedTokenInHand, { setSelectedTokenInHandMove } from '../localMoves/SetSelectedTokenInHand'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
 import ThiefTokenInBank from '@gamepark/brigands/types/ThiefTokenInBank'
+import { getThieves } from '@gamepark/brigands/GameView'
 
 type Props = {
     player:ThiefState | ThiefView
@@ -231,13 +232,13 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
                                             : partner.district === DistrictName.Jail
-                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1)
+                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEscaping(player.role, index, thieves, phase, districtResolved))
                                                 : partnerHandPosition(positionForPartners, index, numberOfThieves)        
                                         : isPartnerView(partner)
                                             ? test
                                             : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1)
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEscaping(player.role, index, thieves, phase, districtResolved))
                                      
                                             ]}
                               role={player.role}
@@ -289,6 +290,18 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
     )
 
+}
+
+function isEscaping(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|ThiefView)[], phase:Phase|undefined, districtResolved:District|undefined ):boolean{
+    const colorOfPartnerEscaping : PlayerRole|undefined = thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)) !== undefined 
+        ? thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)!)!.role
+        : undefined
+
+    if (colorOfPartnerEscaping === undefined || phase !== Phase.Solving || districtResolved === undefined || districtResolved.name !== DistrictName.Jail) return false
+    else {
+        const indexOfPartnerEscaping : number = thieves.find(t => t.role === colorOfPartnerEscaping)!.partners.findIndex(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)
+        return role === colorOfPartnerEscaping && partnerIndex === indexOfPartnerEscaping
+    }
 }
 
 function getStealTranslationLength(numberOfThieves:number):number{
@@ -522,10 +535,10 @@ const validationButtonPosition = css`
     font-size:3.5em;
 `
 
-const onCity = (positionForPartners:number, index:number, district:number, prince:number) => css`
+const onCity = (positionForPartners:number, index:number, district:number, prince:number, isEscaping:boolean) => css`
 top:${prince*(-100)+index*8}%;
 left:${1.0+district*12.5+positionForPartners*2}%;
-
+${isEscaping === true && `transform:translateZ(4em) scale(1.2,1.2);`};
 ${transitionPartner};
 `
 
