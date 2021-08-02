@@ -2,6 +2,7 @@ import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import { ThiefState } from '../PlayerState'
+import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -33,6 +34,13 @@ export default class Convoy extends DistrictRules {
           return {type: MoveType.ThrowDice, dice: rollDice(this.isDistrictEvent() ? 6 : 4), district: DistrictName.Convoy}
         }
       }
+    } else if (this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Convoy)).length === 1){
+      return {
+        type : MoveType.GainGold, district:DistrictName.Convoy, 
+        thief:this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Convoy))[0].role,
+        gold:this.district.dice.reduce((acc, cv) => acc + cv),
+        noShare:true
+       }
     } else if (partners.every(p => p.solvingDone === true)) {
       return {
         type: MoveType.SpareGoldOnTreasure, gold: this.district.dice.reduce((acc, cv) => acc + cv) % partners.length, district: DistrictName.Convoy

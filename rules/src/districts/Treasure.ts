@@ -1,6 +1,7 @@
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import { ThiefState } from '../PlayerState'
+import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -26,10 +27,19 @@ export default class Treasure extends DistrictRules {
       }
     } else {
       if (this.district.dice === undefined) {
-        return {
-          type: MoveType.GainGold, gold: Math.floor(this.district.gold! / partners.length),
-          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!.role,
-          district: DistrictName.Treasure
+        if (this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Treasure)).length === 1){
+          return {
+            type : MoveType.GainGold, district:DistrictName.Treasure, 
+            thief:this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Treasure))[0].role,
+            gold:this.district.gold!,
+            noShare:true
+           }
+        } else {
+          return {
+            type: MoveType.GainGold, gold: Math.floor(this.district.gold! / partners.length),
+            thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Treasure))!.role,
+            district: DistrictName.Treasure
+          }
         }
       } else {
         return {

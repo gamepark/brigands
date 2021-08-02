@@ -2,8 +2,9 @@ import {rollDice} from '../material/Dice'
 import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
-import { ThiefState } from '../PlayerState'
+import { isPrinceState, ThiefState } from '../PlayerState'
 import Event from '../types/Event'
+import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -36,7 +37,16 @@ export default class CityHall extends DistrictRules {
           district: DistrictName.CityHall
         }
       }
-    } else if (partners.every(p => p.solvingDone === true)) {
+    } else if (this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.CityHall)).length === 1){
+      return {
+        type : MoveType.GainGold, district:DistrictName.CityHall, 
+        thief:this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.CityHall))[0].role,
+        gold:this.district.dice.reduce((acc, cv) => acc + cv),
+        noShare:true
+       }
+    }
+    
+    else if (partners.every(p => p.solvingDone === true)) {
       return {
         type: MoveType.SpareGoldOnTreasure, gold: this.district.dice.reduce((acc, cv) => acc + cv) % partners.length,
         district: DistrictName.CityHall
