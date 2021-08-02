@@ -45,7 +45,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
                 if (item.patrolNumber !== 2){
                     return !prince.patrols.includes(district.name)
                 } else {
-                    return district.name !== DistrictName.Jail && !prince.patrols.includes(district.name)
+                    return !prince.patrols.includes(district.name)
                 }
                 
             } else if (isPartnerInHand(item)){
@@ -62,7 +62,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
         drop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
             if (isPatrolInHand(item)){
                 moveSound.play()
-                return district.name === DistrictName.Jail ? {type:MoveType.JudgePrisoners} : {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
+                return {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
             } else if (isPartnerInHand(item)){
                 moveSound.play()
                 return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
@@ -81,7 +81,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
 
             <div css={[dropSize,
                     selectedPartner !== undefined && district.name !== DistrictName.Jail && canClickStyle,
-                    selectedPatrol !== undefined && !prince.patrols.includes(district.name) && (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true ) && canClickStyle,
+                    selectedPatrol !== undefined && !prince.patrols.includes(district.name) && canClickStyle,
                     selectedHeadStart === true && prince.patrols.includes(district.name) && canClickStyle
                     , canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 

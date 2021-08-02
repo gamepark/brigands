@@ -16,7 +16,6 @@ export function judgePrisoners(state: GameState | GameView) {
   const prince = getPrince(state)
   const thieves = getThieves(state)
   prince.abilities[0] = true
-  prince.patrols[prince.patrols.findIndex(pat => pat === -1)] = -2
 
   thieves.forEach(thief => thief.partners.forEach(partner => {
     if (!isPartnerView(partner) && partner.district === DistrictName.Jail) {
@@ -24,6 +23,8 @@ export function judgePrisoners(state: GameState | GameView) {
       prince.victoryPoints += 2
     }
   }))
+
+  prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
 }
 
 export function isJudgePrisoners(move: Move | MoveView): move is JudgePrisoners {

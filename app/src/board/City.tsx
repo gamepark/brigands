@@ -68,18 +68,12 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
 
     function playPlacePatrol(district:DistrictName){
         if (selectedPatrol !== undefined && selectedPatrol.index !== undefined){
-            if (district === DistrictName.Jail){
-                play({
-                    type:MoveType.JudgePrisoners                    
-                })
-            } else {
-                moveSound.play()
-                play({
-                    type:MoveType.PlacePatrol,
-                    district,
-                    patrolNumber:selectedPatrol.index,
-                })
-            }
+            moveSound.play()
+            play({
+                type:MoveType.PlacePatrol,
+                district,
+                patrolNumber:selectedPatrol.index,
+            })
             playResetSelectPatrol(resetSelectedPatrolMove(), {local:true})
         }
     }
@@ -111,7 +105,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               selectedHeadStart={selectedHeadStart}
                               onClick={() => playerId === PlayerRole.Prince 
                                 ? phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined 
-                                    ? (selectedPatrol.index === 2 ? district.name !== DistrictName.Jail : true) && playPlacePatrol(district.name)
+                                    ? playPlacePatrol(district.name)
                                     : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
                                 : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
                 />

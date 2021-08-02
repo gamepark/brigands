@@ -15,10 +15,9 @@ import Move from '../moves/Move'
 import MovePartner from '../moves/MovePartner'
 import MoveType from '../moves/MoveType'
 import {createSteals} from '../moves/ResolveStealToken'
-import {isThief, isThiefState, ThiefState} from '../PlayerState'
+import {isThiefState, ThiefState} from '../PlayerState'
 import Partner from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
-import TokenAction from '../types/TokenAction'
 import {PhaseRules} from './PhaseRules'
 
 export default class Solving extends PhaseRules {

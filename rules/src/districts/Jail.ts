@@ -1,9 +1,10 @@
 import {getTokensInBank} from '../Brigands'
+import { getPrince } from '../GameView'
 import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken from '../moves/TakeToken'
-import {ThiefState} from '../PlayerState'
+import {isPrinceState, ThiefState} from '../PlayerState'
 import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
@@ -36,6 +37,11 @@ export default class Jail extends DistrictRules {
     const partners = this.getDistrictPartners()
     const thievesOnJail = this.getThieves().filter(p => p.partners.some(part => isPartner(part) && part.district === DistrictName.Jail))
     const isTutorial = this.state.tutorial
+
+    if (this.state.players.find(isPrinceState)!.patrols.some(pat => pat === DistrictName.Jail)){
+      return {type:MoveType.JudgePrisoners}
+    }
+
     if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || getTokensInBank(p).length === 0)))) {
       if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
 
