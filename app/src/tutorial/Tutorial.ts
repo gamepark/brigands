@@ -85,7 +85,7 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:1, district:DistrictName.Convoy},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.GreenThief},
 
-        {type:MoveType.JudgePrisoners},
+        {type:MoveType.PlacePatrol,patrolNumber:0, district:DistrictName.Jail},
         {type:MoveType.PlacePatrol,patrolNumber:1, district:DistrictName.Treasure},
         {type:MoveType.PlacePatrol,patrolNumber:2, district:DistrictName.Harbor},
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.Prince},

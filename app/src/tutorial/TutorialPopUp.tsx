@@ -153,7 +153,6 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
     }, [actionsNumber, failures])
 
     useEffect(() => {
-      console.log(actions?.length)
       if (game.eventDeck <=3){
         tutorial.setOpponentsPlayAutomatically(true)
       }

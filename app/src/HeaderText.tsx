@@ -109,7 +109,6 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
   const playerId = usePlayerId<PlayerRole>()
   const players = usePlayers<PlayerRole>()
 
-  const judgePrisonersAnimation = useAnimation<JudgePrisoners>(animation => isJudgePrisoners(animation.move))
   const playHeadStartAnimation = useAnimation<PlayHeadStart>(animation => isPlayHeadStart(animation.move))
   const moveCaptainAnimation = useAnimation<PlacePatrol>(animation => isPlaceCaptain(animation.move))
 
@@ -142,10 +141,8 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
       const prince = getPrince(game)
       if (prince.isReady === true){
         return <> {t("patrolling.reveal")} </>
-      } else if(judgePrisonersAnimation || playHeadStartAnimation || moveCaptainAnimation){
-        if (judgePrisonersAnimation){
-          return <> {t("patrolling.judging.prisoners", {score : getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === DistrictName.Jail)).length*2})}  </>
-        } else if (playHeadStartAnimation){
+      } else if(playHeadStartAnimation || moveCaptainAnimation){
+        if (playHeadStartAnimation){
           return <> {t("patrolling.playing.head.start", {district: playHeadStartAnimation.move.district})} </>
         } else if (moveCaptainAnimation){
           return <> {t("patrolling.move.captain", {district:moveCaptainAnimation.move.district})} </>
@@ -192,13 +189,18 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
           return <> {t("solving.move.token.wait")} </>
         }
 
-      } else if (getPrince(game).patrols.some(pat => pat === district.name)){
+      } else if (getPrince(game).patrols.some(pat => pat === district.name) && district.name !== DistrictName.Jail){
         return <> {t("solving.arrest")} </>
       } else {
         const partnersOnDistrict = getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === district.name))
         const isEvent : boolean = EventArray[game.event].district === district.name
         switch(district.name){
           case DistrictName.Jail:{
+
+            if (getPrince(game).patrols.some(pat => pat === DistrictName.Jail)){
+              return <> {t("patrolling.judging.prisoners", {score : getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) &&  part.district === DistrictName.Jail)).length*2})}  </>
+            }
+
             if (partnersOnDistrict.some(part => part.solvingDone !== true)){
               if (district.dice !== undefined && district.dice[0] === 4){
                 return <> {t("solving.jail.free.partner", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role,players, t)})} </>
