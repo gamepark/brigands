@@ -199,14 +199,12 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
         const isEvent : boolean = EventArray[game.event].district === district.name
         switch(district.name){
           case DistrictName.Jail:{
-            if (getThieves(game).every(p => p.partners.every(part => !isPartner(part) || part.district !== district.name || part.solvingDone !== true))){
-              if (district.dice === undefined){
-                return <> {t("solving.jail.dice", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role,players, t)})} </> 
-              } else if (district.dice[0] === 4){
+            if (partnersOnDistrict.some(part => part.solvingDone !== true)){
+              if (district.dice !== undefined && district.dice[0] === 4){
                 return <> {t("solving.jail.free.partner", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role,players, t)})} </>
               } else {
-                return <> {t("solving.jail.stay.in.jail", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role,players, t)})} </>
-              }
+                return <> {t("solving.jail.dice", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role,players, t)})} </> 
+              } 
             } else {
               if (playerId === undefined || playerId === PlayerRole.Prince || getThieves(game).find(p => p.role === playerId)!.partners.every(part => !isPartner(part) || part.district !== district.name || part.tokensTaken === 1)){
                 if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.tokensTaken === 0)).length === 1){
