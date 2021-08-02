@@ -7,7 +7,7 @@ import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/districts/District";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import { useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
+import { PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../utils/Button";
@@ -66,7 +66,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
 
                 <AvatarPanel playerInfo={playerInfo} role={player.role} />
                 <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
-                <div css={tempoTimer}> 00:00 </div>            {/*<PlayerTimer playerId={player.role} css={[timerStyle]}/>*/}
+                <PlayerTimer playerId={player.role} css={[timerStyle]}/>
 
             </div>
 
@@ -250,13 +250,8 @@ const nameStyle = css`
 
 const timerStyle = css`
     display: block;
+    position:relative;
     font-size: 2.5em;
-    padding-top: 0.2em;
-`
-
-const tempoTimer = css`
-    display: block;
-    font-size: 2.4em;
     padding-top: 0.2em;
 `
 
