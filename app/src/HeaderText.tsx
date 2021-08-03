@@ -32,6 +32,27 @@ export default function HeaderText({loading, game}: Props) {
   }
 }
 
+function getDistrictName(district:DistrictName, t:TFunction):string{
+  switch(district){
+    case DistrictName.Jail:
+      return t("the Jail")
+    case DistrictName.CityHall:
+      return t("the Cityhall")
+    case DistrictName.Convoy:
+      return t("the Convoy")
+    case DistrictName.Harbor:
+      return t("the Harbor")
+    case DistrictName.Market:
+      return t("the Market")
+    case DistrictName.Palace:
+      return t("the Palace")
+    case DistrictName.Tavern:
+      return t("the Tavern")
+    case DistrictName.Treasure:
+      return t("the Treasure")
+  }
+}
+
 function getMaxScoreThief(thieves:(ThiefState | ThiefView)[]):number{
   let max:number = 0
   thieves.forEach(p => {
@@ -143,9 +164,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
         return <> {t("patrolling.reveal")} </>
       } else if(playHeadStartAnimation || moveCaptainAnimation){
         if (playHeadStartAnimation){
-          return <> {t("patrolling.playing.head.start", {district: playHeadStartAnimation.move.district})} </>
+          return <> {t("patrolling.playing.head.start", {district: getDistrictName(playHeadStartAnimation.move.district,t) })} </>
         } else if (moveCaptainAnimation){
-          return <> {t("patrolling.move.captain", {district:moveCaptainAnimation.move.district})} </>
+          return <> {t("patrolling.move.captain", {district:getDistrictName(moveCaptainAnimation.move.district,t)})} </>
         } else {
           return <> {t("no.powers")} </>
         }

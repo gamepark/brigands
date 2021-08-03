@@ -54,7 +54,7 @@ const Event9: Event = {
   district: DistrictName.CityHall,
   goldForPrince: 4,
   goldForTreasure: 3,
-  numberOfDice: 1,
+  numberOfDice: 2,
   positionOfCaptain: 4
 }
 const Event10: Event = {
