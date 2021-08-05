@@ -20,6 +20,7 @@ import ArrestPartners, {isArrestPartners} from "@gamepark/brigands/moves/ArrestP
 import PatrolInHand from "@gamepark/brigands/types/PatrolInHand";
 import SetSelectedPatrol, { setSelectedPatrolMove } from "../localMoves/SetSelectedPatrol";
 import SetSelectedHeadStart, { setSelectedHeadStartMove } from "../localMoves/SetSelectedHeadStart";
+import JudgePrisoners, { isJudgePrisoners } from "@gamepark/brigands/moves/JudgePrisoners";
 
 type Props = {
     player:PrinceState
@@ -40,6 +41,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
     const playSelectHeadStart = usePlay<SetSelectedHeadStart>()
 
     const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
+    const judgePartnersAnimation = useAnimation<JudgePrisoners>(animation => isJudgePrisoners(animation.move))
 
     function isPatrolDraggable(phase:Phase | undefined, role:PlayerRole, statePatrol:number, patrolIndex:number):boolean{
         if (player.isReady === true){return false}
@@ -73,6 +75,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
 
             {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
+            {judgePartnersAnimation && <p css={arrestPartnersHintPosition(judgePartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
 
             {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
             

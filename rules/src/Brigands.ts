@@ -86,6 +86,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case Phase.Solving:
         return new Solving(this.state)
       default:
+        console.log("bug is over !")
         throw new Error('Game is over')
     }
   }

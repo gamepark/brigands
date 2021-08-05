@@ -26,6 +26,7 @@ import BrigandsSounds from './sounds/BrigandsSounds'
 import { AudioLoader } from './utils/AudioLoader'
 import BetGold, { isBetGold } from '@gamepark/brigands/moves/BetGold'
 import GainGold, { gainGold, isGainGold } from '@gamepark/brigands/moves/GainGold'
+import DistrictHelpPopUp from './board/DistrictHelpPopUp'
 
 type Props = {
   game: GameView
@@ -60,7 +61,10 @@ export default function GameDisplay({game, audioLoader}: Props) {
   const [welcomePopUpClosed, setWelcomePopUpClosed] = useState(tutorial ? true : playerId === undefined || game.eventDeck < 5)
   const showWelcomePopup = !welcomePopUpClosed
 
+  const [districtPopUpClosed, setDistrictPopUpClosed] = useState<true | DistrictName>(true)
+
   return (
+    <>
     <Letterbox css={letterBoxStyle} top={0}>
       <div css={perspective}>
         
@@ -101,6 +105,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
               selectedTokenInHand = {game.selectedTokenInHand}
               selectedPatrol = {game.selectedPatrol}
               selectedHeadStart ={game.selectedHeadStart}
+              open = { (district) => setDistrictPopUpClosed(district)}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved!==undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
@@ -152,6 +157,10 @@ export default function GameDisplay({game, audioLoader}: Props) {
       <BrigandsSounds audioLoader={ audioLoader } />
 
     </Letterbox>
+
+    {playerId !== undefined && districtPopUpClosed !== true && <DistrictHelpPopUp district={districtPopUpClosed} nbPlayers={game.players.length} color={playerId === undefined ? PlayerRole.Prince : playerId} close={() => setDistrictPopUpClosed(true)} />}
+
+    </>
   )
 }
 

@@ -26,5 +26,6 @@ export function revealGoldsInView(state: GameView, move: RevealGoldsView) {
 }
 
 export function getRevealGoldsView(thieves: Thief[]): RevealGoldsView {
+  console.log("its over !")
   return {type: MoveType.RevealGolds, goldArray: thieves.map(thief => thief.gold)}
 }

@@ -17,6 +17,8 @@ import { useDrop } from "react-dnd";
 import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
 import Images from "../utils/Images";
 import MoveTokenSound from "../sounds/moveToken.mp3"
+import Phase from "@gamepark/brigands/phases/Phase";
+import { ResetSelectedPartner, resetSelectedPartnerMove } from "../localMoves/SetSelectedPartner";
 
 
 type Props = {
@@ -25,10 +27,11 @@ type Props = {
     color:PlayerRole
     partners?:Partner[]
     selectedTokenInHand?:ThiefTokenInHand
+    phase?:Phase
     
 }
 
-const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTokenInHand}) => {
+const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTokenInHand, phase}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const play = usePlay<Move>()
@@ -50,11 +53,14 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
         }),
         drop: (item: ThiefTokenInHand) => {
             moveSound.play()
+            playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
+            playResetSelectedPartner(resetSelectedPartnerMove(), {local:true})
             return {type:MoveType.PlaceToken,role:playerId, tokenAction:item.tokenAction, partnerNumber:indexOfFirstPartnerOnDistrict}
         }
       })
 
     const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
+    const playResetSelectedPartner = usePlay<ResetSelectedPartner>()
 
     function playPlaceToken(partnerNumber:number, role:PlayerRole, tokenAction:TokenAction){
             moveSound.play()
@@ -65,6 +71,7 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
                 tokenAction
             })
             playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
+            playResetSelectedPartner(resetSelectedPartnerMove(), {local:true})
     }
 
     function canDropSelected():boolean{
@@ -86,7 +93,9 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
             css={[fullSize, canDropSelected() && canDropSelectedStyle, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}
             onClick={() => thief.role === playerId && selectedTokenInHand !== undefined && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1 && playPlaceToken(indexOfFirstPartnerOnDistrict, thief.role, selectedTokenInHand.tokenAction)} >↓</div>}
 
-            <div css = {[back, districtCardBackStyle(getCardBG(undefined), getSeal(color)), revealPartnersAnimation && rotateCardBackAnimation(revealPartnersAnimation.duration)]}></div>
+            <div css = {[back, districtCardBackStyle(getCardBG(undefined), getSeal(color)), revealPartnersAnimation && rotateCardBackAnimation(revealPartnersAnimation.duration)]}>
+                {district !== undefined && phase === Phase.Planning && <img css={iconStyle} src={getIcon(district)} />}
+            </div>
             <div css = {[front, districtCardFrontStyle(getCardBG(district), getSeal(color)), revealPartnersAnimation && rotateCardFrontAnimation(revealPartnersAnimation.duration)]}></div>
         </div>
     )
@@ -106,6 +115,15 @@ export const glowingBrigand = (color:string) => css`
     animation: ${glowingColoredKeyframes(color)} 1s infinite alternate;
 `
 
+const iconStyle = css`
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+z-index:3;
+width:100%;
+filter:grayscale(100%);
+`
+
 const fullSize = css`
 width:31%;
 height:100%;
@@ -115,12 +133,14 @@ position:absolute;
 `
 
 const canDropStyle = css`
+z-index:5;
 border:white solid 0.08em;
 background-color:rgba(0,0,0,0.0);
 transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
 `
 
 const canDropSelectedStyle = css`
+z-index:5;
 border:white solid 0.08em;
 background-color:rgba(0,0,0,0.0);
 transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
@@ -133,6 +153,7 @@ cursor:pointer;
 `
 
 const isOverStyle = css`
+z-index:5;
 border:white solid 0.08em;
 background-color:rgba(0,0,0,0.7);
 transition : background-color 0.5s ease-in-out, border 0.5s ease-in-out;
@@ -175,6 +196,8 @@ backface-visibility:hidden;
 `
 
 const districtCardBackStyle = (back:string, seal:string) => css`
+position:relative;
+z-index:1;
 background: center / 50% no-repeat url(${seal}),center / contain no-repeat url(${back});
 width:100%;
 height:100%;
@@ -182,6 +205,8 @@ box-shadow: 0 0 1em 0.2em black;
 `
 
 const districtCardFrontStyle = (front:string, seal:string) => css`
+position:relative;
+z-index:1;
 background: center 10% / 40% no-repeat url(${seal}),center / contain no-repeat url(${front});
 width:100%;
 height:100%;
@@ -192,6 +217,30 @@ const cardSize = css`
 width:31%;
 height:100%;
 `
+
+function getIcon(district?:DistrictName):string{
+    if (district === undefined){
+        return ""
+    }
+    switch (district){
+        case DistrictName.CityHall :
+            return Images.iconCityHall
+        case DistrictName.Harbor :
+            return Images.iconHarbor
+        case DistrictName.Market :
+            return Images.iconMarket
+        case DistrictName.Palace :
+            return Images.iconPalace
+        case DistrictName.Tavern :
+            return Images.iconTavern
+        case DistrictName.Treasure :
+            return Images.iconTreasure
+        case DistrictName.Convoy :
+            return Images.iconConvoy
+        default :
+            return 'error : jail detected'  
+    }
+}
 
 function getCardBG(district?:DistrictName):string{
 

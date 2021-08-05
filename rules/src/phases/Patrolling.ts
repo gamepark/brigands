@@ -17,7 +17,7 @@ export default class Patrolling extends PhaseRules {
     const patrollingMoves: (PlacePatrol | JudgePrisoners | PlayHeadStart | TellYouAreReady)[] = []
     for (let i = 1; i < 9; i++) {
       if (prince.gold > 1 && prince.abilities[1] === false) {
-        prince.patrols.includes(i) && patrollingMoves.push({type: MoveType.PlayHeadStart, district: i})
+        prince.patrols.includes(i) && i !== 1 && patrollingMoves.push({type: MoveType.PlayHeadStart, district: i})
       }
       if (prince.gold > 4 && !prince.abilities[2] && i !== prince.patrols[2]) {
         !prince.patrols.includes(i) && prince.abilities[1] !== prince.patrols[2] && patrollingMoves.push({type: MoveType.PlacePatrol, district: i, patrolNumber: 2})

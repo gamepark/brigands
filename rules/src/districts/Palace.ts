@@ -31,7 +31,7 @@ export default class Palace extends DistrictRules {
   }
 
   maxPartners() {
-    if (this.isDistrictEvent()) return 3
+    if (this.isDistrictEvent()) return 4
     else if (this.state.players.length >= 4) return 2
     else return 1
   }

@@ -27,10 +27,10 @@ import {decomposeGold, getCoin} from './PrincePanel'
 import ThiefToken from './ThiefToken'
 import ResolveStealToken, { isResolveStealToken } from '@gamepark/brigands/moves/ResolveStealToken'
 import { resolveStealDurationUnit } from '../BrigandsAnimations'
-import SetSelectedPartner, { setSelectedPartnerMove } from '../localMoves/SetSelectedPartner'
+import SetSelectedPartner, { ResetSelectedPartner, resetSelectedPartnerMove, setSelectedPartnerMove } from '../localMoves/SetSelectedPartner'
 import { EventArray } from '@gamepark/brigands/material/Events'
 import { ResetSelectedTokensInBank, resetSelectedTokensInBankMove } from '../localMoves/SetSelectedTokensInBank'
-import SetSelectedTokenInHand, { setSelectedTokenInHandMove } from '../localMoves/SetSelectedTokenInHand'
+import SetSelectedTokenInHand, { ResetSelectedTokenInHand, resetSelectedTokenInHandMove, setSelectedTokenInHandMove } from '../localMoves/SetSelectedTokenInHand'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
 import ThiefTokenInBank from '@gamepark/brigands/types/ThiefTokenInBank'
 import { getThieves } from '@gamepark/brigands/GameView'
@@ -99,6 +99,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     const playResetTokensInBank = usePlay<ResetSelectedTokensInBank>()
     const playSetTokenInHand = usePlay<SetSelectedTokenInHand>()
 
+    const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
+    const playResetSelectedPartner = usePlay<ResetSelectedPartner>()
+
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["ThiefTokenInBank"],
         canDrop: (item: ThiefTokenInBank) => {
@@ -122,6 +125,12 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
             })
         })
         playResetTokensInBank(resetSelectedTokensInBankMove(), {local:true})
+      }
+      
+      function playTellYoureReady(role:PlayerRole){
+        playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
+        playResetSelectedPartner(resetSelectedPartnerMove(), {local:true})
+        play({type:MoveType.TellYouAreReady, playerId:player.role})
       }
 
     return(
@@ -194,6 +203,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                                                                         district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
                                                                         partners={partnersForCards}
                                                                         selectedTokenInHand={tokenInHandSelected}
+                                                                        phase={phase}
                 />)}
 
             </div>
@@ -232,13 +242,13 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                                                     ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
                                                     : partnerOnOneOfThreeCards(positionForPartners, index, partner.card, numberOfThieves)
                                             : partner.district === DistrictName.Jail
-                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEscaping(player.role, index, thieves, phase, districtResolved))
+                                                ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
                                                 : partnerHandPosition(positionForPartners, index, numberOfThieves)        
                                         : isPartnerView(partner)
                                             ? test
                                             : partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEscaping(player.role, index, thieves, phase, districtResolved))
+                                                : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
                                      
                                             ]}
                               role={player.role}
@@ -257,7 +267,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
         )}
 
         {player.role === playerId && phase === Phase.Planning && player.isReady === false && player.partners.every(part => !isPartnerView(part) && part.district !== undefined)
-        && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => play({type:MoveType.TellYouAreReady, playerId:player.role})} pRole={player.role} >{t('Validate')}</Button>
+        && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => playTellYoureReady(player.role)} pRole={player.role} >{t('Validate')}</Button>
         }   
 
         {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
@@ -292,6 +302,13 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
 }
 
+function isEmphazing(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|ThiefView)[], phase:Phase|undefined, districtResolved:District|undefined ):boolean{
+    if (districtResolved === undefined || (districtResolved.name !==DistrictName.Jail && districtResolved.name !== DistrictName.Tavern)) return false
+    else {
+        return districtResolved.name === DistrictName.Jail ? isEscaping(role, partnerIndex, thieves, phase, districtResolved) : isBetting(role, partnerIndex, thieves, phase, districtResolved)
+    }
+}
+
 function isEscaping(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|ThiefView)[], phase:Phase|undefined, districtResolved:District|undefined ):boolean{
     const colorOfPartnerEscaping : PlayerRole|undefined = thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)) !== undefined 
         ? thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)!)!.role
@@ -300,6 +317,18 @@ function isEscaping(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|Th
     if (colorOfPartnerEscaping === undefined || phase !== Phase.Solving || districtResolved === undefined || districtResolved.name !== DistrictName.Jail) return false
     else {
         const indexOfPartnerEscaping : number = thieves.find(t => t.role === colorOfPartnerEscaping)!.partners.findIndex(part => isPartner(part) && part.district === DistrictName.Jail && part.solvingDone !== true)
+        return role === colorOfPartnerEscaping && partnerIndex === indexOfPartnerEscaping
+    }
+}
+
+function isBetting(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|ThiefView)[], phase:Phase|undefined, districtResolved:District|undefined ):boolean{
+    const colorOfPartnerEscaping : PlayerRole|undefined = thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Tavern && part.goldForTavern !== undefined)) !== undefined 
+        ? thieves.find(t => t.partners.find(part => isPartner(part) && part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!)!.role
+        : undefined
+
+    if (colorOfPartnerEscaping === undefined || phase !== Phase.Solving || districtResolved === undefined || districtResolved.name !== DistrictName.Tavern) return false
+    else {
+        const indexOfPartnerEscaping : number = thieves.find(t => t.role === colorOfPartnerEscaping)!.partners.findIndex(part => isPartner(part) && part.district === DistrictName.Tavern && part.goldForTavern !== undefined)
         return role === colorOfPartnerEscaping && partnerIndex === indexOfPartnerEscaping
     }
 }
@@ -538,7 +567,7 @@ const validationButtonPosition = css`
 const onCity = (positionForPartners:number, index:number, district:number, prince:number, isEscaping:boolean) => css`
 top:${prince*(-100)+index*8}%;
 left:${1.0+district*12.5+positionForPartners*2}%;
-${isEscaping === true && `transform:translateZ(4em) scale(1.2,1.2);`};
+${isEscaping === true && `transform:translateZ(4em) scale(1.4,1.4);`};
 ${transitionPartner};
 `
 
@@ -620,6 +649,7 @@ const partnerSize = css`
 position:absolute;
 width:3.5em;
 height:3.5em;
+z-index:7;
 `
 
 const isSelectedStyle = css`

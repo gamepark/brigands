@@ -5,7 +5,7 @@ import District from "@gamepark/brigands/districts/District"
 import DistrictName from "@gamepark/brigands/districts/DistrictName"
 import Phase from "@gamepark/brigands/phases/Phase"
 import PlayerRole from "@gamepark/brigands/types/PlayerRole"
-import { usePlayerId, useSound } from "@gamepark/react-client"
+import { usePlay, usePlayerId, useSound } from "@gamepark/react-client"
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
@@ -15,6 +15,8 @@ import PatrolInHand, { isPatrolInHand } from "@gamepark/brigands/types/PatrolInH
 import PartnerInHand, { isPartnerInHand } from "@gamepark/brigands/types/PartnerInHand"
 import HeadStartToken from "@gamepark/brigands/types/HeadStartToken"
 import MoveTokenSound from "../sounds/moveToken.mp3"
+import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand"
+import { ResetSelectedPartner, resetSelectedPartnerMove } from "../localMoves/SetSelectedPartner"
 
 /** @jsxImportSource @emotion/react */
 
@@ -37,6 +39,9 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
     const playerId = usePlayerId<PlayerRole>()
     const {t} = useTranslation()
     const moveSound = useSound(MoveTokenSound)
+
+    const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
+    const playResetSelectedPartner = usePlay<ResetSelectedPartner>()
 
     const [{canDrop, isOver}, dropRef] = useDrop({
         accept: ["PartnerInHand","PatrolInHand", "HeadStartToken"],
@@ -65,6 +70,8 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
                 return {type:MoveType.PlacePatrol,patrolNumber:item.patrolNumber, district:district.name}
             } else if (isPartnerInHand(item)){
                 moveSound.play()
+                playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local:true})
+                playResetSelectedPartner(resetSelectedPartnerMove(), {local:true})
                 return {type:MoveType.PlacePartner, playerId, district:district.name, partnerNumber:item.partnerNumber}
             } else {
                 moveSound.play()
@@ -185,7 +192,7 @@ const districtStyle = (image:string) => css`
     background-position: top;
 `
 
-function getDistrictImage(district:number, nbPlayers:number):string{
+export function getDistrictImage(district:number, nbPlayers:number):string{
     switch (district){
         case 1 :
              return Images.districtJail

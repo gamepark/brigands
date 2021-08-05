@@ -5,7 +5,7 @@ import { PrinceState } from "@gamepark/brigands/PlayerState";
 import District from "@gamepark/brigands/districts/District";
 import Partner from "@gamepark/brigands/types/Partner";
 import Phase from "@gamepark/brigands/phases/Phase";
-import { FC, HTMLAttributes } from "react";
+import { FC, HTMLAttributes, useState } from "react";
 import DistrictTile from "./DistrictTile";
 import { usePlay, usePlayerId, useSound } from "@gamepark/react-client";
 import Move from "@gamepark/brigands/moves/Move";
@@ -19,6 +19,7 @@ import { ResetSelectedHeadStart, resetSelectedHeadStartMove } from "../localMove
 import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
 import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
 import MoveTokenSound from "../sounds/moveToken.mp3"
+import DistrictHelpPopUp from './DistrictHelpPopUp';
 
 type Props = {
     city:District[]
@@ -32,10 +33,11 @@ type Props = {
     selectedTokenInHand?:ThiefTokenInHand
     selectedPatrol?:PatrolInHand
     selectedHeadStart?:boolean
+    open:(district:DistrictName) => void
 
 } & HTMLAttributes<HTMLDivElement>
 
-const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand, selectedPatrol, selectedHeadStart, ...props}) => {
+const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand, selectedPatrol, selectedHeadStart, open, ...props}) => {
 
     const play = usePlay<Move>()
     const playResetSelectPartner = usePlay<ResetSelectedPartner>()
@@ -45,6 +47,7 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
     const playerId = usePlayerId<PlayerRole>()
 
     const moveSound = useSound(MoveTokenSound)
+
 
     function playPlacePartner(selectedPartner:number | undefined, district:DistrictName){
         if (selectedPartner !== undefined && playerId !== undefined){
@@ -86,6 +89,8 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
 
     return(
 
+        <>
+
         <div {...props} css={cityStyle}>
 
             {city.map((district, index) => 
@@ -104,15 +109,23 @@ const City : FC<Props> = ({city, phase, prince, districtResolved, nbPlayers, par
                               selectedPatrol={selectedPatrol}
                               selectedHeadStart={selectedHeadStart}
                               onClick={() => playerId === PlayerRole.Prince 
-                                ? phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined 
-                                    ? playPlacePatrol(district.name)
-                                    : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
-                                : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
+                                ? selectedPatrol === undefined && selectedHeadStart === undefined
+                                    ? open(district.name)
+                                    : phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined 
+                                        ? playPlacePatrol(district.name)
+                                        : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
+                                
+                                : selectedPartner === undefined && selectedTokenInHand === undefined
+                                    ? open(district.name)
+                                    : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
+
                 />
             
             )}
 
         </div>
+
+        </>
 
     )
 
