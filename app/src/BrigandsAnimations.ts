@@ -22,8 +22,6 @@ const brigandsAnimations : Animations<GameView, MoveView, PlayerRole> = {
             return 2
         } else if (move.type === MoveType.TakeBackPartner){
             return 1
-        } else if (move.type === MoveType.TakeToken){
-            return action.playerId === playerId ? 0 : 2
         } else if (move.type === MoveType.ThrowDice){
             return 2
         } else if (move.type === MoveType.ResolveStealToken){

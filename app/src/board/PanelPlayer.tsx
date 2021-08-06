@@ -112,6 +112,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
           isOver: monitor.isOver()
         }),
         drop: (item: ThiefTokenInBank) => {
+            playResetTokensInBank(resetSelectedTokensInBankMove(), {local:true})
             return {type:MoveType.TakeToken,role:playerId, token:item.tokenAction}
         }
       })
@@ -615,6 +616,7 @@ const partnerHandPosition = (positionForPartners:number, index:number, nbThieves
 
 const cardsPanelPosition = css`
 position:relative;
+transform-style: preserve-3d;
 top:0%;
 left:5%;
 width:90%;
@@ -674,6 +676,7 @@ const timerStyle = css`
 `
 
 const tokenDivPosition = css`
+    transform-style: preserve-3d;
     margin : 1em 0.5em 0.5em 0.7em;
     height:20%;
     display:flex;
@@ -687,6 +690,7 @@ transition:transform 0.2s linear;
 `
 
 const tokenSize = css`
+transform-style: preserve-3d;
 transition:transform 0.2s linear;
 height:88%;
 width:15%;
@@ -696,6 +700,7 @@ width:15%;
 const panelPlayerStyle = (color:string) => css`
 border:0.5em solid ${color};
 border-radius:10%;
+transform-style: preserve-3d;
 `
 
 export function getPlayerColor(role:PlayerRole):string{

@@ -31,12 +31,12 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
                        shadow,
                        animationDrawEvent && fadeOut(animationDrawEvent.duration)]}></div>
             
-            
-            {animationDrawEvent 
-            ? <div css={[hiddenCardPosition]}>
-                    <div css={[frontCard, shadow, card, drawEventAnimationFront(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
-                    <div css={[backCard, shadow, card, drawEventAnimationBack(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === PlayerRole.Prince || playerId === undefined), hiddenCardStyle]}></div>
-              </div> 
+
+              {animationDrawEvent 
+            ? <div css={[hiddenCardPosition, drawEventAnimation(animationDrawEvent.duration,getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === undefined || playerId === PlayerRole.Prince)]}>
+                <div css={[frontCard, shadow, card,  revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}></div>
+                <div css={[backCard, shadow, card, hiddenCardStyle]}></div>
+             </div> 
             : eventDeck > 0 && <div css={[hiddenCardPosition, shadow]}>
                     <div css={[frontCard, shadow, card]}></div>
                     <div css={[backCard, shadow, card, hiddenCardStyle]}></div>
@@ -46,6 +46,8 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
             {eventDeck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t("Last Turn")}</p></div>}
 
             {eventDeck > 1 && [...Array(eventDeck-1)].map((_, i) => <img key={i} alt={t('deck')} src={Images.weekCardBack} css={[backCard, hiddenCardStyle, offsetDeck(i+1), shadow]} draggable={false} />)}
+
+           
 
 
            
@@ -93,66 +95,38 @@ z-index:${-1-index};
 
 `
 
-const drawEventKeyFramesFront = (districtPosition:number, isPrinceView:boolean) => keyframes`
-    from{        
+
+const drawEventKeyFrames = (districtPosition:number, isPrinceView:boolean) => keyframes`
+    from{
         top:0%;
-        left:0%;
+        left:60%;        
+        transform:translateZ(0em) rotateY(0deg);
     }
     15%{
         top:0%;
-        left:0%;
-        transform:translateZ(18em) rotateY(-90deg);
+        left:60%;
+        transform:translateZ(18em) rotateY(90deg);
     }
     30%,50%{
         top:0%;
-        left:0%;
-        transform:translateZ(0em) rotateY(0deg);
-    }
-    75%{
-        top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
-        transform:translateZ(0em) rotateY(0deg);
-    }
-    to{
-        transform:translateZ(0em) rotateY(0deg);
-        top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
-
-    }
-`
-const drawEventKeyFramesBack = (districtPosition:number, isPrinceView:boolean) => keyframes`
-    from{
-        top:0%;
-        left:0%;
-    }
-    15%{
-        top:0%;
-        left:0%;
-        transform:translateZ(18em) rotateY(90deg);
-    }
-    30%,50%{        
-        top:0%;
-        left:0%;
+        left:60%;
         transform:translateZ(0em) rotateY(180deg);
     }
     75%{
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
+        left:${isPrinceView ? -31+districtPosition*52.5 : -47+districtPosition*58}%;
         transform:translateZ(0em) rotateY(180deg);
     }
     to{
         transform:translateZ(0em) rotateY(180deg);
         top:${isPrinceView ? -147 : 137}%;
-        left:${isPrinceView ? -226+districtPosition*131 : -282+districtPosition*152.5}%;
+        left:${isPrinceView ? -31+districtPosition*52.5 : -47+districtPosition*58}%;
+
     }
 `
 
-const drawEventAnimationFront = (duration:number, districtPosition:number, isPrinceView:boolean) => css`
-animation:${drawEventKeyFramesFront(districtPosition, isPrinceView)} ${duration}s ease-in-out;
-`
-
-const drawEventAnimationBack = (duration:number, districtPosition:number, isPrinceView:boolean) => css`
-animation:${drawEventKeyFramesBack(districtPosition, isPrinceView)} ${duration}s ease-in-out;
+const drawEventAnimation = (duration:number, districtPosition:number, isPrinceView:boolean) => css`
+animation:${drawEventKeyFrames(districtPosition, isPrinceView)} ${duration}s ease-in-out;
 `
 
 const card = css`
@@ -163,7 +137,7 @@ height:100%;
 
 const frontCard = css`
 transform-style: preserve-3d;
-transform:rotateY(-180deg);
+transform: rotateY(-180deg) ;
 backface-visibility:hidden;
 `
 

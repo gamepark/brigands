@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
+import { isThiefState, PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
@@ -64,7 +64,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
             )
     }
 
-    function tokenCanBeClicked(districtResolved:DistrictName|undefined, player:ThiefState|ThiefView, event:number, selectedTokens:ThiefTokenInBank[] | undefined, tokenClicked:TokenAction, indexToken:number):boolean{
+    function tokenCanBeClicked(districtResolved:DistrictName|undefined, player:ThiefState|ThiefView, event:number, selectedTokens:ThiefTokenInBank[] | undefined, tokenClicked:TokenAction, indexToken:number, players:(ThiefState | ThiefView)[]):boolean{
         if(districtResolved === undefined || (districtResolved !== DistrictName.Harbor && districtResolved !== DistrictName.Jail)) return false
         else {
             if (districtResolved === DistrictName.Harbor){
@@ -96,7 +96,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                         const tokensAlreadyTaken = partnersJailed.filter(part => part.tokensTaken === 1).length
                         const tokensAlreadySelected = selectedTokensInBank === undefined ? 0 : selectedTokensInBank.length
                         if (tokensAlreadyTaken + tokensAlreadySelected < tokensToTake){
-                            return true
+                            return isThiefState(player) && canTakeTokenInJail(player, players)
                         } else {
                             return selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === tokenClicked && tok.index === indexToken) !== undefined
 
@@ -124,7 +124,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                                     draggable={isDraggable(phase,resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Kicking}}
-                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Kicking, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Kicking, indexT), {local:true})}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Kicking, indexT, players) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Kicking, indexT), {local:true})}
 
                         />
                         
@@ -137,7 +137,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Fleeing}}
-                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Fleeing, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Fleeing, indexT), {local:true})}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Fleeing, indexT, players) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Fleeing, indexT), {local:true})}
 
                         />
                     </div>
@@ -149,7 +149,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
                                     draggableItem={{tokenAction:TokenAction.Stealing}}
-                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Stealing, indexT) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Stealing, indexT), {local:true})}
+                                    onClick = {() => phase === Phase.Solving && player.role === playerId && tokenCanBeClicked(resolvedDistrict, player, event, selectedTokensInBank, TokenAction.Stealing, indexT, players) && playSelectToken(setSelectedTokensInBankMove(TokenAction.Stealing, indexT), {local:true})}
                         />
                     </div>
                 )}

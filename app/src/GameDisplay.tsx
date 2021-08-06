@@ -184,6 +184,7 @@ height:30%;
 
 const panelPlayerPosition = css`
 position:absolute;
+transform-style: preserve-3d;
 left:5%;
 display:flex;
 flex-direction:row;

@@ -75,7 +75,7 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
             <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}></div>
 
             {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
-            {judgePartnersAnimation && <p css={arrestPartnersHintPosition(judgePartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
+            {judgePartnersAnimation && partnersArrestedCount && <p css={arrestPartnersHintPosition(judgePartnersAnimation.duration)}> + {partnersArrestedCount*2} </p>}
 
             {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
             

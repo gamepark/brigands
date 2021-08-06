@@ -86,20 +86,38 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
     const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
         return(
-        <div css={[cardSize]}>
 
-        {(canDrop || canDropSelected()) && color === playerId && <div 
-            ref={dropRef} 
-            css={[fullSize, canDropSelected() && canDropSelectedStyle, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}
-            onClick={() => thief.role === playerId && selectedTokenInHand !== undefined && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1 && playPlaceToken(indexOfFirstPartnerOnDistrict, thief.role, selectedTokenInHand.tokenAction)} >↓</div>}
+        <div css={[cardSize, revealPartnersAnimation && revealCardAnimation(revealPartnersAnimation.duration)]}>
 
-            <div css = {[back, districtCardBackStyle(getCardBG(undefined), getSeal(color)), revealPartnersAnimation && rotateCardBackAnimation(revealPartnersAnimation.duration)]}>
+            {(canDrop || canDropSelected()) && color === playerId && <div 
+                ref={dropRef} 
+                css={[fullSize, canDropSelected() && canDropSelectedStyle, canDrop && canDropStyle , canDrop && isOver && isOverStyle]}
+                onClick={() => thief.role === playerId && selectedTokenInHand !== undefined && indexOfFirstPartnerOnDistrict !== undefined && indexOfFirstPartnerOnDistrict !== -1 && playPlaceToken(indexOfFirstPartnerOnDistrict, thief.role, selectedTokenInHand.tokenAction)}>
+                    ↓
+                </div>
+            }
+
+            <div css={[backCard, shadow, card, districtCardBackStyle(getCardBG(undefined), getSeal(color))]}>
                 {district !== undefined && phase === Phase.Planning && <img css={iconStyle} src={getIcon(district)} />}
             </div>
-            <div css = {[front, districtCardFrontStyle(getCardBG(district), getSeal(color)), revealPartnersAnimation && rotateCardFrontAnimation(revealPartnersAnimation.duration)]}></div>
-        </div>
+            <div css={[frontCard, shadow, card,  districtCardFrontStyle(getCardBG(district), getSeal(color))]}></div>
+        </div> 
+
     )
 }
+
+const card = css`
+position:absolute;
+width:100%;
+height:100%;
+`
+
+const shadow = css`
+box-shadow: 0 0 1em 0.2em black;
+border-radius:15% / 10%;
+`
+
+
 
 export const glowingColoredKeyframes = (color:string) => keyframes`
     0% {
@@ -125,7 +143,7 @@ filter:grayscale(100%);
 `
 
 const fullSize = css`
-width:31%;
+width:100%;
 height:100%;
 font-size:7em;
 text-align:center;
@@ -176,6 +194,18 @@ const rotateCardBackKeyFrames = keyframes`
     to{transform:translateY(0em)  rotateY(180deg);}
 `
 
+const rotateCardKeyFrames = keyframes`
+    from{transform:translateY(0em) translateZ(0em) rotateY(0deg)}
+    25%{transform:translateY(-10em) translateZ(0em) rotateY(0deg)}
+    50%{transform:translateY(-10em) translateZ(0em) rotateY(180deg);}
+    75%{transform:translateY(0em)  rotateY(180deg);}
+    to{transform:translateY(0em)  rotateY(180deg);}
+`
+
+const revealCardAnimation = (duration:number) => css`
+animation:${rotateCardKeyFrames} ${duration}s ease-in-out;
+`
+
 const rotateCardFrontAnimation = (duration:number) => css`
 animation:${rotateCardFrontKeyFrames} ${duration}s ease-in-out;
 `
@@ -184,36 +214,34 @@ const rotateCardBackAnimation = (duration:number) => css`
 animation:${rotateCardBackKeyFrames} ${duration}s ease-in-out;
 `
 
-const front = css`
-transform:rotateY(-180deg);
+const frontCard = css`
+transform-style: preserve-3d;
+transform: rotateY(-180deg) ;
 backface-visibility:hidden;
-position: relative;
-top: -100%;
 `
 
-const back = css`
+const backCard = css`
+transform-style: preserve-3d;
 backface-visibility:hidden;
 `
 
 const districtCardBackStyle = (back:string, seal:string) => css`
-position:relative;
 z-index:1;
 background: center / 50% no-repeat url(${seal}),center / contain no-repeat url(${back});
 width:100%;
 height:100%;
-box-shadow: 0 0 1em 0.2em black;
 `
 
 const districtCardFrontStyle = (front:string, seal:string) => css`
-position:relative;
 z-index:1;
 background: center 10% / 40% no-repeat url(${seal}),center / contain no-repeat url(${front});
 width:100%;
 height:100%;
-box-shadow: 0 0 1em 0.2em black;
 `
 
 const cardSize = css`
+position:relative;
+transform-style: preserve-3d;
 width:31%;
 height:100%;
 `

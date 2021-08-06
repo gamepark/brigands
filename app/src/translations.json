@@ -278,6 +278,7 @@
             "palace.help.text2": "Si plus de deux Comparses se trouvent sur le Palais, ils sont arrêtés immédiatement. Sinon, chaque Comparse gagne cinq Ducats.",
             "tavern.help.text": "Chaque Comparse peut miser un à cinq Ducats, puis lance un dé. \nSur un deux, la mise est perdue.\nSur un trois et un quatre, la mise est respectivement doublée et triplée;",
             "treasure.help.text": "Tous les Comparses présents se partagent les Ducats présents sur le Trésor.",
+            "jail.help.text": "Une Patrouille présente libèrera tous les Comparses, octroyant 2 points par Comparse ainsi libéré.\nSinon, chaque Comparse lance un dé. Sur un quatre, il est libéré. Sinon, il prend un jeton Action.",
             "title.welcome": "Bienvenue dans le tutoriel de Brigands",
             "tuto.welcome": "A Port-Mousse, le Prince est chargé de pourchasser et d'enfermer les Brigands qui multiplient larcins et coups bas pour s'enrichir. Serez vous un Prince efficace, ou bien le plus riche et le plus ingénieux de tous les Brigands ?",
             "title.your.thief": "Votre Brigand",
