@@ -113,7 +113,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
           />
         }
 
-        {game.districtResolved !== undefined && game.city[game.districtResolved].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice) &&
+        {game.districtResolved !== undefined && game.city[game.districtResolved].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.districtResolved].dice !== undefined && game.city[game.districtResolved].dice!.length !== 0)) &&
           <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice} 
         />}
 

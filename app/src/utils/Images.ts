@@ -21,7 +21,8 @@ import iconTavern from '../images/IconTavern.png'
 import iconTreasure from '../images/IconTreasure.png'
 import iconConvoy from '../images/IconConvoy.png'
 
-import districtCityHall from '../images/DistrictCityHall.jpg'
+import districtCityHall1 from '../images/DistrictCityHall1.jpg'
+import districtCityHall2 from '../images/DistrictCityHall2.jpg'
 import districtHarbor from '../images/DistrictHarbor.jpg'
 import districtJail from '../images/DistrictJail.jpg'
 import districtMarket from '../images/DistrictMarket.jpg'
@@ -93,7 +94,7 @@ const Images = {
     cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
     cardCityHall, cardHarbor, cardMarket, cardPalace, cardTavern, cardTreasure, cardConvoy,
     iconCityHall, iconHarbor, iconMarket, iconPalace, iconTavern, iconTreasure, iconConvoy,
-    districtCityHall, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail, districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
+    districtCityHall1, districtCityHall2, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail, districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
     princePanel,
     patrol, mercenary, victoryToken,
     coin1,coin2,coin5,

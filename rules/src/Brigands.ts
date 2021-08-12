@@ -75,7 +75,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.state.phase === undefined
   }
 
-  getPhaseRules(): PhaseRules {
+  getPhaseRules(): PhaseRules | undefined {
     switch (this.state.phase) {
       case Phase.NewDay:
         return new NewDay(this.state)
@@ -86,20 +86,20 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case Phase.Solving:
         return new Solving(this.state)
       default:
-        throw new Error('Game is over')
+        return undefined
     }
   }
 
   isActive(playerId: PlayerRole): boolean {
     const player = this.state.players.find(p => p.role === playerId)
-    if (!player) return false
-    return isThief(player) ? this.getPhaseRules().isThiefActive(player) : this.getPhaseRules().isPrinceActive(player)
+    if (!player|| this.getPhaseRules() === undefined) return false
+    return isThief(player) ? this.getPhaseRules()!.isThiefActive(player) : this.getPhaseRules()!.isPrinceActive(player)
   }
 
   getLegalMoves(role: PlayerRole): Move[] {
     const player = this.state.players.find(p => p.role === role)
-    if (player === undefined) return []
-    return isThief(player) ? this.getPhaseRules().getThiefLegalMoves(player) : this.getPhaseRules().getPrinceLegalMoves(player)
+    if (player === undefined || this.getPhaseRules() === undefined) return []
+    return isThief(player) ? this.getPhaseRules()!.getThiefLegalMoves(player) : this.getPhaseRules()!.getPrinceLegalMoves(player)
   }
 
   play(move: Move): void {
@@ -155,8 +155,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   getAutomaticMove(): Move | void {
     if (this.isOver()) return
-    if ((princeWin(this.state) || lastTurnIsOver(this.state))) return {type: MoveType.RevealGolds}
-    return this.getPhaseRules().getAutomaticMove()
+    if ((princeWin(this.state) || lastTurnIsOver(this.state) || this.getPhaseRules() === undefined)) return {type: MoveType.RevealGolds}
+    return this.getPhaseRules()!.getAutomaticMove()
   }
 
   getView(playerId?: PlayerRole): GameView {

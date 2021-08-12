@@ -46,7 +46,7 @@ export default class Tavern extends DistrictRules {
       return
     }
     if (this.district.dice === undefined) {
-      return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Tavern}
+      return {type: MoveType.ThrowDice, dice: rollDice(this.isDistrictEvent() ? 4 : 3), district: DistrictName.Tavern}   // Roll 3 dices and not only 1 (or 4 if event)
     }
     const partner = thiefWithBet.partners.find(part => part.district === DistrictName.Tavern && part.goldForTavern !== undefined)!
     if (partner.solvingDone) {
@@ -54,7 +54,7 @@ export default class Tavern extends DistrictRules {
     } else {
       return {
         type: MoveType.GainGold,
-        gold: betResult(partner.goldForTavern!, this.district.dice[0], this.isDistrictEvent()),
+        gold: betResultv2(partner.goldForTavern!, this.district.dice),
         thief: thiefWithBet.role, district: DistrictName.Tavern
       }
     }
@@ -76,4 +76,18 @@ function betResult(goldBet: number, dice: number, isEvent: boolean): number {
         return 0
     }
   }
+}
+
+function betResultv2(goldBet:number, dice:number[]):number{
+  const arrayOfTwos = dice.filter(face => face === 2)
+  const arrayOfThrees = dice.filter(face => face === 3)
+  const arrayOfFours = dice.filter(face => face === 4)
+  if (arrayOfFours.length === 4 || arrayOfThrees.length === 4 ||arrayOfTwos.length === 4){
+    return goldBet * 4
+  } else if (arrayOfFours.length === 3 || arrayOfThrees.length === 3 ||arrayOfTwos.length === 3){
+    return goldBet * 3
+  } else if (arrayOfFours.length === 2 || arrayOfThrees.length === 2 ||arrayOfTwos.length === 2){
+    return goldBet * 2
+  } else return 0
+
 }

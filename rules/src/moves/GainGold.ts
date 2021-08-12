@@ -1,7 +1,7 @@
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import {isThiefState} from '../PlayerState'
+import {isPrinceState, isThiefState} from '../PlayerState'
 import {isPartner, isPartnerView} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import Move from './Move'
@@ -53,8 +53,17 @@ export function gainGold(state: GameState | GameView, move: GainGold) {
     if (isThiefState(thief)) {
       thief.gold += move.gold
     }
-    const partner = thief.partners.find(partner => !isPartnerView(partner) && partner.district === move.district && partner.solvingDone !== true)!
-    partner.solvingDone = true
+
+    if (move.district === DistrictName.Market){
+      thief.partners.forEach(part => {
+        if (isPartner(part) && part.district === DistrictName.Market){
+          part.solvingDone = true
+        }
+      })
+    } else {
+      const partner = thief.partners.find(partner => !isPartnerView(partner) && partner.district === move.district && partner.solvingDone !== true)!
+      partner.solvingDone = true
+    }
 
   }
 

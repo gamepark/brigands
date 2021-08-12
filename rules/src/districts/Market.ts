@@ -2,6 +2,7 @@ import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import { ThiefState } from '../PlayerState'
+import { isPartner } from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -19,14 +20,13 @@ export default class Market extends DistrictRules {
         return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
       }
     }
-    if (this.district.dice === undefined) {
-      return {type: MoveType.ThrowDice, dice: rollDice(this.isDistrictEvent() ? 2 : 1), district: DistrictName.Market}
-    }
-    const partner = thief.partners.find(partner => partner.district === DistrictName.Market)!
-    if (!partner.solvingDone) {
-      return {type: MoveType.GainGold, gold: this.district.dice.reduce((acc, vc) => acc + vc), thief: thief.role, district: DistrictName.Market}
-    } else {
+
+    const partnersOfOneColor = thief.partners.filter(part => part.district === DistrictName.Market)
+
+    if (partnersOfOneColor.some(part => part.solvingDone === true)) {
       return {type: MoveType.TakeBackPartner, thief: thief.role, district: DistrictName.Market}
+    } else {
+      return {type: MoveType.GainGold, gold: partnersOfOneColor.length*(partnersOfOneColor.length+1) + (this.isDistrictEvent() ? 5 : 0), thief: thief.role, district: DistrictName.Market}
     }
   }
 

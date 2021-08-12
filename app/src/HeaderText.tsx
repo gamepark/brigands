@@ -75,6 +75,20 @@ function getPseudo(player: PlayerRole, players: PlayerInfo<PlayerRole>[], t: TFu
   }
 }
 
+function betResultText(dice:number[]):number{
+  const arrayOfTwos = dice.filter(face => face === 2)
+  const arrayOfThrees = dice.filter(face => face === 3)
+  const arrayOfFours = dice.filter(face => face === 4)
+  if (arrayOfFours.length === 4 || arrayOfThrees.length === 4 ||arrayOfTwos.length === 4){
+    return 4
+  } else if (arrayOfFours.length === 3 || arrayOfThrees.length === 3 ||arrayOfTwos.length === 3){
+    return 3
+  } else if (arrayOfFours.length === 2 || arrayOfThrees.length === 2 ||arrayOfTwos.length === 2){
+    return 2
+  } else return 0
+
+}
+
 function HeaderGameOverText({game}:{game:GameView}){
   const {t} = useTranslation()
   const playerId = usePlayerId<PlayerRole>()
@@ -244,9 +258,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             if (district.dice === undefined){
               return <> {t("solving.cityhall.dice")} </>
             } else if (partnersOnDistrict.every(part => part.solvingDone === true)){
-              return <> {t("solving.cityhall.place.gold.on.treasure", {gold: district.dice.reduce((acc, cv) => acc + cv) % partnersOnDistrict.length})} </>
+              return <> {t("solving.cityhall.place.gold.on.treasure", {gold: ((getThieves(game).length < 4 ? 7 : 10) + (district.dice.length !== 0 ? district.dice.reduce((acc, cv) => acc + cv) : 0)) % partnersOnDistrict.length})} </>
             } else {
-              return <> {t("solving.cityhall.gain.gold", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role, players, t), gold : Math.floor(district.dice.reduce((acc, cv) => acc + cv) / partnersOnDistrict.length) })} </>
+              return <> {t("solving.cityhall.gain.gold", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!.role, players, t), gold : Math.floor(((getThieves(game).length < 4 ? 7 : 10) + (district.dice.length !== 0 ? district.dice.reduce((acc, cv) => acc + cv) : 0)) / partnersOnDistrict.length) })} </>
             }
           }
           case DistrictName.Convoy:{
@@ -316,12 +330,14 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
                 } else if (district.dice === undefined){
                   return <> {t("solving.tavern.you.roll.dice")} </>
                 } else {
-                  if (district.dice[0] === 2){
+                  if (betResultText(district.dice) === 0){
                     return <> {t("solving.tavern.you.lost", {gold:partnerOnTavern.goldForTavern})} </>
-                  } else if (district.dice[0] === 3 && isEvent === false){
+                  } else if (betResultText(district.dice) === 2){
                     return <> {t("solving.tavern.you.double", {gold:partnerOnTavern.goldForTavern*2})} </>
-                  } else {
+                  } else if (betResultText(district.dice) === 3){
                     return <> {t("solving.tavern.you.triple", {gold:partnerOnTavern.goldForTavern*3})} </>
+                  } else {
+                    return <> {t("solving.tavern.you.quadruple", {gold:partnerOnTavern.goldForTavern*4})} </>
                   }
                 }
               } else {
@@ -333,12 +349,14 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
                   if (district.dice === undefined){
                     return <> {t("solving.tavern.thief.roll.dice", {thief:getPseudo(thiefWhoBet.role, players, t)})} </>
                   } else {
-                    if (district.dice[0] === 2){
+                    if (betResultText(district.dice) === 0){
                       return <> {t("solving.tavern.thief.lost", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!})} </>
-                    } else if (district.dice[0] === 3 && isEvent === false){
+                    } else if (betResultText(district.dice) === 2){
                       return <> {t("solving.tavern.thief.double", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!*2})} </>
-                    } else {
+                    } else if (betResultText(district.dice) === 3){
                       return <> {t("solving.tavern.thief.triple", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!*3})} </>
+                    } else {
+                      return <> {t("solving.tavern.thief.quadruple", {thief:getPseudo(thiefWhoBet.role, players, t), gold:partnerWhoBet.goldForTavern!*4})} </>
                     }
                   }
                 }
