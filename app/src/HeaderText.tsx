@@ -255,6 +255,9 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
             }
           }
           case DistrictName.CityHall:{
+            if (partnersOnDistrict.every(part => part.solvingDone === true)){
+              return <> {t("solving.cityhall.take.back.partners")} </>
+            }
             if (district.dice === undefined){
               return <> {t("solving.cityhall.dice")} </>
             } else if (partnersOnDistrict.every(part => part.solvingDone === true)){
@@ -298,11 +301,11 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
           case DistrictName.Market:{
             if (getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone === true))){
               return <> {t("solving.market.take.back.partner")} </>
-            } else if (district.dice === undefined){
-              return <> {t("solving.market.roll.dice", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true ))!.role, players, t)})} </>  
             } else {
-              return <> {t("solving.market.gain.gold", {thief:getPseudo(getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true ))!.role, players, t), gold:district.dice.reduce((acc, vc) => acc + vc)})} </>
-            }
+              const thief = getThieves(game).find(p => p.partners.some(part => isPartner(part) && part.district === district.name && part.solvingDone !== true))!
+              const partnersOfThiefOnMarket = thief.partners.filter(part => isPartner(part) && part.district === DistrictName.Market)
+              return <> {t("solving.market.take.gold", {thief:getPseudo(thief.role, players, t), gold:partnersOfThiefOnMarket.length*(partnersOfThiefOnMarket.length+1) + (isEvent === true ? 5 : 0)})} </>  
+            } 
           }
           case DistrictName.Palace:{
             if (partnersOnDistrict.length > (isEvent ? 3 : getThieves(game).length >=3 ? 2 : 1)){

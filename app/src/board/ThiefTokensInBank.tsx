@@ -165,12 +165,14 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
 const isSelected = css`
 transform:translateZ(2em) translateX(-4em);
 transition:transform 0.2s linear;
+transform-style: preserve-3d;
 `
 
 const bankFlex = css`
 display:flex;
 flex-direction:row;
 justify-content:start;
+transform-style: preserve-3d;
 `
 
 const tokenSize = css`
@@ -178,6 +180,7 @@ height:15%;
 width:100%;
 margin:-0.4em 0em;
 transition:transform 0.2s linear;
+transform-style: preserve-3d;
 
 `
 
@@ -188,6 +191,7 @@ width:10%;
 display:flex;
 flex-direction:column;
 justify-content:start;
+transform-style: preserve-3d;
 `
 const swapJustifyContentToStart = css`
 justify-content:start;

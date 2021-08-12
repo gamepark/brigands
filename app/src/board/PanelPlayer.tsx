@@ -190,6 +190,8 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 )}
             </div>
 
+            {isThiefState(player) && phase === undefined && <div><p css={scoreDivStyle}> {t('Score')} : {player.gold + player.tokens.steal.length + player.tokens.kick.length + player.tokens.move.length}</p></div>}
+
             {phase === Phase.Solving && thiefId !== false && isThiefState(thiefId) && thiefId.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined)
             && (player.partners as Partner[]).some(part => part.district === districtResolved!.name && player.role !== playerId)
             && prince.abilities[1] !== districtResolved!.name
@@ -647,6 +649,12 @@ flex-direction:row;
 justify-content:center;
 `
 
+const scoreDivStyle = css`
+    font-size:2.8em;
+    margin: 0.2em 0.5em;
+    text-align:center;
+`
+
 const partnerSize = css`
 position:absolute;
 width:3.5em;
@@ -682,6 +690,7 @@ const tokenDivPosition = css`
     display:flex;
     flex-direction:row;
     justify-content:space-around;
+    transform-style: preserve-3d;
 `
 
 const tokenIsSelectedStyle = css`
@@ -694,6 +703,7 @@ transform-style: preserve-3d;
 transition:transform 0.2s linear;
 height:88%;
 width:15%;
+transform-style: preserve-3d;
 `
 
 
