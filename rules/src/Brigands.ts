@@ -1,4 +1,4 @@
-import {Action, GameSpeed, SecretInformation, SimultaneousGame, TimeLimit, Undo} from '@gamepark/rules-api'
+import {Action, SecretInformation, SimultaneousGame, TimeLimit, Undo} from '@gamepark/rules-api'
 import {shuffle} from 'lodash'
 import {BrigandsOptions, BrigandsPlayerOptions, isGameOptions} from './BrigandsOptions'
 import canUndo from './canUndo'
@@ -75,7 +75,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.state.phase === undefined
   }
 
-  getPhaseRules(): PhaseRules | undefined {
+  getPhaseRules(): PhaseRules | void {
     switch (this.state.phase) {
       case Phase.NewDay:
         return new NewDay(this.state)
@@ -85,21 +85,21 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return new Patrolling(this.state)
       case Phase.Solving:
         return new Solving(this.state)
-      default:
-        return undefined
     }
   }
 
   isActive(playerId: PlayerRole): boolean {
     const player = this.state.players.find(p => p.role === playerId)
-    if (!player|| this.getPhaseRules() === undefined) return false
-    return isThief(player) ? this.getPhaseRules()!.isThiefActive(player) : this.getPhaseRules()!.isPrinceActive(player)
+    const phaseRules = this.getPhaseRules()
+    if (!player || !phaseRules) return false
+    return isThief(player) ? phaseRules.isThiefActive(player) : phaseRules.isPrinceActive(player)
   }
 
   getLegalMoves(role: PlayerRole): Move[] {
     const player = this.state.players.find(p => p.role === role)
-    if (player === undefined || this.getPhaseRules() === undefined) return []
-    return isThief(player) ? this.getPhaseRules()!.getThiefLegalMoves(player) : this.getPhaseRules()!.getPrinceLegalMoves(player)
+    const phaseRules = this.getPhaseRules()
+    if (!player || !phaseRules) return []
+    return isThief(player) ? phaseRules.getThiefLegalMoves(player) : phaseRules.getPrinceLegalMoves(player)
   }
 
   play(move: Move): void {
@@ -154,9 +154,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   getAutomaticMove(): Move | void {
-    if (this.isOver()) return
-    if ((princeWin(this.state) || lastTurnIsOver(this.state) || this.getPhaseRules() === undefined)) return {type: MoveType.RevealGolds}
-    return this.getPhaseRules()!.getAutomaticMove()
+    const phaseRules = this.getPhaseRules()
+    if (!phaseRules) return
+    if (princeWin(this.state) || lastTurnIsOver(this.state)) return {type: MoveType.RevealGolds}
+    return phaseRules.getAutomaticMove()
   }
 
   getView(playerId?: PlayerRole): GameView {
