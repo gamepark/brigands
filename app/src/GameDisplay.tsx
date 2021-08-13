@@ -9,9 +9,9 @@ import Partner, {isPartner, isPartnerView} from '@gamepark/brigands/types/Partne
 import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
-import {useAnimation, usePlayerId, useTutorial} from '@gamepark/react-client'
+import {useAnimation, usePlayerId, useSound, useTutorial} from '@gamepark/react-client'
 import {Letterbox} from '@gamepark/react-components'
-import {useMemo, useState} from 'react'
+import {useEffect, useMemo, useState} from 'react'
 import City from './board/City'
 import DicePopUp from './board/DicePopUp'
 import PanelPlayer from './board/PanelPlayer'
@@ -27,6 +27,7 @@ import { AudioLoader } from './utils/AudioLoader'
 import BetGold, { isBetGold } from '@gamepark/brigands/moves/BetGold'
 import GainGold, { gainGold, isGainGold } from '@gamepark/brigands/moves/GainGold'
 import DistrictHelpPopUp from './board/DistrictHelpPopUp'
+import EndSound from "./sounds/prisonDoor.mp3"
 
 type Props = {
   game: GameView
@@ -154,7 +155,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
 
       {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)} />}
 
-      <BrigandsSounds audioLoader={ audioLoader } />
+      <BrigandsSounds audioLoader={ audioLoader } phase={game.phase}/>
 
     </Letterbox>
 
@@ -178,9 +179,9 @@ transform-origin: bottom;
 
 const thiefTokensInBankPosition = css`
 position:absolute;
-transform-style: preserve-3d;
 width:25%;
 height:30%;
+
 `
 
 const panelPlayerPosition = css`

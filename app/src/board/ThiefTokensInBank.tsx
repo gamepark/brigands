@@ -120,6 +120,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                 {getArray(player.tokens.kick).map((_, indexT) => 
                     <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
+                                    css={preserve}
                                     role={player.role}
                                     draggable={isDraggable(phase,resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -133,6 +134,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                 {getArray(player.tokens.move).map((_, indexT) => 
                     <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
+                                    css={preserve}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -145,6 +147,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                 {getArray(player.tokens.steal).map((_, indexT) => 
                     <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ,isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
+                                    css={preserve}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -162,17 +165,22 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
     )
 }
 
+const preserve = css`
+transform-style:preserve-3d;
+transform:translateZ(0em);
+`
+
 const isSelected = css`
 transform:translateZ(2em) translateX(-4em);
 transition:transform 0.2s linear;
-transform-style: preserve-3d;
 `
 
 const bankFlex = css`
 display:flex;
 flex-direction:row;
 justify-content:start;
-transform-style: preserve-3d;
+transform-style:preserve-3d;
+
 `
 
 const tokenSize = css`
@@ -180,7 +188,7 @@ height:15%;
 width:100%;
 margin:-0.4em 0em;
 transition:transform 0.2s linear;
-transform-style: preserve-3d;
+transform-style:preserve-3d;
 
 `
 
@@ -191,7 +199,8 @@ width:10%;
 display:flex;
 flex-direction:column;
 justify-content:start;
-transform-style: preserve-3d;
+transform-style:preserve-3d;
+
 `
 const swapJustifyContentToStart = css`
 justify-content:start;

@@ -41,20 +41,20 @@ export default class CityHall extends DistrictRules {
       return {
         type : MoveType.GainGold, district:DistrictName.CityHall, 
         thief:this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.CityHall))[0].role,
-        gold:(this.getThieves().length < 4 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0),
+        gold:(this.getThieves().length < 3 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0),
         noShare:true
        }
     }
     
     else if (partners.every(p => p.solvingDone === true)) {
       return {
-        type: MoveType.SpareGoldOnTreasure, gold: ((this.getThieves().length < 4 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0)) % partners.length,
+        type: MoveType.SpareGoldOnTreasure, gold: ((this.getThieves().length < 3 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0)) % partners.length,
         district: DistrictName.CityHall
       }
     } else {
       return {
         type: MoveType.GainGold,
-        gold: Math.floor(((this.getThieves().length < 4 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0)) / partners.length),
+        gold: Math.floor(((this.getThieves().length < 3 ? 7 : 10) + (this.district.dice.length !== 0 ? this.district.dice.reduce((acc, cv) => acc + cv) : 0)) / partners.length),
         thief: this.getThieves().find(p => p.partners.filter(part => part.district === DistrictName.CityHall).some(part => part.solvingDone !== true))!.role,
         district: DistrictName.CityHall
       }

@@ -15,12 +15,15 @@ import GoldBagSound from './goldBag.mp3'
 import CardFlip from './cardFlip.mp3'
 import DiceShake from './diceShake.mp3'
 import PrisonDoor from './prisonDoor.mp3'
+import EndSound from './trumpet.mp3'
+import Phase from "@gamepark/brigands/phases/Phase";
 
 type Props = {
     audioLoader: AudioLoader
+    phase?:Phase
 }
 
-const BrigandsSounds : FC<Props> = ({audioLoader}) => {
+const BrigandsSounds : FC<Props> = ({audioLoader, phase}) => {
 
     const gainGoldAnimation = useAnimation<GainGold>(animation => isGainGold(animation.move))
     const drawEventAnimation = useAnimation<DrawEvent>(animation => isDrawEvent(animation.move))
@@ -52,6 +55,12 @@ const BrigandsSounds : FC<Props> = ({audioLoader}) => {
           audioLoader.play(PrisonDoor, false, 0.4)
         }
       }, [arrestPartnersAnimation?.move]);
+      
+      useEffect(() => {
+        if (phase === undefined) {
+          audioLoader.play(EndSound, false, 0.4)
+          }
+      }, [phase])
 
     return null
 

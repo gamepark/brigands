@@ -52,6 +52,7 @@ width:100%;
 height:100%;
 border-radius: 100%;
 box-shadow: 0 0 0.5em 0.1em black;
+transform-style:preserve-3d;
 `
 
 function getTokenBackground(action:TokenAction, role:PlayerRole):string{

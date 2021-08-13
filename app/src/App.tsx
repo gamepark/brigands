@@ -18,6 +18,7 @@ import CardFlip from './sounds/cardFlip.mp3'
 import DiceRoll from './sounds/diceRoll.mp3'
 import DiceShake from './sounds/diceShake.mp3'
 import PrisonDoor from './sounds/prisonDoor.mp3'
+import EndSound from './sounds/trumpet.mp3'
 
 export default function App() {
   const game = useGame<GameView>()
@@ -40,7 +41,7 @@ export default function App() {
                      publisher="Aspic Games" 
                      developer="Théo Grégorio"/>
       <Header><HeaderText loading={loading} game={game}/></Header>
-      <SoundLoader sounds={[GoldCoinSound, GoldBagSound, MoveToken, CardFlip, DiceRoll, DiceShake, PrisonDoor]} onSoundLoad={() => setSoundLoading(false)} onSoundsPrepared={ (audioLoader) => setAudioLoader(audioLoader) }/>
+      <SoundLoader sounds={[GoldCoinSound, GoldBagSound, MoveToken, CardFlip, DiceRoll, DiceShake, PrisonDoor, EndSound]} onSoundLoad={() => setSoundLoading(false)} onSoundsPrepared={ (audioLoader) => setAudioLoader(audioLoader) }/>
       <Menu/>
       <FailuresDialog/>
       <FullscreenDialog/>

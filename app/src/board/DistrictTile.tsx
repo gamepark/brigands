@@ -203,7 +203,7 @@ export function getDistrictImage(district:number, nbPlayers:number):string{
         case 4 :
             return Images.districtHarbor
         case 5 : 
-            return nbPlayers < 5 ? Images.districtCityHall1 : Images.districtCityHall2
+            return nbPlayers < 4 ? Images.districtCityHall1 : Images.districtCityHall2
         case 6 : 
             return Images.districtTreasure
         case 7 : 

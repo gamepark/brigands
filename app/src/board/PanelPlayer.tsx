@@ -155,6 +155,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 {player.tokens.kick.map((token, index) => 
                     token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
+                                    css={preserve}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -167,6 +168,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 {player.tokens.move.map((token, index) => 
                     token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
+                                    css={preserve}  
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -179,6 +181,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 {player.tokens.steal.map((token, index) => 
                     token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
+                                    css={preserve}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -237,7 +240,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                               css={[partnerSize,
                                     (partnerSelected === index && player.role === playerId && isSelectedStyle),
                                 (!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase,player.role) : false) && glowingBrigand(getGlowingPlayerColor(player.role)),
-                                    phase !== Phase.Solving 
+                                    (phase !== Phase.Solving && phase !== undefined) 
                                         ? isPartnerView(partner) 
                                             ? cardsPlayed === 1 
                                                 ? partnerOnOnlyCard(positionForPartners, index, numberOfThieves)
@@ -247,11 +250,11 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                                             : partner.district === DistrictName.Jail
                                                 ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
                                                 : partnerHandPosition(positionForPartners, index, numberOfThieves)        
-                                        : isPartnerView(partner)
-                                            ? test
-                                            : partner.district === undefined
+                                        : isPartner(partner)
+                                            ? partner.district === undefined
                                                 ? partnerHandPosition(positionForPartners, index, numberOfThieves)
                                                 : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
+                                            : partnerHandPosition(positionForPartners, index, numberOfThieves)      // Not Perfect
                                      
                                             ]}
                               role={player.role}
@@ -574,7 +577,7 @@ ${isEscaping === true && `transform:translateZ(4em) scale(1.4,1.4);`};
 ${transitionPartner};
 `
 
-const test = css`top:-50%;`
+const test = css``
 
 const partnerOnOneOfThreeCards = (positionForPartners:number, index:number, card:number, nbThieves:number) => css`
 top:${76}%;
@@ -684,13 +687,12 @@ const timerStyle = css`
 `
 
 const tokenDivPosition = css`
-    transform-style: preserve-3d;
     margin : 1em 0.5em 0.5em 0.7em;
     height:20%;
     display:flex;
     flex-direction:row;
     justify-content:space-around;
-    transform-style: preserve-3d;
+    transform-style:preserve-3d;
 `
 
 const tokenIsSelectedStyle = css`
@@ -699,11 +701,10 @@ transition:transform 0.2s linear;
 `
 
 const tokenSize = css`
-transform-style: preserve-3d;
 transition:transform 0.2s linear;
 height:88%;
 width:15%;
-transform-style: preserve-3d;
+transform-style:preserve-3d;
 `
 
 
@@ -711,6 +712,11 @@ const panelPlayerStyle = (color:string) => css`
 border:0.5em solid ${color};
 border-radius:10%;
 transform-style: preserve-3d;
+`
+
+const preserve = css`
+transform-style:preserve-3d;
+transform:translateZ(0em);
 `
 
 export function getPlayerColor(role:PlayerRole):string{
