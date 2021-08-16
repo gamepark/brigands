@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { isThiefState, PrinceState, ThiefState } from "@gamepark/brigands/PlayerState";
 import DistrictName from "@gamepark/brigands/districts/DistrictName";
 import Phase from "@gamepark/brigands/phases/Phase";
@@ -118,7 +118,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
 
             <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToStart]} key={indexP}>
                 {getArray(player.tokens.kick).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     css={preserve}
                                     role={player.role}
@@ -132,7 +132,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                     </div>
                 )}
                 {getArray(player.tokens.move).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     css={preserve}
                                     role={player.role}
@@ -145,7 +145,7 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                     </div>
                 )}
                 {getArray(player.tokens.steal).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ,isDraggable(phase,resolvedDistrict, player.role, players) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ,isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     css={preserve}
                                     role={player.role}
@@ -165,9 +165,23 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
     )
 }
 
+const glowingTokenColoredKeyframes = (color:string) => keyframes`
+    0% {
+        box-shadow:0 0 2em ${color};
+    }
+    80%, 100% {
+        box-shadow:0 0 0.5em ${color};
+    }
+`
+
+const glowingToken = (color:string) => css`
+    border-radius:100%;
+    animation: ${glowingTokenColoredKeyframes(color)} 1s infinite alternate;
+`
+
 const preserve = css`
 transform-style:preserve-3d;
-transform:translateZ(0em);
+transform:translateZ(0.01em);
 `
 
 const isSelected = css`

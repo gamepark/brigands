@@ -153,7 +153,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             <div css={tokenDivPosition}>
                 {player.tokens.kick.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Kicking}
                                     css={preserve}
                                     role={player.role}
@@ -166,7 +166,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                     </div>
                 )}
                 {player.tokens.move.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Fleeing}
                                     css={preserve}  
                                     role={player.role}
@@ -179,7 +179,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                     </div>
                 )}
                 {player.tokens.steal.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingBrigand(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
                         <ThiefToken action={TokenAction.Stealing}
                                     css={preserve}
                                     role={player.role}
@@ -353,6 +353,20 @@ function getStealTranslationLength(numberOfThieves:number):number{
             return 0
     }
 }
+
+const glowingTokenColoredKeyframes = (color:string) => keyframes`
+    0% {
+        box-shadow:0 0 2em ${color};
+    }
+    80%, 100% {
+        box-shadow:0 0 0.5em ${color};
+    }
+`
+
+const glowingToken = (color:string) => css`
+    border-radius:100%;
+    animation: ${glowingTokenColoredKeyframes(color)} 1s infinite alternate;
+`
 
 const translateXKeyFrames = (deltaPositions:number, numberOfThieves:number) => keyframes`
 from{}
