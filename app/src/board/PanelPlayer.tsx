@@ -153,9 +153,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             <div css={tokenDivPosition}>
                 {player.tokens.kick.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle]}> 
                         <ThiefToken action={TokenAction.Kicking}
-                                    css={preserve}
+                                    css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -166,9 +166,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                     </div>
                 )}
                 {player.tokens.move.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle ]}> 
                         <ThiefToken action={TokenAction.Fleeing}
-                                    css={preserve}  
+                                    css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}  
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -179,9 +179,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                     </div>
                 )}
                 {player.tokens.steal.map((token, index) => 
-                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle , isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    token === -1 && <div key={index} css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle]}> 
                         <ThiefToken action={TokenAction.Stealing}
-                                    css={preserve}
+                                    css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}
                                     role={player.role}
                                     draggable={isTokenDraggable(phase, player.role, token)}
                                     type={"ThiefTokenInHand"}
@@ -364,7 +364,6 @@ const glowingTokenColoredKeyframes = (color:string) => keyframes`
 `
 
 const glowingToken = (color:string) => css`
-    border-radius:100%;
     animation: ${glowingTokenColoredKeyframes(color)} 1s infinite alternate;
 `
 
@@ -730,7 +729,7 @@ transform-style: preserve-3d;
 
 const preserve = css`
 transform-style:preserve-3d;
-transform:translateZ(0em);
+
 `
 
 export function getPlayerColor(role:PlayerRole):string{

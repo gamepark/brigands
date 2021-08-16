@@ -118,9 +118,9 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
 
             <div css={[tokenPlayerDivPosition(indexP), playerId === undefined || playerId === PlayerRole.Prince ? swapJustifyContentToStart : swapJustifyContentToStart]} key={indexP}>
                 {getArray(player.tokens.kick).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Kicking && tok.index === indexT) && isSelected ]}> 
                         <ThiefToken action={TokenAction.Kicking}
-                                    css={preserve}
+                                    css={[preserve, isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}
                                     role={player.role}
                                     draggable={isDraggable(phase,resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -132,9 +132,9 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                     </div>
                 )}
                 {getArray(player.tokens.move).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected , isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Fleeing && tok.index === indexT) && isSelected ]}> 
                         <ThiefToken action={TokenAction.Fleeing}
-                                    css={preserve}
+                                    css={[preserve, isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -145,9 +145,9 @@ const ThiefTokensInBank : FC<Props> = ({players, prince, phase, resolvedDistrict
                     </div>
                 )}
                 {getArray(player.tokens.steal).map((_, indexT) => 
-                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ,isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}> 
+                    <div key={indexT} css={[tokenSize, player.role === playerId && selectedTokensInBank !== undefined && selectedTokensInBank.find(tok => tok.tokenAction === TokenAction.Stealing && tok.index === indexT) && isSelected ]}> 
                         <ThiefToken action={TokenAction.Stealing}
-                                    css={preserve}
+                                    css={[preserve, isDraggable(phase,resolvedDistrict, player.role, players) && glowingToken(getGlowingPlayerColor(player.role))]}
                                     role={player.role}
                                     draggable={isDraggable(phase, resolvedDistrict, player.role, players)}
                                     type={'ThiefTokenInBank'}
@@ -175,13 +175,12 @@ const glowingTokenColoredKeyframes = (color:string) => keyframes`
 `
 
 const glowingToken = (color:string) => css`
-    border-radius:100%;
+
     animation: ${glowingTokenColoredKeyframes(color)} 1s infinite alternate;
 `
 
 const preserve = css`
 transform-style:preserve-3d;
-transform:translateZ(0.01em);
 `
 
 const isSelected = css`
