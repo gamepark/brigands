@@ -492,13 +492,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
         {
             title: (t: TFunction) => t('title.place.partner'),
             text: 'tuto.place.partner',
-            boxTop: 55,
+            boxTop: 50,
             boxLeft: 40,
             boxWidth: 50,
             arrow: {
-                angle: 180,
-                top: 55,
-                left: 16.5
+                angle: 270,
+                top: 40,
+                left: 3
               }
         }   
     ],
@@ -538,13 +538,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
         {
             title: (t: TFunction) => t('title.place.second.partner'),
             text: 'tuto.place.second.partner',
-            boxTop: 70,
-            boxLeft: 60,
+            boxTop: 50,
+            boxLeft: 53,
             boxWidth: 50,
             arrow: {
                 angle: 270,
-                top: 62,
-                left: 23
+                top: 40,
+                left: 17
               }
         }
       
@@ -553,12 +553,12 @@ const tutorialDescription:TutorialStepDescription[][] = [
         {
             title: (t: TFunction) => t('title.place.third.partner'),
             text: 'tuto.place.third.partner',
-            boxTop: 70,
-            boxLeft: 62,
+            boxTop: 50,
+            boxLeft: 61,
             boxWidth: 50,
             arrow: {
                 angle: 270,
-                top: 62,
+                top: 40,
                 left: 25
               }
         }
@@ -884,13 +884,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
     {
       title: (t: TFunction) => t('title.place.convoy'),
       text: 'tuto.place.convoy',
-      boxTop: 55,
-      boxLeft: 40,
-      boxWidth: 50,
+      boxTop: 50,
+      boxLeft: 68,
+      boxWidth: 30,
       arrow: {
-          angle: 180,
-          top: 55,
-          left: 16.5
+          angle: 270,
+          top:40,
+          left: 41
         }
     }
   ],
@@ -927,13 +927,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
     {
       title: (t: TFunction) => t('title.place.palace'),
       text: 'tuto.place.palace',
-      boxTop: 70,
-      boxLeft: 60,
-      boxWidth: 50,
+      boxTop: 50,
+      boxLeft: 30,
+      boxWidth: 30,
       arrow: {
-          angle: 270,
-          top: 62,
-          left: 23
+          angle: 90,
+          top:38,
+          left: 40
         }
     }
   ],
@@ -949,27 +949,22 @@ const tutorialDescription:TutorialStepDescription[][] = [
     {
       title: (t: TFunction) => t('title.place.move.token'),
       text: 'tuto.place.move.token',
-      boxTop: 72,
+      boxTop: 52,
       boxLeft: 35,
       boxWidth: 60,
-      arrow: {
-          angle: 180,
-          top: 72,
-          left: 18.5
-      }
     }
   ],
   [
     {
       title: (t: TFunction) => t('title.place.tavern'),
       text: 'tuto.place.tavern',
-      boxTop: 70,
-      boxLeft: 62,
-      boxWidth: 50,
+      boxTop: 50,
+      boxLeft: 39,
+      boxWidth: 35,
       arrow: {
-          angle: 270,
-          top: 62,
-          left: 25
+          angle: 90,
+          top:38,
+          left: 52
         }
     }
   ],
@@ -985,14 +980,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
     {
       title: (t: TFunction) => t('title.place.kick.token'),
       text: 'tuto.place.kick.token',
-      boxTop: 72,
+      boxTop: 50,
       boxLeft: 35,
       boxWidth: 60,
-      arrow: {
-          angle: 180,
-          top: 72,
-          left: 20
-      }
     },
   ],
   [

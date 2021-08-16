@@ -38,9 +38,15 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
 
         // Turn 1
 
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Market},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.CityHall},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Harbor},
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Market}, 
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Market} ,
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Market}],
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.CityHall},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.CityHall},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.CityHall}],
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Harbor},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Harbor},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Harbor}],
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.YellowThief},
 
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:0, district:DistrictName.CityHall},
@@ -73,12 +79,24 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
 
         // Turn 2
 
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Convoy},
-        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Stealing},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Palace},
-        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Fleeing},
-        {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Tavern},
-        {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Kicking},
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Convoy},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Convoy},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Convoy}],
+        [{type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Stealing},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Stealing},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Stealing}],
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Palace},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Palace},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Palace}],
+        [{type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Fleeing},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Fleeing},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Fleeing}],
+        [{type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:0, district:DistrictName.Tavern},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:1, district:DistrictName.Tavern},
+         {type:MoveType.PlacePartner, playerId:PlayerRole.YellowThief, partnerNumber:2, district:DistrictName.Tavern}],
+        [{type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:0, tokenAction:TokenAction.Kicking},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:1, tokenAction:TokenAction.Kicking},
+         {type:MoveType.PlaceToken, role:PlayerRole.YellowThief, partnerNumber:2, tokenAction:TokenAction.Kicking}],
         {type:MoveType.TellYouAreReady, playerId:PlayerRole.YellowThief},
 
         {type:MoveType.PlacePartner, playerId:PlayerRole.GreenThief, partnerNumber:0, district:DistrictName.Tavern},
