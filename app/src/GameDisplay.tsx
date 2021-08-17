@@ -142,7 +142,9 @@ export default function GameDisplay({game, audioLoader}: Props) {
             partnerSelected={game.selectedPartner?.partnerNumber}
             tokensInBankSelected={game.selectedTokensInBank}
             eventCard={game.event}
+            deckSize = {game.eventDeck}
             tokenInHandSelected={game.selectedTokenInHand}
+            tutorial = {game.tutorial}
             />
 
           )}

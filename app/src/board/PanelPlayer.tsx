@@ -14,7 +14,7 @@ import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import TokenAction from '@gamepark/brigands/types/TokenAction'
-import {PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
+import {PlayerTimer, Tutorial, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
 import {useDrop} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
@@ -49,11 +49,13 @@ type Props = {
     partnerSelected?:number
     tokensInBankSelected?:ThiefTokenInBank[]
     eventCard:number
+    deckSize:number
     tokenInHandSelected?:ThiefTokenInHand
+    tutorial?:boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, tokenInHandSelected,  ...props}) => {
+const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards, displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, deckSize, tokenInHandSelected, tutorial, ...props}) => {
 
     const playerId = usePlayerId<PlayerRole>()
     const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -79,6 +81,9 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
         if (districtResolved === undefined || (districtResolved !== DistrictName.Jail && districtResolved !== DistrictName.Harbor)) return false
         else {
             if (districtResolved === DistrictName.Harbor){
+                if (tutorial === true && deckSize === 5 ){
+                    return tokensInBankSelected?.length === 1
+                }
                 const firstPartner = player.partners.find(part => isPartner(part) && part.district === DistrictName.Harbor)
                 const maxToTake = EventArray[eventCard].district === DistrictName.Harbor ? 3 : 2
                 if (firstPartner === undefined) return false
