@@ -1,4 +1,4 @@
-enum PlayerRole {Prince=1,GreenThief, BlueThief, RedThief, PurpleThief, YellowThief}
+enum PlayerRole {Prince = 1, GreenThief, BlueThief, RedThief, PurpleThief, YellowThief}
 
 export default PlayerRole
 
