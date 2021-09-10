@@ -197,7 +197,7 @@ transform-style:preserve-3d;
 `
 
 const tokenSize = css`
-height:15%;
+height:19%;
 width:100%;
 margin:-0.4em 0em;
 transition:transform 0.2s linear;

@@ -207,7 +207,7 @@ function HeaderOnGoingGameText({game}:{game:GameView}){
 
         if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasStealToken(p, index))).length > 0){
           return <> {t("solving.steal.token")} </>
-        } else if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(p, index)))){
+        } else if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(p, index))).length > 0){
           if (thief !== undefined && thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index))){
             if (thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined)){
               return <> {t("solving.kick.token.choose", {howManyTimesLeft: thief.partners.filter((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined).length})} </>

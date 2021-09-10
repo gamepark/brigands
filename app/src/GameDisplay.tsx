@@ -182,7 +182,7 @@ transform-origin: bottom;
 const thiefTokensInBankPosition = css`
 position:absolute;
 width:25%;
-height:30%;
+height:23%;
 
 `
 

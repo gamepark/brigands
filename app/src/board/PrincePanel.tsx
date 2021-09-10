@@ -196,7 +196,7 @@ transition:transform 0.2s linear;
 
 const validationButtonPosition = css`
 position:absolute;
-z-index: 1;
+z-index: 10;
 width:12%;
 height:6%;
 top:90.4%;
