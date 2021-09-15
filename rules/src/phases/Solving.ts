@@ -117,6 +117,11 @@ export default class Solving extends PhaseRules {
     if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
       return {type: MoveType.RevealKickOrNot}
     } else {
+      const kickers:ThiefState[] = this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))
+      if (kickers.length === 1 && this.getThieves().flatMap(thief => thief.partners.filter(partner => partner.district === district.name)).length === 1){
+        console.log("couocu !")
+        return {type:MoveType.KickOrNot, kickerRole:kickers[0].role, playerToKick:false}
+      }
       return
     }
   }

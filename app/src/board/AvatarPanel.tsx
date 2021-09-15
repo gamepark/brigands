@@ -14,8 +14,8 @@ type Props = {
 
 const AvatarPanel: FC<Props> = ({playerInfo, role}) => {
   const {t} = useTranslation()
-  if (playerInfo?.avatar) {
-    return <Avatar css={avatarStyle} playerId={role} speechBubbleProps={{direction: SpeechBubbleDirection.BOTTOM_RIGHT}}/>
+  if (playerInfo?.avatar || true) {
+    return <Avatar css={avatarStyle} playerId={role} speechBubbleProps={{direction: SpeechBubbleDirection.BOTTOM_RIGHT, children: 'blablabla'}}/>
   } else {
     return <img alt={t('Player avatar')} src={getAlternativeAvatar(role)} css={avatarStyle} draggable={false}/>
   }

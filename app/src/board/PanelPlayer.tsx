@@ -142,14 +142,14 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     return(
 
         <>
-
-        <div {...props} ref={dropRef} css={[panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
-
-            
-
+        <div css={avatarPosition(positionForPartners, numberOfThieves)}>
             <AvatarPanel playerInfo={playerInfo} role={player.role} />
             <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
             <PlayerTimer playerId={player.role} css={[timerStyle]}/>
+        </div>
+
+        <div {...props} ref={dropRef} css={[preserve, panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+
             <div css={goldZonePosition}>
 
                 {isThiefState(player) && <div css={goldPanel}><p> {t('Ducats')} : {player.gold}</p></div>}
@@ -312,6 +312,16 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
     )
 
 }
+
+const avatarPosition = (position:number, nbThieves:number) => css`
+position:absolute;
+width:17.5%;
+top:1%;
+${nbThieves === 5 && `left:${1.20+position*20}%;`}
+${nbThieves === 4 && `left:${3.75+position*25}%;`}
+${nbThieves === 3 && `left:${7.75+position*33.5}%;`}
+${nbThieves === 2 && `left:${16.25+position*50}%;`}
+`
 
 function isEmphazing(role:PlayerRole, partnerIndex:number, thieves:(ThiefState|ThiefView)[], phase:Phase|undefined, districtResolved:District|undefined ):boolean{
     if (districtResolved === undefined || (districtResolved.name !==DistrictName.Jail && districtResolved.name !== DistrictName.Tavern)) return false
@@ -664,7 +674,7 @@ p{
 const goldZonePosition = css`
 height:15%;
 width:100%;
-margin: 1em 0.2em 0.2em 0.2em;
+margin: 8em 0.2em 0.2em 0.2em;
 display:flex;
 flex-direction:row;
 justify-content:center;
@@ -729,12 +739,11 @@ transform-style:preserve-3d;
 const panelPlayerStyle = (color:string) => css`
 border:0.5em solid ${color};
 border-radius:10%;
-transform-style: preserve-3d;
+
 `
 
 const preserve = css`
 transform-style:preserve-3d;
-
 `
 
 export function getPlayerColor(role:PlayerRole):string{

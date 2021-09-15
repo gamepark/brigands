@@ -19,7 +19,7 @@ const DistrictHelpPopUp : FC<{district:DistrictName, nbPlayers:number, color:Pla
 
         <div css={[popupOverlayStyle, showPopupOverlayStyle]} onClick={close}>
 
-                <div css={popupStyle}>
+                <div css={popupStyle} onClick={event => event.stopPropagation()}>
 
                 <div css = {closePopupStyle} onClick={close}> <FontAwesomeIcon icon={faTimes} /> </div>
                 <h2>{getDistrictName(district,t)}</h2>
@@ -84,7 +84,7 @@ position:relative;
 
 const popupOverlayStyle = css`
   background: rgba(0, 0, 0, 0.8);
-  transform: perspective(0em) translateZ(0.1em);
+  transform: translateZ(0.1em);
   
   z-index: 99;
   transition: all .5s ease;
