@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import GameView from '@gamepark/brigands/GameView'
 import {FailuresDialog, FullscreenDialog, Menu, useGame} from '@gamepark/react-client'
-import {Header, LoadingScreen} from '@gamepark/react-components'
+import {Header, ImagesLoader, LoadingScreen} from '@gamepark/react-components'
 import {useEffect, useState} from 'react'
 import {DndProvider} from 'react-dnd-multi-backend'
 import HTML5ToTouch from 'react-dnd-multi-backend/dist/cjs/HTML5toTouch'
@@ -24,23 +24,24 @@ export default function App() {
   const game = useGame<GameView>()
 
   const [audioLoader, setAudioLoader] = useState<AudioLoader>()
+  const [imagesLoading, setImagesLoading] = useState(true)
   const [isSoundsLoading, setSoundLoading] = useState(true)
 
   const [isJustDisplayed, setJustDisplayed] = useState(true)
   useEffect(() => {
     setTimeout(() => setJustDisplayed(false), 2000)
   }, [])
-  const loading = !game || isJustDisplayed || isSoundsLoading
+  const loading = !game || imagesLoading || isJustDisplayed || isSoundsLoading
   return (
     <DndProvider options={HTML5ToTouch}>
       {!loading && audioLoader && game && <GameDisplay game={game} audioLoader={audioLoader} />}
       <LoadingScreen display={loading} 
-                     gameBox={Images.box} 
-                     author="Florian Boué & Laurène Brosseau" 
+                     author="Florian Boué & Laurène Brosseau"
                      artist="Sylvain Aublin" 
                      publisher="Aspic Games" 
                      developer="Théo Grégorio"/>
       <Header><HeaderText loading={loading} game={game}/></Header>
+      <ImagesLoader images={Object.values(Images)} onImagesLoad={() => setImagesLoading(false)}/>
       <SoundLoader sounds={[GoldCoinSound, GoldBagSound, MoveToken, CardFlip, DiceRoll, DiceShake, PrisonDoor, EndSound]} onSoundLoad={() => setSoundLoading(false)} onSoundsPrepared={ (audioLoader) => setAudioLoader(audioLoader) }/>
       <Menu/>
       <FailuresDialog/>

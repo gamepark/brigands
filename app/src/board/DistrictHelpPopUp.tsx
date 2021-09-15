@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import PlayerRole from "@gamepark/brigands/types/PlayerRole"
+import {Picture} from '@gamepark/react-components'
 import { FC } from "react"
 import { useTranslation } from "react-i18next"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -23,7 +24,7 @@ const DistrictHelpPopUp : FC<{district:DistrictName, nbPlayers:number, color:Pla
 
                 <div css = {closePopupStyle} onClick={close}> <FontAwesomeIcon icon={faTimes} /> </div>
                 <h2>{getDistrictName(district,t)}</h2>
-                <img src={getDistrictImage(district,nbPlayers)} />
+                <Picture src={getDistrictImage(district,nbPlayers)} />
                 <p> {getDistrictHelpText(district,nbPlayers,t)} </p>
 
                 <Button pRole={color} css={buttonPosition} onClick={close}>{t('OK')}</Button>    

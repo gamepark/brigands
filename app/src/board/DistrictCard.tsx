@@ -12,6 +12,7 @@ import { ThiefView } from "@gamepark/brigands/types/Thief";
 import ThiefTokenInHand from "@gamepark/brigands/types/ThiefTokenInHand";
 import TokenAction from "@gamepark/brigands/types/TokenAction";
 import { useAnimation, usePlay, usePlayerId, useSound } from "@gamepark/react-client";
+import {Picture} from '@gamepark/react-components'
 import { FC } from "react";
 import { useDrop } from "react-dnd";
 import { ResetSelectedTokenInHand, resetSelectedTokenInHandMove } from "../localMoves/SetSelectedTokenInHand";
@@ -98,7 +99,7 @@ const DistrictCard : FC<Props> = ({district, thief, color, partners, selectedTok
             }
 
             <div css={[backCard, shadow, card, districtCardBackStyle(getCardBG(undefined), getSeal(color))]}>
-                {district !== undefined && phase === Phase.Planning && <img css={iconStyle} src={getIcon(district)} />}
+                {district !== undefined && phase === Phase.Planning && <Picture css={iconStyle} src={getIcon(district)} />}
             </div>
             <div css={[frontCard, shadow, card,  districtCardFrontStyle(getCardBG(district), getSeal(color))]}></div>
         </div> 

@@ -8,6 +8,7 @@ import District from "@gamepark/brigands/districts/District";
 import Phase from "@gamepark/brigands/phases/Phase";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId } from "@gamepark/react-client";
+import {Picture} from '@gamepark/react-components'
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "../utils/Button";
@@ -77,10 +78,10 @@ const PrincePanel : FC<Props> = ({player, city, phase, partnersArrestedCount, se
             {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
             {judgePartnersAnimation && partnersArrestedCount && <p css={arrestPartnersHintPosition(judgePartnersAnimation.duration)}> + {partnersArrestedCount*2} </p>}
 
-            {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <img key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} draggable={false} />)}
+            {[...Array(Math.floor(player.victoryPoints/10))].map((_, i) => <Picture key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]} />)}
             
             {decomposeGold(player.gold).map((coin, index) =>
-                [...Array(coin)].map((_, i) => <img key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} draggable={false} />)
+                [...Array(coin)].map((_, i) => <Picture key={i+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)} />)
             )}
 
         </div>

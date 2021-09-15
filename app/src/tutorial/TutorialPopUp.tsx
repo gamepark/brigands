@@ -3,6 +3,7 @@ import {css} from "@emotion/react";
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {Tutorial, useActions, useAnimation, useFailures, usePlay, usePlayerId} from "@gamepark/react-client";
+import {Picture} from '@gamepark/react-components'
 import {TFunction} from "i18next";
 import {FC, useEffect, useRef, useState} from "react";
 import {Trans, useTranslation} from "react-i18next";
@@ -184,7 +185,7 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
 
               <div css={closePopupStyle} onClick={() => setTutorialDisplay(false)}><FontAwesomeIcon icon={faTimes}/></div>
 
-              {currentMessage && <h2>{currentMessage.title(t)} {currentMessage && currentMessage.image && <img css={[imageStyle]} src={currentMessage.image} alt={t("steal Token")} />}</h2>}
+              {currentMessage && <h2>{currentMessage.title(t)} {currentMessage && currentMessage.image && <Picture css={[imageStyle]} src={currentMessage.image} alt={t("steal Token")} />}</h2>}
               {currentMessage && <p> <Trans defaults={currentMessage.text} components={[<strong/>]} /> </p>}
               {tutorialIndex > 0 && <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(-1)}>{'<<'}</Button>}
               <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(1)}>{t('OK')}</Button>
@@ -200,8 +201,8 @@ const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}
 
         {
           currentMessage && currentMessage.arrow &&
-          <img alt='Arrow pointing toward current tutorial interest' src={Arrow} draggable="false"
-               css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
+          <Picture alt='Arrow pointing toward current tutorial interest' src={Arrow} draggable="false"
+                   css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
         }
 
         {game.eventDeck === 1 && !hideFifthTurnInfo &&

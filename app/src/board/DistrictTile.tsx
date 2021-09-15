@@ -6,6 +6,7 @@ import DistrictName from "@gamepark/brigands/districts/DistrictName"
 import Phase from "@gamepark/brigands/phases/Phase"
 import PlayerRole from "@gamepark/brigands/types/PlayerRole"
 import { usePlay, usePlayerId, useSound } from "@gamepark/react-client"
+import {Picture} from '@gamepark/react-components'
 import { FC, HTMLAttributes } from "react"
 import { useDrop } from "react-dnd"
 import { useTranslation } from "react-i18next"
@@ -93,7 +94,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
                     , canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
 
                 {phase === Phase.Planning && district.name !== DistrictName.Jail && playerId !== PlayerRole.Prince && playerId !== undefined &&
-                    [...Array(nbPartners)].map((_,i) => <img key={i} alt={t('temporary partner')} src={Images.partnerGreen} draggable={false} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
+                    [...Array(nbPartners)].map((_,i) => <Picture key={i} alt={t('temporary partner')} src={Images.partnerGreen} css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]} /> )
                 }
 
                 {district.gold !== undefined 
@@ -101,7 +102,7 @@ const DistrictTile : FC<Props> = ({district, prince, phase, nbPlayers, nbPartner
                     
                         {            
                             decomposeGold(district.gold).map((coin, index) =>
-                            [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} draggable={false} />)
+                            [...Array(coin)].map((_, index2) => <Picture key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)} />)
                         )}
 
                 </div>

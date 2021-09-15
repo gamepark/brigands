@@ -3,6 +3,7 @@ import {css} from '@emotion/react'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Avatar, Player} from '@gamepark/react-client'
 import {SpeechBubbleDirection} from '@gamepark/react-client/dist/Avatar'
+import {Picture} from '@gamepark/react-components'
 import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
 import Images from '../utils/Images'
@@ -17,7 +18,7 @@ const AvatarPanel: FC<Props> = ({playerInfo, role}) => {
   if (playerInfo?.avatar) {
     return <Avatar css={avatarStyle} playerId={role} speechBubbleProps={{direction: SpeechBubbleDirection.BOTTOM_RIGHT}}/>
   } else {
-    return <img alt={t('Player avatar')} src={getAlternativeAvatar(role)} css={avatarStyle} draggable={false}/>
+    return <Picture alt={t('Player avatar')} src={getAlternativeAvatar(role)} css={avatarStyle}/>
   }
 }
 

@@ -15,6 +15,7 @@ import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import TokenAction from '@gamepark/brigands/types/TokenAction'
 import {PlayerTimer, Tutorial, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
+import {Picture} from '@gamepark/react-components'
 import {FC, HTMLAttributes} from 'react'
 import {useDrop} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
@@ -223,7 +224,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
 
             {animationGainGold && (animationGainGold.move.thief === player.role)
                 && <div css={flexStyle}> {decomposeGold(animationGainGold.move.gold).map((coin, index) =>
-                    [...Array(coin)].map((_, index2) => <img key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} draggable={false} />))}
+                    [...Array(coin)].map((_, index2) => <Picture key={index2+"_"+index} alt={t('Coin')} src={getCoin(index)} css={[coinPosition(index), gainGoldAnimation(animationGainGold.duration, city.findIndex(d => d.name === districtResolved!.name)!,  numberOfThieves, positionForPartners, (playerId === PlayerRole.Prince || playerId === undefined))]} />))}
                    </div>
             }
 
@@ -231,7 +232,7 @@ const PanelPlayer : FC<Props> = ({player, prince, phase, positionForPartners, ci
                 && <div css={flexStyle}>{
                 animationResolveSteal.move.steals.filter(s => s.victim === player.role && s.thief !== player.role).map((steal, stealIndex) => 
                     decomposeGold(steal.gold).map((coin, coinIndex) => 
-                        [...Array(coin)].map((_, index) => <img key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim), numberOfThieves)]} draggable={false} />
+                        [...Array(coin)].map((_, index) => <Picture key={stealIndex+"_"+coinIndex+"_"+index} alt={t('Coin')} src={getCoin(coinIndex)} css={[coinPosition(coinIndex), translateAnimation(stealIndex, displayedThievesOrder.findIndex(t => t === steal.thief), displayedThievesOrder.findIndex(t=> t=== steal.victim), numberOfThieves)]} />
                         )
                     )
                 )}

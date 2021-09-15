@@ -6,6 +6,7 @@ import { EventArray } from "@gamepark/brigands/material/Events";
 import {DrawEventView, isDrawEvent} from "@gamepark/brigands/moves/DrawEvent";
 import PlayerRole from "@gamepark/brigands/types/PlayerRole";
 import { useAnimation, usePlayerId } from "@gamepark/react-client";
+import {Picture} from '@gamepark/react-components'
 import { FC, HTMLAttributes } from "react";
 import { useTranslation } from "react-i18next";
 import Images from "../utils/Images";
@@ -45,7 +46,7 @@ const WeekCardsPanel : FC<Props> = ({event, eventDeck, city, ...props}) => {
 
             {eventDeck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t("Last Turn")}</p></div>}
 
-            {eventDeck > 1 && [...Array(eventDeck-1)].map((_, i) => <img key={i} alt={t('deck')} src={Images.weekCardBack} css={[backCard, hiddenCardStyle, offsetDeck(i+1), shadow]} draggable={false} />)}
+            {eventDeck > 1 && [...Array(eventDeck-1)].map((_, i) => <Picture key={i} alt={t('deck')} src={Images.weekCardBack} css={[backCard, hiddenCardStyle, offsetDeck(i+1), shadow]} />)}
 
            
 
