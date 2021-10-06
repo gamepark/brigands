@@ -21,6 +21,6 @@
     "lodash.shuffle": "^4.2.0"
   },
   "devDependencies": {
-    "i18next": "^20.0.0"
+    "i18next": "^21.2.4"
   }
 }
