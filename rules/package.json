@@ -17,7 +17,7 @@
     "prepublishOnly": "tsc"
   },
   "dependencies": {
-    "@gamepark/rules-api": "~5.3.0",
+    "@gamepark/rules-api": "~5.7.0",
     "lodash.shuffle": "^4.2.0"
   },
   "devDependencies": {
