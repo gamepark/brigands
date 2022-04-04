@@ -88,7 +88,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
   }
 
-  isActive(playerId: PlayerRole): boolean {
+  isTurnToPlay(playerId: PlayerRole): boolean {
     const player = this.state.players.find(p => p.role === playerId)
     const phaseRules = this.getPhaseRules()
     if (!player || !phaseRules) return false

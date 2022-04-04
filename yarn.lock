@@ -1182,6 +1182,13 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@babel/runtime@^7.17.2":
+  version "7.17.8"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.8.tgz#3e56e4aff81befa55ac3ac6a0967349fd1c5bca2"
+  integrity sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/template@^7.10.4", "@babel/template@^7.15.4", "@babel/template@^7.3.3":
   version "7.15.4"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.15.4.tgz#51898d35dcf3faa670c4ee6afcfd517ee139f194"
@@ -1450,10 +1457,17 @@
     "@react-dnd/shallowequal" "^2.0.0"
     supports-webp "^2.0.1"
 
-"@gamepark/rules-api@^5.8.0", "@gamepark/rules-api@~5.8.0":
+"@gamepark/rules-api@^5.8.0":
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/@gamepark/rules-api/-/rules-api-5.8.0.tgz#dfb889fc17f69f37754b890550f9314ec42888a2"
   integrity sha512-B8KryJkPYqpRjD5G+YmI12ssUG3VtCsPbJygNvo8ARmcBG9KHB0YO38Dnmw9Q50fzTmzcVxr/59NukQ7fBr4sw==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+
+"@gamepark/rules-api@~5.10.0":
+  version "5.10.0"
+  resolved "https://registry.yarnpkg.com/@gamepark/rules-api/-/rules-api-5.10.0.tgz#4f6a97ca3657d96e3ee75512f2af6cb3c0b3a287"
+  integrity sha512-yZhKRIPRcoxvtFQRB1XcJpgkSGKwvv6ifhOO7z1xriSkbe83WrBJ36vJ4GaqWSuE98KotJ1n90L5l+77VAxzeg==
   dependencies:
     fast-deep-equal "^3.1.3"
 
@@ -8146,6 +8160,13 @@ i18next@^21.2.4:
   integrity sha512-ojsp2GYeXaPNkMaG2p4Ot2bNZjvCFpTGT5ffnDLyMaLQovLEtTjv66X9riP0vkq1W3+Ici2cty77So+bfyDjSQ==
   dependencies:
     "@babel/runtime" "^7.12.0"
+
+i18next@^21.6.14:
+  version "21.6.14"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-21.6.14.tgz#2bc199fba7f4da44b5952d7df0a3814a6e5c3943"
+  integrity sha512-XL6WyD+xlwQwbieXRlXhKWoLb/rkch50/rA+vl6untHnJ+aYnkQ0YDZciTWE78PPhOpbi2gR0LTJCJpiAhA+uQ==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
   version "0.4.24"
@@ -14914,10 +14935,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^4.2.2:
-  version "4.4.4"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.4.4.tgz#2cd01a1a1f160704d3101fd5a58ff0f9fcb8030c"
-  integrity sha512-DqGhF5IKoBl8WNf8C1gu8q0xZSInh9j1kJJMqT3a94w1JzVaBU4EXOSMrz9yDqMT0xt3selp83fuFMQ0uzv6qA==
+typescript@^4.6.3:
+  version "4.6.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.6.3.tgz#eefeafa6afdd31d725584c67a0eaba80f6fc6c6c"
+  integrity sha512-yNIatDa5iaofVozS/uQJEl3JRWLKKGJKh6Yaiv0GLGSuhpFJe7P3SbHZ8/yjAHRQwKRoA6YZqlfjXWmVzoVSMw==
 
 uglify-js@^3.1.4:
   version "3.14.2"
