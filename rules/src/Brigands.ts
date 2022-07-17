@@ -153,11 +153,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
   }
 
-  getAutomaticMove(): Move | void {
+  getAutomaticMoves(): Move[] {
     const phaseRules = this.getPhaseRules()
-    if (!phaseRules) return
-    if (princeWin(this.state) || lastTurnIsOver(this.state)) return {type: MoveType.RevealGolds}
-    return phaseRules.getAutomaticMove()
+    if (!phaseRules) return []
+    if (princeWin(this.state) || lastTurnIsOver(this.state)) return [{type: MoveType.RevealGolds}]
+    const move = phaseRules.getAutomaticMove()
+    return move ? [move] : []
   }
 
   getView(playerId?: PlayerRole): GameView {
