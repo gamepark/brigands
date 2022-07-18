@@ -18,13 +18,13 @@ import {ResetSelectedPatrol, resetSelectedPatrolMove} from '../localMoves/SetSel
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
 import DistrictTile from './DistrictTile'
+import JailTile from './JailTile'
 
 type Props = {
   city: District[]
   phase: Phase | undefined
   prince: PrinceState
   currentDistrict: number | undefined
-  nbPlayers: number
   partnersOfPlayerId?: Partner[]
   isPlayerReady?: boolean
   selectedPartner?: number
@@ -36,7 +36,7 @@ type Props = {
 }
 
 const City: FC<Props> = ({
-                           city, phase, prince, currentDistrict, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand,
+                           city, phase, prince, currentDistrict, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand,
                            selectedPatrol, selectedHeadStart, open
                          }) => {
 
@@ -90,13 +90,13 @@ const City: FC<Props> = ({
 
   return (
     <>
-      {city.map((district, index) =>
+      <JailTile prince={prince} selectedPatrol={selectedPatrol} selectedHeadStart={selectedHeadStart}/>
+      {city.slice(0, -1 /* TODO: remove Jail */).map((district, index) =>
         <DistrictTile key={district.name}
                       css={[districtPosition(index), phase === Phase.Solving && currentDistrict !== index && reduceBrightness]}
                       district={district}
                       phase={phase}
                       prince={prince}
-                      nbPlayers={nbPlayers}
                       nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
                       isPlayerReady={isPlayerReady}
                       selectedPartner={selectedPartner}

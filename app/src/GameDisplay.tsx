@@ -95,7 +95,6 @@ export default function GameDisplay({game, audioLoader}: Props) {
                 phase={game.phase}
                 prince={players.find(isPrinceState)!}
                 currentDistrict={game.currentDistrict}
-                nbPlayers={game.players.length}
                 partnersOfPlayerId={game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
                 isPlayerReady={(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
                 selectedPartner={game.selectedPartner?.partnerNumber}

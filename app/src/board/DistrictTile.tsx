@@ -24,7 +24,6 @@ type Props = {
   district: District
   prince: PrinceState
   phase: Phase | undefined
-  nbPlayers: number
   nbPartners?: number
   isPlayerReady?: boolean
   selectedPartner?: number
@@ -34,7 +33,7 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>
 
 const DistrictTile: FC<Props> = ({
-                                   district, prince, phase, nbPlayers, nbPartners, isPlayerReady, selectedPartner, selectedPatrol,
+                                   district, prince, phase, nbPartners, isPlayerReady, selectedPartner, selectedPatrol,
                                    selectedHeadStart, ...props
                                  }) => {
 
@@ -49,12 +48,7 @@ const DistrictTile: FC<Props> = ({
     accept: ['PartnerInHand', 'PatrolInHand', 'HeadStartToken'],
     canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
       if (isPatrolInHand(item)) {
-        if (item.patrolNumber !== 2) {
-          return !prince.patrols.includes(district.name)
-        } else {
-          return !prince.patrols.includes(district.name)
-        }
-
+        return !prince.patrols.includes(district.name)
       } else if (isPartnerInHand(item)) {
         return district.name !== DistrictName.Jail
       } else {
