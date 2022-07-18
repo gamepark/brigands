@@ -1,11 +1,12 @@
-import HeadStartToken from "./HeadStartToken"
-import PatrolInHand from "./PatrolInHand"
+import HeadStartToken from './HeadStartToken'
+import PatrolInHand from './PatrolInHand'
 
 type PartnerInHand = {
-    partnerNumber:number,
+  partnerNumber: number,
 }
 
 export default PartnerInHand
 
-export function isPartnerInHand(state:PatrolInHand|PartnerInHand|HeadStartToken):state is (PartnerInHand){
-    return typeof (state as PartnerInHand).partnerNumber === 'number'}
+export function isPartnerInHand(state: PatrolInHand | PartnerInHand | HeadStartToken): state is (PartnerInHand) {
+  return (state as PartnerInHand).partnerNumber !== undefined
+}

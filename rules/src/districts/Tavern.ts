@@ -9,7 +9,8 @@ import {DistrictRules} from './DistrictRules'
 
 export default class Tavern extends DistrictRules {
   isThiefActive(thief: ThiefState): boolean {
-    return (thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined) || (this.state.tutorial === true && thief.role === PlayerRole.YellowThief)
+    return (thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined)
+      || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
@@ -21,7 +22,7 @@ export default class Tavern extends DistrictRules {
         }
       }
     }
-    if (this.state.tutorial === true && tavernMoves.length === 0){
+    if (this.state.tutorial && tavernMoves.length === 0){
       return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
     } else {
       return tavernMoves
@@ -32,7 +33,7 @@ export default class Tavern extends DistrictRules {
     // Actually simultaneous Phase, but can be better if sequential for animations ?
     const thief = this.getThieves().find(p => p.partners.find(part => part.district === DistrictName.Tavern))
     if (!thief) {
-      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+      if (this.state.tutorial && this.state.eventDeck.length >= 4){
 
         // TO DO : Delete when we can control AutoMoves in Tutorial
 
@@ -54,31 +55,14 @@ export default class Tavern extends DistrictRules {
     } else {
       return {
         type: MoveType.GainGold,
-        gold: betResultv2(partner.goldForTavern!, this.district.dice),
+        gold: betResult(partner.goldForTavern!, this.district.dice),
         thief: thiefWithBet.role, district: DistrictName.Tavern
       }
     }
   }
 }
 
-function betResult(goldBet: number, dice: number, isEvent: boolean): number {
-  if (isEvent) {
-    return dice === 2 ? 0 : goldBet * 3
-  } else {
-    switch (dice) {
-      case 2 :
-        return 0
-      case 3:
-        return goldBet * 2
-      case 4:
-        return goldBet * 3
-      default:
-        return 0
-    }
-  }
-}
-
-function betResultv2(goldBet:number, dice:number[]):number{
+function betResult(goldBet:number, dice:number[]):number{
   const arrayOfTwos = dice.filter(face => face === 2)
   const arrayOfThrees = dice.filter(face => face === 3)
   const arrayOfFours = dice.filter(face => face === 4)

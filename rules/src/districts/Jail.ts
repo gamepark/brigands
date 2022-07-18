@@ -1,11 +1,10 @@
 import {getTokensInBank} from '../Brigands'
-import { getPrince } from '../GameView'
 import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken from '../moves/TakeToken'
 import {isPrinceState, ThiefState} from '../PlayerState'
-import { isPartner } from '../types/Partner'
+import {isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
@@ -13,9 +12,10 @@ import {DistrictRules} from './DistrictRules'
 
 export default class Jail extends DistrictRules {
 
-  
+
   isThiefActive(thief: ThiefState): boolean {
-    return (getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined) || (this.state.tutorial === true && thief.role === PlayerRole.YellowThief)
+    return (getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined)
+      || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
@@ -26,7 +26,7 @@ export default class Jail extends DistrictRules {
         jailMoves.push({type: MoveType.TakeToken, role: thief.role, token: availableTokens[i]})
       }
     }
-    if (this.state.tutorial === true && jailMoves.length === 0){
+    if (this.state.tutorial && jailMoves.length === 0) {
       return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
     } else {
       return jailMoves
@@ -38,12 +38,12 @@ export default class Jail extends DistrictRules {
     const thievesOnJail = this.getThieves().filter(p => p.partners.some(part => isPartner(part) && part.district === DistrictName.Jail))
     const isTutorial = this.state.tutorial
 
-    if (this.state.players.find(isPrinceState)!.patrols.some(pat => pat === DistrictName.Jail)){
-      return {type:MoveType.JudgePrisoners}
+    if (this.state.players.find(isPrinceState)!.patrols.some(pat => pat === DistrictName.Jail)) {
+      return {type: MoveType.JudgePrisoners}
     }
 
     if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || getTokensInBank(p).length === 0)))) {
-      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
 
         // TO DO : Delete when we can control AutoMoves in Tutorial
 
@@ -59,10 +59,12 @@ export default class Jail extends DistrictRules {
 
       // --- --- TO DO : Delete parts linked to Tutorial when scripting random will be implemented --- ---
 
-      if (!isTutorial || this.state.eventDeck.length !== 5){
+      if (!isTutorial || this.state.eventDeck.length !== 5) {
         return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Jail}
       } else {
-        return partners.length === 2 ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail}
+        return partners.length === 2 ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {
+          type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail
+        }
       }
 
       // --- --- END TO DO --- --- 

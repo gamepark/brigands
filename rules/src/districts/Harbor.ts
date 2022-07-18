@@ -15,7 +15,7 @@ export default class Harbor extends DistrictRules {
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
-    
+
     const harborMoves: TakeToken[] = []
     if (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))) {
       const availableTokens: TokenAction[] = getTokensInBank(thief)
@@ -26,7 +26,7 @@ export default class Harbor extends DistrictRules {
 
     // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
 
-    if (this.state.tutorial === true && harborMoves.length === 0){
+    if (this.state.tutorial && harborMoves.length === 0) {
       return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
     } else {
       return harborMoves
@@ -35,7 +35,7 @@ export default class Harbor extends DistrictRules {
 
   getAutomaticMove(): Move | void {
     if (!this.getThieves().some(p => p.partners.some(part => part.district === DistrictName.Harbor))) {
-      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
 
         // TO DO : Delete when we can control AutoMoves in Tutorial
 

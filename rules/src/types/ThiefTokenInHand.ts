@@ -1,8 +1,8 @@
-import TokenAction from "./TokenAction"
+import TokenAction from './TokenAction'
 
 type ThiefTokenInHand = {
-    tokenAction:TokenAction
-    index?:number
+  tokenAction: TokenAction
+  index?: number
 }
 
 export default ThiefTokenInHand

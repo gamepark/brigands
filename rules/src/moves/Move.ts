@@ -22,10 +22,10 @@ import TakeToken from './TakeToken'
 import TellYouAreReady from './TellYouAreReady'
 import ThrowDice from './ThrowDice'
 
-type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts 
-| ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
-| ResolveStealToken | KickOrNot | RevealKickOrNot | MovePartner
-| JudgePrisoners | PlayHeadStart 
-| RevealGolds
+type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts
+  | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
+  | ResolveStealToken | KickOrNot | RevealKickOrNot | MovePartner
+  | JudgePrisoners | PlayHeadStart
+  | RevealGolds
 
 export default Move

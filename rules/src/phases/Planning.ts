@@ -1,11 +1,11 @@
 import {isThisPartnerHasAnyToken} from '../Brigands'
+import DistrictName from '../districts/DistrictName'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import PlacePartner from '../moves/PlacePartner'
 import PlaceToken from '../moves/PlaceToken'
 import TellYouAreReady from '../moves/TellYouAreReady'
 import {ThiefState} from '../PlayerState'
-import DistrictName from '../districts/DistrictName'
 import TokenAction from '../types/TokenAction'
 import {PhaseRules} from './PhaseRules'
 

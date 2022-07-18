@@ -4,7 +4,6 @@ import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
 import {isPrinceState, PrinceState, ThiefState} from '../PlayerState'
 import Partner, {isPartner} from '../types/Partner'
-import Thief from '../types/Thief'
 import MoveType from './MoveType'
 
 type RevealKickOrNot = {

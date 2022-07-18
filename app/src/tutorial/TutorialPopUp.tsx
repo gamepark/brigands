@@ -1,243 +1,245 @@
 /** @jsxImportSource @emotion/react */
-import {css} from "@emotion/react";
+import {css} from '@emotion/react'
 import {faTimes} from '@fortawesome/free-solid-svg-icons'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {Tutorial, useActions, useAnimation, useFailures, usePlay, usePlayerId} from "@gamepark/react-client";
+import GameView from '@gamepark/brigands/GameView'
+import Move from '@gamepark/brigands/moves/Move'
+import MoveType from '@gamepark/brigands/moves/MoveType'
+import PlayerRole from '@gamepark/brigands/types/PlayerRole'
+import {Tutorial, useActions, useAnimation, useFailures, usePlay, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
-import {TFunction} from "i18next";
-import {FC, useEffect, useRef, useState} from "react";
-import {Trans, useTranslation} from "react-i18next";
-import Arrow from "../tutorial/tutorial-arrow-white.png"
-import GameView from "@gamepark/brigands/GameView";
-import PlayerRole from "@gamepark/brigands/types/PlayerRole";
-import Move from "@gamepark/brigands/moves/Move";
-import Button from "../utils/Button";
-import MoveType from "@gamepark/brigands/moves/MoveType";
-import Images from "../utils/Images";
+import {TFunction} from 'i18next'
+import {FC, useEffect, useRef, useState} from 'react'
+import {Trans, useTranslation} from 'react-i18next'
+import Arrow from '../tutorial/tutorial-arrow-white.png'
+import Button from '../utils/Button'
+import Images from '../utils/Images'
 
 
-const TutorialPopup : FC<{game:GameView, tutorial:Tutorial}> = ({game, tutorial}) => {
+const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutorial}) => {
 
-    const {t} = useTranslation()
-    const playerId = usePlayerId<PlayerRole>()
-    const actions = useActions<Move, PlayerRole>()
-    const actionsNumber = actions !== undefined ? actions.filter(action => action.playerId === playerId).length : 0
-    const previousActionNumber = useRef(actionsNumber)
-    const [tutorialIndex, setTutorialIndex] = useState(0)
-    const [tutorialDisplay, setTutorialDisplay] = useState(tutorialDescription.length > actionsNumber)
-    const [failures] = useFailures()
-    const [hideLastTurnInfo, setHideLastTurnInfo] = useState(false)
-    const [hideFifthTurnInfo, setHideFifthTurnInfo] = useState(false)
-    const [hideEndInfo, setHideEndInfo] = useState(false)
+  const {t} = useTranslation()
+  const playerId = usePlayerId<PlayerRole>()
+  const actions = useActions<Move, PlayerRole>()
+  const actionsNumber = actions !== undefined ? actions.filter(action => action.playerId === playerId).length : 0
+  const previousActionNumber = useRef(actionsNumber)
+  const [tutorialIndex, setTutorialIndex] = useState(0)
+  const [tutorialDisplay, setTutorialDisplay] = useState(tutorialDescription.length > actionsNumber)
+  const [failures] = useFailures()
+  const [hideLastTurnInfo, setHideLastTurnInfo] = useState(false)
+  const [hideFifthTurnInfo, setHideFifthTurnInfo] = useState(false)
+  const [hideEndInfo, setHideEndInfo] = useState(false)
 
-    const platformUri = process.env.REACT_APP_PLATFORM_URI ?? 'https://game-park.com'
-    const discordUri = 'https://discord.gg/nMSDRag'
+  const platformUri = process.env.REACT_APP_PLATFORM_URI ?? 'https://game-park.com'
+  const discordUri = 'https://discord.gg/nMSDRag'
 
-    const play = usePlay<Move>()
-    const animation = useAnimation<Move>()
+  const play = usePlay<Move>()
+  const animation = useAnimation<Move>()
 
 
-    const moveTutorial = (deltaMessage: number) => {
-      setTutorialIndex(tutorialIndex + deltaMessage)
-      setTutorialDisplay(true)
-      if (deltaMessage > 0){
-        playMoves()
-      }
-      
+  const moveTutorial = (deltaMessage: number) => {
+    setTutorialIndex(tutorialIndex + deltaMessage)
+    setTutorialDisplay(true)
+    if (deltaMessage > 0) {
+      playMoves()
     }
 
-    function playMoves():void{
-      if (actions && actions.length === 47 && tutorialIndex === 0){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:7})
-      }
-      if (actions && actions.length === 46 && tutorialIndex === 0){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:6})
-      }
-      if (actions && actions.length === 45 && tutorialIndex === 0){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:5})
-      }
-      if (actions && actions.length === 40 && tutorialIndex === 1){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:3})
-      }
-      if (actions && actions.length === 39 && tutorialIndex === 5){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:2})
-      }
-      if (actions && actions.length === 38){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:1})
-      }
-      if (actions && actions.length === 37 && tutorialIndex === 7){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:0})
-      }
-      if (actions && actions.length === 36 && tutorialIndex === 6){
-        tutorial.playNextMoves(1)
-      }
-      if (actions && actions.length === 34 && tutorialIndex === 3){
-        tutorial.playNextMoves(2)
-      }
-      if (actions && actions.length === 33 && tutorialIndex === 2){
-        tutorial.playNextMoves(1)
-      }
-      if (actions && actions.length === 22 && tutorialIndex === 1){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:7})
-      }
-      if (actions && actions.length === 20 && tutorialIndex === 4){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:6})
-        tutorial.playNextMoves(1)
-      }
-      if (actions && actions.length === 19 && tutorialIndex === 1){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:5})
-      }
-      if (actions && actions.length === 18){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:4})
-      }
-      if (actions && actions.length === 17){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:3})
-      }
-      if (actions && actions.length === 16){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:2})
-      }
-      if (actions && actions.length === 12){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:1})
-      }
-      if (actions && actions.length === 11 && tutorialIndex === 6){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:0})
-      }
-      if (actions && actions.length === 10 && tutorialIndex === 4){
-        tutorial.playNextMoves(1)
-      } else if (actions && actions.length === 8 && tutorialIndex === 1){
-        tutorial.playNextMoves(2)
-      } else if (actions && actions.length === 7 && tutorialIndex === 0){
-        tutorial.playNextMoves(1)
-      } 
-        
-    }
-    
-    const resetTutorialDisplay = () => {
-      if (game.phase !== undefined){
-        if (game.eventDeck === 2){
-          setHideFifthTurnInfo(false)
-        } else if (game.eventDeck === 0){
-          setHideLastTurnInfo(false)
-        } else {
-          setTutorialIndex(0)
-          setTutorialDisplay(true)
-        }
+  }
 
+  function playMoves(): void {
+    if (actions && actions.length === 47 && tutorialIndex === 0) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 7})
+    }
+    if (actions && actions.length === 46 && tutorialIndex === 0) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 6})
+    }
+    if (actions && actions.length === 45 && tutorialIndex === 0) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 5})
+    }
+    if (actions && actions.length === 40 && tutorialIndex === 1) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 3})
+    }
+    if (actions && actions.length === 39 && tutorialIndex === 5) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 2})
+    }
+    if (actions && actions.length === 38) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 1})
+    }
+    if (actions && actions.length === 37 && tutorialIndex === 7) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 0})
+    }
+    if (actions && actions.length === 36 && tutorialIndex === 6) {
+      tutorial.playNextMoves(1)
+    }
+    if (actions && actions.length === 34 && tutorialIndex === 3) {
+      tutorial.playNextMoves(2)
+    }
+    if (actions && actions.length === 33 && tutorialIndex === 2) {
+      tutorial.playNextMoves(1)
+    }
+    if (actions && actions.length === 22 && tutorialIndex === 1) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 7})
+    }
+    if (actions && actions.length === 20 && tutorialIndex === 4) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 6})
+      tutorial.playNextMoves(1)
+    }
+    if (actions && actions.length === 19 && tutorialIndex === 1) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 5})
+    }
+    if (actions && actions.length === 18) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 4})
+    }
+    if (actions && actions.length === 17) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 3})
+    }
+    if (actions && actions.length === 16) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 2})
+    }
+    if (actions && actions.length === 12) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 1})
+    }
+    if (actions && actions.length === 11 && tutorialIndex === 6) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 0})
+    }
+    if (actions && actions.length === 10 && tutorialIndex === 4) {
+      tutorial.playNextMoves(1)
+    } else if (actions && actions.length === 8 && tutorialIndex === 1) {
+      tutorial.playNextMoves(2)
+    } else if (actions && actions.length === 7 && tutorialIndex === 0) {
+      tutorial.playNextMoves(1)
+    }
+
+  }
+
+  const resetTutorialDisplay = () => {
+    if (game.phase !== undefined) {
+      if (game.eventDeck === 2) {
+        setHideFifthTurnInfo(false)
+      } else if (game.eventDeck === 0) {
+        setHideLastTurnInfo(false)
       } else {
-        setHideEndInfo(false)
+        setTutorialIndex(0)
+        setTutorialDisplay(true)
       }
 
+    } else {
+      setHideEndInfo(false)
     }
 
-    const tutorialMessage = (index: number) => {
-        let currentStep = actionsNumber
-        while (!tutorialDescription[currentStep]) {
-          currentStep--
-        }
-        return tutorialDescription[currentStep][index]
-      }
+  }
 
-      useEffect(() => {
-        if (previousActionNumber.current > actionsNumber) {
-          setTutorialDisplay(false)
-        } else if (tutorialDescription[actionsNumber]) {
-          resetTutorialDisplay()
-        }
-        previousActionNumber.current = actionsNumber
-      }, [actionsNumber])
+  const tutorialMessage = (index: number) => {
+    let currentStep = actionsNumber
+    while (!tutorialDescription[currentStep]) {
+      currentStep--
+    }
+    return tutorialDescription[currentStep][index]
+  }
 
-    useEffect(() => {
-      if (failures.length) {
-        setTutorialIndex(tutorialDescription[actionsNumber].length - 1)  
-        setTutorialDisplay(true)
-        }
-    }, [actionsNumber, failures])
+  useEffect(() => {
+    if (previousActionNumber.current > actionsNumber) {
+      setTutorialDisplay(false)
+    } else if (tutorialDescription[actionsNumber]) {
+      resetTutorialDisplay()
+    }
+    previousActionNumber.current = actionsNumber
+  }, [actionsNumber])
 
-    useEffect(() => {
-      if (game.eventDeck <=3){
-        tutorial.setOpponentsPlayAutomatically(true)
-      }
+  useEffect(() => {
+    if (failures.length) {
+      setTutorialIndex(tutorialDescription[actionsNumber].length - 1)
+      setTutorialDisplay(true)
+    }
+  }, [actionsNumber, failures])
 
-      if (actionsNumber === 27){
-        play({type:MoveType.MoveOnDistrictResolved, districtResolved:4})
-      }
-      if (actionsNumber === 22 && actions && actions.length === 30){
-        tutorial.playNextMoves(3)
-      }
-      if (actionsNumber === 4 && actions && actions.length === 4){
-        tutorial.playNextMoves(3)
-      }
-    }, [actionsNumber, game.eventDeck])
+  useEffect(() => {
+    if (game.eventDeck <= 3) {
+      tutorial.setOpponentsPlayAutomatically(true)
+    }
+
+    if (actionsNumber === 27) {
+      play({type: MoveType.MoveOnDistrictResolved, districtResolved: 4})
+    }
+    if (actionsNumber === 22 && actions && actions.length === 30) {
+      tutorial.playNextMoves(3)
+    }
+    if (actionsNumber === 4 && actions && actions.length === 4) {
+      tutorial.playNextMoves(3)
+    }
+  }, [actionsNumber, game.eventDeck])
 
 
-    const currentMessage = tutorialMessage(tutorialIndex)
+  const currentMessage = tutorialMessage(tutorialIndex)
 
-    const displayPopup = tutorialDisplay && !animation && currentMessage && !failures.length
+  const displayPopup = tutorialDisplay && !animation && currentMessage && !failures.length
 
-    return (
-        <>
+  return (
+    <>
 
-        <div css={[popupOverlayStyle, displayPopup ? showPopupOverlayStyle : hidePopupOverlayStyle(85, 90), style]}
-            onClick={() => setTutorialDisplay(false)}>
+      <div css={[popupOverlayStyle, displayPopup ? showPopupOverlayStyle : hidePopupOverlayStyle(85, 90), style]}
+           onClick={() => setTutorialDisplay(false)}>
 
-            <div css={[popupStyle, displayPopup ? popupPosition(currentMessage) : hidePopupStyle]}
-                onClick={event => event.stopPropagation()}>
+        <div css={[popupStyle, displayPopup ? popupPosition(currentMessage) : hidePopupStyle]}
+             onClick={event => event.stopPropagation()}>
 
-              <div css={closePopupStyle} onClick={() => setTutorialDisplay(false)}><FontAwesomeIcon icon={faTimes}/></div>
+          <div css={closePopupStyle} onClick={() => setTutorialDisplay(false)}><FontAwesomeIcon icon={faTimes}/></div>
 
-              {currentMessage && <h2>{currentMessage.title(t)} {currentMessage && currentMessage.image && <Picture css={[imageStyle]} src={currentMessage.image} alt={t("steal Token")} />}</h2>}
-              {currentMessage && <p> <Trans defaults={currentMessage.text} components={[<strong/>]} /> </p>}
-              {tutorialIndex > 0 && <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(-1)}>{'<<'}</Button>}
-              <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(1)}>{t('OK')}</Button>
-
-            </div>
+          {currentMessage && <h2>{currentMessage.title(t)} {currentMessage && currentMessage.image &&
+          <Picture css={[imageStyle]} src={currentMessage.image} alt={t('steal Token')}/>}</h2>}
+          {currentMessage && <p><Trans defaults={currentMessage.text} components={[<strong/>]}/></p>}
+          {tutorialIndex > 0 && <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(-1)}>{'<<'}</Button>}
+          <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => moveTutorial(1)}>{t('OK')}</Button>
 
         </div>
 
-        {
-        !displayPopup && 
+      </div>
+
+      {
+        !displayPopup &&
         <Button css={[buttonTutoStyle, resetStyle]} pRole={PlayerRole.YellowThief} onClick={() => resetTutorialDisplay()}>{t('Show Tutorial')}</Button>
       }
 
-        {
-          currentMessage && currentMessage.arrow &&
-          <Picture alt='Arrow pointing toward current tutorial interest' src={Arrow} draggable="false"
-                   css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
-        }
+      {
+        currentMessage && currentMessage.arrow &&
+        <Picture alt="Arrow pointing toward current tutorial interest" src={Arrow} draggable="false"
+                 css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
+      }
 
-        {game.eventDeck === 1 && !hideFifthTurnInfo &&
-          <div css={[popupStyle, popupPosition(fifthTurnInfo)]}>
-            <div css={closePopupStyle} onClick={() => setHideFifthTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
-            <h2>{fifthTurnInfo.title(t)}</h2>
-            <p>{t(fifthTurnInfo.text)}</p>
-            <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideFifthTurnInfo(true)}>{t('OK')}</Button>
-          </div>
-        }
+      {game.eventDeck === 1 && !hideFifthTurnInfo &&
+      <div css={[popupStyle, popupPosition(fifthTurnInfo)]}>
+        <div css={closePopupStyle} onClick={() => setHideFifthTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
+        <h2>{fifthTurnInfo.title(t)}</h2>
+        <p>{t(fifthTurnInfo.text)}</p>
+        <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideFifthTurnInfo(true)}>{t('OK')}</Button>
+      </div>
+      }
 
-        {
-          game.eventDeck === 0 && !hideLastTurnInfo &&
-          <div css={[popupStyle, popupPosition(lastTurnInfo)]}>
-            <div css={closePopupStyle} onClick={() => setHideLastTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
-            <h2>{lastTurnInfo.title(t)}</h2>
-            <p>{t(lastTurnInfo.text)}</p>
-            <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideLastTurnInfo(true)}>{t('OK')}</Button>
-          </div>
-        }
+      {
+        game.eventDeck === 0 && !hideLastTurnInfo &&
+        <div css={[popupStyle, popupPosition(lastTurnInfo)]}>
+          <div css={closePopupStyle} onClick={() => setHideLastTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
+          <h2>{lastTurnInfo.title(t)}</h2>
+          <p>{t(lastTurnInfo.text)}</p>
+          <Button css={buttonTutoStyle} pRole={PlayerRole.YellowThief} onClick={() => setHideLastTurnInfo(true)}>{t('OK')}</Button>
+        </div>
+      }
 
-        {
-          game.phase === undefined && !hideEndInfo &&
-          <div css={[popupStyle, popupPosition(tutorialEndGame)]}>
-            <div css={closePopupStyle} onClick={() => setHideEndInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
-            <h2 css={textEndStyle} >{tutorialEndGame.title(t)}</h2>
-            <p css={textEndStyle} >{t(tutorialEndGame.text)}</p>
-            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => resetTutorial()}>{t('Restart the tutorial')}</Button>
-            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => window.location.href = platformUri}>{t('Play with friends')}</Button>
-            <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => window.location.href = discordUri}>{t('Find players')}</Button>
-          </div>
-        }
+      {
+        game.phase === undefined && !hideEndInfo &&
+        <div css={[popupStyle, popupPosition(tutorialEndGame)]}>
+          <div css={closePopupStyle} onClick={() => setHideEndInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
+          <h2 css={textEndStyle}>{tutorialEndGame.title(t)}</h2>
+          <p css={textEndStyle}>{t(tutorialEndGame.text)}</p>
+          <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => resetTutorial()}>{t('Restart the tutorial')}</Button>
+          <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief}
+                  onClick={() => window.location.href = platformUri}>{t('Play with friends')}</Button>
+          <Button css={[buttonTutoStyle, endSize]} pRole={PlayerRole.YellowThief} onClick={() => window.location.href = discordUri}>{t('Find players')}</Button>
+        </div>
+      }
 
-        </>
-    )
+    </>
+  )
 
 }
 
@@ -266,18 +268,18 @@ export const hidePopupOverlayStyle = (boxTop: number, boxLeft: number) => css`
 `
 
 const buttonTutoStyle = css`
-width:5em;
-height:1.5em;
-margin-right: 1em;
+  width: 5em;
+  height: 1.5em;
+  margin-right: 1em;
 `
 
 const endSize = css`
-width:auto;
+  width: auto;
 
 `
 
 const textEndStyle = css`
-color: black;
+  color: black;
 `
 
 const popupOverlayStyle = css`
@@ -299,7 +301,7 @@ const showPopupOverlayStyle = css`
 const popupStyle = css`
   position: absolute;
   text-align: center;
-  z-index : 102;
+  z-index: 102;
   border-radius: 1em;
   box-sizing: border-box;
   align-self: center;
@@ -307,11 +309,10 @@ const popupStyle = css`
   margin: 0 2%;
   outline: none;
   box-shadow: 1em 2em 2.5em -1.5em hsla(0, 0%, 0%, 0.2);
-  border:1em black solid;
-  background: url();
-  background-color: rgba(254,165,0,0.8);
+  border: 1em black solid;
+  background-color: rgba(254, 165, 0, 0.8);
   border-radius: 40em 3em 40em 3em/3em 40em 3em 40em;
-  color:black;
+  color: black;
   font-family: 'Mulish', sans-serif;
 
   &:before {
@@ -321,30 +322,33 @@ const popupStyle = css`
     left: 0;
     top: 0;
     width: 100%;
-    height: 100%; 
+    height: 100%;
     border-radius: 40em 1.5em 40em 1.5em/1.5em 40em 1.5em 40em;
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
-  &:hover{
-      box-shadow: 2em 4em 5em -3em hsla(0,0%,0%,0.5);
-    }
-  & > h2 {
-    position:relative;
-    font-size: 5em;
-    margin:0 1em;
+
+  &:hover {
+    box-shadow: 2em 4em 5em -3em hsla(0, 0%, 0%, 0.5);
   }
+
+  & > h2 {
+    position: relative;
+    font-size: 5em;
+    margin: 0 1em;
+  }
+
   & > p {
-    position:relative;
+    position: relative;
     text-align: center;
     font-size: 3.5em;
     white-space: break-spaces;
 
     strong {
-      font-weight:bold;
+      font-weight: bold;
     }
 
   }
+
   & > button {
     font-size: 3.5em;
   }
@@ -361,8 +365,9 @@ const closePopupStyle = css`
   margin-top: -2%;
   margin-right: -0%;
   font-size: 4em;
-  color:white;
-  &:hover{
+  color: white;
+
+  &:hover {
     cursor: pointer;
     color: black;
   }
@@ -401,9 +406,9 @@ const hideArrowStyle = css`
 `
 
 const imageStyle = css`
-border-radius:100%;
-box-shadow:0 0 0.1em 0.02em black;
-vertical-align: bottom;
+  border-radius: 100%;
+  box-shadow: 0 0 0.1em 0.02em black;
+  vertical-align: bottom;
 `
 
 const resetStyle = css`
@@ -412,251 +417,251 @@ const resetStyle = css`
   top: 10%;
   right: 8%;
   font-size: 3em;
-  width:auto;
+  width: auto;
 `
 
 type TutorialStepDescription = {
-    title: (t: TFunction) => string
-    text: string
-    boxTop: number
-    boxLeft: number
-    boxWidth: number
-    arrow?: {
-      angle: number
-      top: number
-      left: number
-    }
-    image?:string
+  title: (t: TFunction) => string
+  text: string
+  boxTop: number
+  boxLeft: number
+  boxWidth: number
+  arrow?: {
+    angle: number
+    top: number
+    left: number
   }
+  image?: string
+}
 
-const tutorialDescription:TutorialStepDescription[][] = [
-    [
-        {
-          title: (t: TFunction) => t('title.welcome'),
-          text: 'tuto.welcome',
-          boxTop: 40,
-          boxLeft: 50,
-          boxWidth: 60
-        },
-        {
-          title: (t: TFunction) => t('title.your.thief'),
-          text: 'tuto.your.thief',
-          boxTop: 53,
-          boxLeft: 35,
-          boxWidth: 50,
-          arrow: {
-            angle: 180,
-            top: 53,
-            left: 15
-          }
-        },
-        {
-            title: (t: TFunction) => t('title.opponents'),
-            text: 'tuto.your.opponents',
-            boxTop: 60,
-            boxLeft: 25,
-            boxWidth: 30
-        },
-        {
-          title: (t: TFunction) => t('title.city'),
-          text: 'tuto.city',
-          boxTop: 75,
-          boxLeft: 50,
-          boxWidth: 70
-      },
-        {
-            title: (t: TFunction) => t('title.asymetric.game'),
-            text: 'tuto.asymetric.game',
-            boxTop: 50,
-            boxLeft: 50,
-            boxWidth: 60
-        },
-        {
-            title: (t: TFunction) => t('title.wincon.thief'),
-            text: 'tuto.wincon.thief',
-            boxTop: 60,
-            boxLeft: 40,
-            boxWidth: 60,
-            arrow: {
-                angle: 180,
-                top: 60,
-                left: 16
-              }
-        },
-        {
-            title: (t: TFunction) => t('title.planning.phase'),
-            text: 'tuto.planning.phase',
-            boxTop: 40,
-            boxLeft: 50,
-            boxWidth: 65
-        },
-        {
-            title: (t: TFunction) => t('title.place.partner'),
-            text: 'tuto.place.partner',
-            boxTop: 50,
-            boxLeft: 40,
-            boxWidth: 50,
-            arrow: {
-                angle: 270,
-                top: 40,
-                left: 3
-              }
-        }   
-    ],
-    [
+const tutorialDescription: TutorialStepDescription[][] = [
+  [
+    {
+      title: (t: TFunction) => t('title.welcome'),
+      text: 'tuto.welcome',
+      boxTop: 40,
+      boxLeft: 50,
+      boxWidth: 60
+    },
+    {
+      title: (t: TFunction) => t('title.your.thief'),
+      text: 'tuto.your.thief',
+      boxTop: 53,
+      boxLeft: 35,
+      boxWidth: 50,
+      arrow: {
+        angle: 180,
+        top: 53,
+        left: 15
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.opponents'),
+      text: 'tuto.your.opponents',
+      boxTop: 60,
+      boxLeft: 25,
+      boxWidth: 30
+    },
+    {
+      title: (t: TFunction) => t('title.city'),
+      text: 'tuto.city',
+      boxTop: 75,
+      boxLeft: 50,
+      boxWidth: 70
+    },
+    {
+      title: (t: TFunction) => t('title.asymetric.game'),
+      text: 'tuto.asymetric.game',
+      boxTop: 50,
+      boxLeft: 50,
+      boxWidth: 60
+    },
+    {
+      title: (t: TFunction) => t('title.wincon.thief'),
+      text: 'tuto.wincon.thief',
+      boxTop: 60,
+      boxLeft: 40,
+      boxWidth: 60,
+      arrow: {
+        angle: 180,
+        top: 60,
+        left: 16
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.planning.phase'),
+      text: 'tuto.planning.phase',
+      boxTop: 40,
+      boxLeft: 50,
+      boxWidth: 65
+    },
+    {
+      title: (t: TFunction) => t('title.place.partner'),
+      text: 'tuto.place.partner',
+      boxTop: 50,
+      boxLeft: 40,
+      boxWidth: 50,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 3
+      }
+    }
+  ],
+  [
 
-        {
-            title: (t: TFunction) => t('title.explain.district'),
-            text: 'tuto.explain.district',
-            boxTop: 50,
-            boxLeft: 60,
-            boxWidth: 40,
-        },
-        {
-            title: (t: TFunction) => t('title.explain.shadow'),
-            text: 'tuto.explain.shadow',
-            boxTop: 40,
-            boxLeft: 42,
-            boxWidth: 60,
-            arrow: {
-                angle: 270,
-                top: 35,
-                left: 0
-              }
-        }, 
-        {
-            title: (t: TFunction) => t('title.explain.card'),
-            text: 'tuto.explain.card',
-            boxTop: 71,
-            boxLeft: 30,
-            boxWidth: 60,
-            arrow: {
-                angle: 180,
-                top: 70,
-                left: 14
-              }
-        },
-        {
-            title: (t: TFunction) => t('title.place.second.partner'),
-            text: 'tuto.place.second.partner',
-            boxTop: 50,
-            boxLeft: 53,
-            boxWidth: 50,
-            arrow: {
-                angle: 270,
-                top: 40,
-                left: 17
-              }
-        }
-      
-    ],
-    [
-        {
-            title: (t: TFunction) => t('title.place.third.partner'),
-            text: 'tuto.place.third.partner',
-            boxTop: 50,
-            boxLeft: 61,
-            boxWidth: 50,
-            arrow: {
-                angle: 270,
-                top: 40,
-                left: 25
-              }
-        }
-    ],
-    [
-        {
-            title: (t: TFunction) => t('title.place.explain.third.partner'),
-            text: 'tuto.place.explain.third.partner',
-            boxTop: 78,
-            boxLeft: 60,
-            boxWidth: 50
-        },
-        {
-            title: (t: TFunction) => t('title.validate'),
-            text: 'tuto.validate',
-            boxTop: 46,
-            boxLeft: 70,
-            boxWidth: 50,
-            arrow: {
-              angle: 0,
-              top: 32,
-              left: 62.5
-            }
-        }
+    {
+      title: (t: TFunction) => t('title.explain.district'),
+      text: 'tuto.explain.district',
+      boxTop: 50,
+      boxLeft: 60,
+      boxWidth: 40
+    },
+    {
+      title: (t: TFunction) => t('title.explain.shadow'),
+      text: 'tuto.explain.shadow',
+      boxTop: 40,
+      boxLeft: 42,
+      boxWidth: 60,
+      arrow: {
+        angle: 270,
+        top: 35,
+        left: 0
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.explain.card'),
+      text: 'tuto.explain.card',
+      boxTop: 71,
+      boxLeft: 30,
+      boxWidth: 60,
+      arrow: {
+        angle: 180,
+        top: 70,
+        left: 14
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.place.second.partner'),
+      text: 'tuto.place.second.partner',
+      boxTop: 50,
+      boxLeft: 53,
+      boxWidth: 50,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 17
+      }
+    }
 
-    ],
-    [
-        {
-            title: (t: TFunction) => t('title.opponent.played'),
-            text: 'tuto.opponent.played',
-            boxTop: 73,
-            boxLeft: 65,
-            boxWidth: 50,
-            arrow: {
-                angle: 180,
-                top: 73,
-                left: 68.5
-            }
-        },
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.place.third.partner'),
+      text: 'tuto.place.third.partner',
+      boxTop: 50,
+      boxLeft: 61,
+      boxWidth: 50,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 25
+      }
+    }
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.place.explain.third.partner'),
+      text: 'tuto.place.explain.third.partner',
+      boxTop: 78,
+      boxLeft: 60,
+      boxWidth: 50
+    },
+    {
+      title: (t: TFunction) => t('title.validate'),
+      text: 'tuto.validate',
+      boxTop: 46,
+      boxLeft: 70,
+      boxWidth: 50,
+      arrow: {
+        angle: 0,
+        top: 32,
+        left: 62.5
+      }
+    }
 
-        {
-            title: (t: TFunction) => t('title.patrolling.phase'),
-            text: 'tuto.patrolling.phase',
-            boxTop: 50,
-            boxLeft: 50,
-            boxWidth: 60,
-        },
-        {
-          title: (t: TFunction) => t('title.prince.placed.patrols'),
-          text: 'tuto.prince.placed.patrols',
-          boxTop: 75,
-          boxLeft: 50,
-          boxWidth: 70,
-        },
-        {
-          title: (t: TFunction) => t('title.start.solving'),
-          text: 'tuto.start.solving',
-          boxTop: 25,
-          boxLeft: 50,
-          boxWidth: 70
-        },
-        {
-          title: (t: TFunction) => t('title.market'),
-          text: 'tuto.market',
-          boxTop: 50,
-          boxLeft: 49,
-          boxWidth: 65,
-          arrow: {
-              angle: 270,
-              top: 40,
-              left: 5
-          }
-        },
-        {
-          title: (t: TFunction) => t('title.cityhall1'),
-          text: 'tuto.cityhall1',
-          boxTop: 46,
-          boxLeft: 56,
-          boxWidth: 60,
-          arrow: {
-              angle: 270,
-              top: 40,
-              left: 15
-          }
-        },
-        {
-          title: (t: TFunction) => t('title.cityhall2'),
-          text: 'tuto.cityhall2',
-          boxTop: 46,
-          boxLeft: 56,
-          boxWidth: 60,
-          arrow: {
-              angle: 270,
-              top: 40,
-              left: 15
-          }
-        } 
+  ],
+  [
+    {
+      title: (t: TFunction) => t('title.opponent.played'),
+      text: 'tuto.opponent.played',
+      boxTop: 73,
+      boxLeft: 65,
+      boxWidth: 50,
+      arrow: {
+        angle: 180,
+        top: 73,
+        left: 68.5
+      }
+    },
+
+    {
+      title: (t: TFunction) => t('title.patrolling.phase'),
+      text: 'tuto.patrolling.phase',
+      boxTop: 50,
+      boxLeft: 50,
+      boxWidth: 60
+    },
+    {
+      title: (t: TFunction) => t('title.prince.placed.patrols'),
+      text: 'tuto.prince.placed.patrols',
+      boxTop: 75,
+      boxLeft: 50,
+      boxWidth: 70
+    },
+    {
+      title: (t: TFunction) => t('title.start.solving'),
+      text: 'tuto.start.solving',
+      boxTop: 25,
+      boxLeft: 50,
+      boxWidth: 70
+    },
+    {
+      title: (t: TFunction) => t('title.market'),
+      text: 'tuto.market',
+      boxTop: 50,
+      boxLeft: 49,
+      boxWidth: 65,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 5
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.cityhall1'),
+      text: 'tuto.cityhall1',
+      boxTop: 46,
+      boxLeft: 56,
+      boxWidth: 60,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 15
+      }
+    },
+    {
+      title: (t: TFunction) => t('title.cityhall2'),
+      text: 'tuto.cityhall2',
+      boxTop: 46,
+      boxLeft: 56,
+      boxWidth: 60,
+      arrow: {
+        angle: 270,
+        top: 40,
+        left: 15
+      }
+    }
   ],
   [
     {
@@ -666,9 +671,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 62,
       boxWidth: 50,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 25
+        angle: 270,
+        top: 40,
+        left: 25
       }
     }
   ],
@@ -683,7 +688,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
         angle: 90,
         top: 17,
         left: 53
-    }
+      }
     },
     {
       title: (t: TFunction) => t('title.harbor.event'),
@@ -692,9 +697,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 64.5,
       boxWidth: 50,
       arrow: {
-          angle: 270,
-          top: 51,
-          left: 28
+        angle: 270,
+        top: 51,
+        left: 28
       }
     },
     {
@@ -704,11 +709,11 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 60,
       arrow: {
-          angle: 0,
-          top: 25,
-          left: 57.5
+        angle: 0,
+        top: 25,
+        left: 57.5
       },
-      image:Images.tokenStealYellow
+      image: Images.tokenStealYellow
     }
   ],
   [
@@ -719,13 +724,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 60,
       arrow: {
-          angle: 0,
-          top: 11,
-          left: 57
+        angle: 0,
+        top: 11,
+        left: 57
       },
-      image:Images.tokenKickYellow
+      image: Images.tokenKickYellow
     }
-  ],[
+  ], [
     {
       title: (t: TFunction) => t('title.take.move.token'),
       text: 'tuto.take.move.token',
@@ -733,11 +738,11 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 60,
       arrow: {
-          angle: 0,
-          top: 15,
-          left: 57
+        angle: 0,
+        top: 15,
+        left: 57
       },
-      image:Images.tokenMoveYellow
+      image: Images.tokenMoveYellow
     }
   ],
   [
@@ -748,9 +753,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 72,
       boxWidth: 40,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 40
+        angle: 270,
+        top: 40,
+        left: 40
       }
     }
   ],
@@ -762,9 +767,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 24,
       boxWidth: 40,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 40
+        angle: 90,
+        top: 40,
+        left: 40
       }
     }
   ],
@@ -776,9 +781,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 31,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 52
+        angle: 90,
+        top: 40,
+        left: 52
       }
     }
   ],
@@ -790,9 +795,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 42,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 63
+        angle: 90,
+        top: 40,
+        left: 63
       }
     },
     {
@@ -802,9 +807,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 42,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 47,
-          left: 63
+        angle: 90,
+        top: 47,
+        left: 63
       }
     }
   ],
@@ -816,9 +821,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 54,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 75
+        angle: 90,
+        top: 40,
+        left: 75
       }
     },
     {
@@ -828,9 +833,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 55,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 37,
-          left: 76
+        angle: 90,
+        top: 37,
+        left: 76
       }
     },
     {
@@ -838,14 +843,14 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.jail.active.effect.four',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 50,
+      boxWidth: 50
     },
     {
       title: (t: TFunction) => t('title.jail.active.effect.not.four'),
       text: 'tuto.jail.active.effect.not.four',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 50,
+      boxWidth: 50
     },
     {
       title: (t: TFunction) => t('title.wincon.prince'),
@@ -854,9 +859,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 45,
       boxWidth: 60,
       arrow: {
-          angle: 0,
-          top: 18,
-          left: 51
+        angle: 0,
+        top: 18,
+        left: 51
       }
     }
   ],
@@ -866,7 +871,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.end.solving',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 60,
+      boxWidth: 60
     },
     {
       title: (t: TFunction) => t('title.start.new.turn'),
@@ -875,9 +880,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 40,
       boxWidth: 60,
       arrow: {
-          angle: 0,
-          top: 30,
-          left: 20
+        angle: 0,
+        top: 30,
+        left: 20
       }
     }
   ],
@@ -889,10 +894,10 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 68,
       boxWidth: 30,
       arrow: {
-          angle: 270,
-          top:40,
-          left: 41
-        }
+        angle: 270,
+        top: 40,
+        left: 41
+      }
     }
   ],
   [
@@ -901,7 +906,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.tokens.placing.rules',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 65,
+      boxWidth: 65
     },
     {
       title: (t: TFunction) => t('title.steal.token.effect'),
@@ -909,7 +914,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image:Images.tokenStealYellow
+      image: Images.tokenStealYellow
     },
     {
       title: (t: TFunction) => t('title.place.steal.token'),
@@ -918,9 +923,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 35,
       boxWidth: 60,
       arrow: {
-          angle: 180,
-          top: 72,
-          left: 15
+        angle: 180,
+        top: 72,
+        left: 15
       }
     }
   ],
@@ -932,10 +937,10 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 30,
       boxWidth: 30,
       arrow: {
-          angle: 90,
-          top:38,
-          left: 40
-        }
+        angle: 90,
+        top: 38,
+        left: 40
+      }
     }
   ],
   [
@@ -945,14 +950,14 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image:Images.tokenMoveYellow
+      image: Images.tokenMoveYellow
     },
     {
       title: (t: TFunction) => t('title.place.move.token'),
       text: 'tuto.place.move.token',
       boxTop: 52,
       boxLeft: 35,
-      boxWidth: 60,
+      boxWidth: 60
     }
   ],
   [
@@ -963,10 +968,10 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 39,
       boxWidth: 35,
       arrow: {
-          angle: 90,
-          top:38,
-          left: 52
-        }
+        angle: 90,
+        top: 38,
+        left: 52
+      }
     }
   ],
   [
@@ -976,15 +981,15 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image:Images.tokenKickYellow
+      image: Images.tokenKickYellow
     },
     {
       title: (t: TFunction) => t('title.place.kick.token'),
       text: 'tuto.place.kick.token',
       boxTop: 50,
       boxLeft: 35,
-      boxWidth: 60,
-    },
+      boxWidth: 60
+    }
   ],
   [
     {
@@ -998,7 +1003,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
         top: 32,
         left: 62.5
       }
-  }
+    }
   ],
   [
     {
@@ -1013,7 +1018,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.prince.abilities',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 70,
+      boxWidth: 70
     },
     {
       title: (t: TFunction) => t('title.prince.abilities.judge'),
@@ -1022,9 +1027,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 55,
       arrow: {
-          angle: 0,
-          top: 24,
-          left: 37
+        angle: 0,
+        top: 24,
+        left: 37
       }
     },
     {
@@ -1034,9 +1039,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 22,
       boxWidth: 40,
       arrow: {
-          angle: 90,
-          top: 47,
-          left: 38
+        angle: 90,
+        top: 47,
+        left: 38
       }
     },
     {
@@ -1046,9 +1051,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 55,
       arrow: {
-          angle: 0,
-          top: 24,
-          left: 40
+        angle: 0,
+        top: 24,
+        left: 40
       }
     },
     {
@@ -1056,7 +1061,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.start.solving.phase',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 60,
+      boxWidth: 60
     },
     {
       title: (t: TFunction) => t('title.solving.market.t2'),
@@ -1065,9 +1070,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 49,
       boxWidth: 65,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 5
+        angle: 270,
+        top: 40,
+        left: 5
       }
     },
     {
@@ -1077,9 +1082,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 56,
       boxWidth: 60,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 15
+        angle: 270,
+        top: 40,
+        left: 15
       }
     }
   ],
@@ -1091,9 +1096,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 62,
       boxWidth: 50,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 25
+        angle: 270,
+        top: 40,
+        left: 25
       }
     }
   ],
@@ -1103,7 +1108,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       text: 'tuto.solving.token.rules',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 60,
+      boxWidth: 60
     },
     {
       title: (t: TFunction) => t('title.solving.steal.token1'),
@@ -1112,9 +1117,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 50,
       arrow: {
-          angle: 0,
-          top: 46,
-          left: 30
+        angle: 0,
+        top: 46,
+        left: 30
       }
     },
     {
@@ -1124,9 +1129,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 55,
       arrow: {
-          angle: 0,
-          top: 41,
-          left: 32
+        angle: 0,
+        top: 41,
+        left: 32
       }
     },
     {
@@ -1136,9 +1141,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 72,
       boxWidth: 40,
       arrow: {
-          angle: 270,
-          top: 40,
-          left: 40
+        angle: 270,
+        top: 40,
+        left: 40
       }
     },
     {
@@ -1148,9 +1153,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 72,
       boxWidth: 40,
       arrow: {
-          angle: 270,
-          top: 47,
-          left: 40
+        angle: 270,
+        top: 47,
+        left: 40
       }
     },
     {
@@ -1159,7 +1164,7 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxTop: 46,
       boxLeft: 72,
       boxWidth: 40
-    },
+    }
   ],
   [
     {
@@ -1169,9 +1174,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 50,
       arrow: {
-          angle: 0,
-          top: 47,
-          left: 42
+        angle: 0,
+        top: 47,
+        left: 42
       }
     },
     {
@@ -1190,9 +1195,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 24,
       boxWidth: 40,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 40
+        angle: 90,
+        top: 40,
+        left: 40
       }
     },
     {
@@ -1202,9 +1207,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 26,
       boxWidth: 40,
       arrow: {
-          angle: 90,
-          top: 46,
-          left: 42
+        angle: 90,
+        top: 46,
+        left: 42
       }
     },
     {
@@ -1214,11 +1219,11 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 75,
       boxWidth: 50,
       arrow: {
-          angle: 0,
-          top: 32,
-          left: 75
+        angle: 0,
+        top: 32,
+        left: 75
       }
-    },
+    }
   ],
   [],
   [
@@ -1229,9 +1234,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 35,
       boxWidth: 40,
       arrow: {
-          angle: 90,
-          top: 43,
-          left: 51
+        angle: 90,
+        top: 43,
+        left: 51
       }
     },
     {
@@ -1241,9 +1246,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 65,
       boxWidth: 50,
       arrow: {
-          angle: 180,
-          top: 71,
-          left: 70
+        angle: 180,
+        top: 71,
+        left: 70
       }
     }
   ],
@@ -1255,9 +1260,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 31,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 52
+        angle: 90,
+        top: 40,
+        left: 52
       }
     },
     {
@@ -1267,9 +1272,9 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 30,
       boxWidth: 55,
       arrow: {
-          angle: 90,
-          top: 47.5,
-          left: 53
+        angle: 90,
+        top: 47.5,
+        left: 53
       }
     },
     {
@@ -1279,13 +1284,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 50,
       boxWidth: 50,
       arrow: {
-          angle: 0,
-          top: 31,
-          left: 42
+        angle: 0,
+        top: 31,
+        left: 42
       }
     }
   ],
-  [    
+  [
     {
       title: (t: TFunction) => t('title.result.kick'),
       text: 'tuto.result.kick',
@@ -1293,13 +1298,13 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 42,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 63
+        angle: 90,
+        top: 40,
+        left: 63
       }
     }
   ],
-  [    
+  [
     {
       title: (t: TFunction) => t('title.prison.t2'),
       text: 'tuto.prison.t2',
@@ -1307,30 +1312,30 @@ const tutorialDescription:TutorialStepDescription[][] = [
       boxLeft: 54,
       boxWidth: 50,
       arrow: {
-          angle: 90,
-          top: 40,
-          left: 75
+        angle: 90,
+        top: 40,
+        left: 75
       }
     }
   ],
-  [    
+  [
     {
       title: (t: TFunction) => t('title.end.t2'),
       text: 'tuto.end.t2',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 40,
+      boxWidth: 40
     }
   ],
-  [    
+  [
     {
       title: (t: TFunction) => t('title.end.tuto'),
       text: 'tuto.end.tuto',
       boxTop: 50,
       boxLeft: 50,
-      boxWidth: 60,
+      boxWidth: 60
     }
-  ],
+  ]
 ]
 
 const fifthTurnInfo = {
@@ -1343,7 +1348,7 @@ const fifthTurnInfo = {
 
 const lastTurnInfo = {
   title: (t: TFunction) => t('Last Turn'),
-  text: "tuto.last.turn",
+  text: 'tuto.last.turn',
   boxTop: 50,
   boxLeft: 50,
   boxWidth: 70

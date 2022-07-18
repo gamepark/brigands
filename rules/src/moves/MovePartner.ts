@@ -2,7 +2,7 @@ import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '../Brigands'
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import { isPrinceState, PrinceState } from '../PlayerState'
+import {isPrinceState, PrinceState} from '../PlayerState'
 import {getPartners, isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import MoveType from './MoveType'
@@ -33,7 +33,7 @@ export function movePartner(state: GameState | GameView, move: MovePartner) {
       thief.tokens.move.splice(thief.tokens.move.findIndex(tm => tm === movingPartnerIndex), 1)
     }
     thief.partners.filter(isPartner).filter(part => part.district === actualDistrict)[0].district = nextDistrict
-    if (nextDistrict === DistrictName.Jail){
+    if (nextDistrict === DistrictName.Jail) {
       (state.players.find(isPrinceState) as PrinceState).victoryPoints++
     }
   }

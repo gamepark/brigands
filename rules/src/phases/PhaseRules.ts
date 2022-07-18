@@ -9,19 +9,19 @@ export abstract class PhaseRules {
     this.state = state
   }
 
-  isPrinceActive(prince: PrinceState): boolean {
+  isPrinceActive(_prince: PrinceState): boolean {
     return false
   }
 
-  isThiefActive(thief: ThiefState): boolean {
+  isThiefActive(_thief: ThiefState): boolean {
     return false
   }
 
-  getPrinceLegalMoves(prince: PrinceState): Move[] {
+  getPrinceLegalMoves(_prince: PrinceState): Move[] {
     return []
   }
 
-  getThiefLegalMoves(thief: ThiefState): Move[] {
+  getThiefLegalMoves(_thief: ThiefState): Move[] {
     return []
   }
 

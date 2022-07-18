@@ -61,7 +61,7 @@ export default class Solving extends PhaseRules {
     }
 
     const runnerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.move.some(tm => tm === index))
-    if (this.state.players.filter(isThiefState).some(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))){
+    if (this.state.players.filter(isThiefState).some(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))) {
       return []
     } else {
       if (runnerPartners.length > 0) {
@@ -117,9 +117,9 @@ export default class Solving extends PhaseRules {
     if (this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index))).every(p => p.partners.filter((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)).every(part => part.kickOrNot !== undefined))) {
       return {type: MoveType.RevealKickOrNot}
     } else {
-      const kickers:ThiefState[] = this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))
-      if (kickers.length === 1 && this.getThieves().flatMap(thief => thief.partners.filter(partner => partner.district === district.name)).length === 1){
-        return {type:MoveType.KickOrNot, kickerRole:kickers[0].role, playerToKick:false}
+      const kickers: ThiefState[] = this.getThieves().filter(p => p.partners.some((part, index) => part.district === district.name && isThisPartnerHasKickToken(p, index)))
+      if (kickers.length === 1 && this.getThieves().flatMap(thief => thief.partners.filter(partner => partner.district === district.name)).length === 1) {
+        return {type: MoveType.KickOrNot, kickerRole: kickers[0].role, playerToKick: false}
       }
       return
     }

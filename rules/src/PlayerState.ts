@@ -4,13 +4,13 @@ import Prince from './types/Prince'
 import Thief, {ThiefView} from './types/Thief'
 
 type PlayerState = PrinceState | ThiefState
- 
+
 export default PlayerState
 
 type PlayerCommon = {
   role: PlayerRole
-  gold:number
-  isReady:boolean
+  gold: number
+  isReady: boolean
 }
 
 export type PrinceState = PlayerCommon & Prince

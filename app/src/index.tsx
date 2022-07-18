@@ -63,13 +63,13 @@ const style = css`
 
 ReactDOM.render(
   <StrictMode>
-    <GameProvider game="brigands" 
-                  Rules={Brigands} 
-                  RulesView={BrigandsView} 
+    <GameProvider game="brigands"
+                  Rules={Brigands}
+                  RulesView={BrigandsView}
                   optionsSpec={BrigandsOptionsSpec}
                   animations={brigandsAnimations}
                   tutorial={BrigandsTutorial}
-                  >
+    >
       <App/>
     </GameProvider>
     <Global styles={[normalize, style]}/>

@@ -46,14 +46,14 @@ import {ThiefView} from './types/Thief'
 import TokenAction from './types/TokenAction'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
-  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>, Undo<GameState, Move, PlayerRole>,
-  TimeLimit<GameState, Move, PlayerRole> {
+  implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>,
+    Undo<GameState, Move, PlayerRole>,
+    TimeLimit<GameState, Move, PlayerRole> {
 
   constructor(state: GameState)
   constructor(options: BrigandsOptions)
   constructor(arg: GameState | BrigandsOptions) {
     if (isGameOptions(arg)) {
-
       const game: GameState = {
         players: setupPlayers(arg.players),
         city: setupCity(),
@@ -61,10 +61,9 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         eventDeck: setupEventDeck(),
         event: -1,
         districtResolved: undefined,
-        tutorial:false
+        tutorial: false
       }
       game.city.find(d => d.name === DistrictName.Treasure)!.gold = 0
-
       super(game)
     } else {
       super(arg)
@@ -100,6 +99,14 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     const phaseRules = this.getPhaseRules()
     if (!player || !phaseRules) return []
     return isThief(player) ? phaseRules.getThiefLegalMoves(player) : phaseRules.getPrinceLegalMoves(player)
+  }
+
+  getAutomaticMoves(): Move[] {
+    const phaseRules = this.getPhaseRules()
+    if (!phaseRules) return []
+    if (princeWin(this.state) || lastTurnIsOver(this.state)) return [{type: MoveType.RevealGolds}]
+    const move = phaseRules.getAutomaticMove()
+    return move ? [move] : []
   }
 
   play(move: Move): void {
@@ -151,14 +158,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case MoveType.RevealGolds :
         return revealGolds(this.state)
     }
-  }
-
-  getAutomaticMoves(): Move[] {
-    const phaseRules = this.getPhaseRules()
-    if (!phaseRules) return []
-    if (princeWin(this.state) || lastTurnIsOver(this.state)) return [{type: MoveType.RevealGolds}]
-    const move = phaseRules.getAutomaticMove()
-    return move ? [move] : []
   }
 
   getView(playerId?: PlayerRole): GameView {
@@ -221,8 +220,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return canUndo(action, consecutiveActions)
   }
 
-  giveTime(playerId: PlayerRole): number {
-    switch(this.state.phase){
+  giveTime(): number {
+    switch (this.state.phase) {
       case Phase.Planning:
         return 120
       case Phase.Patrolling:

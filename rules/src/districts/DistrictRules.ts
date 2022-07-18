@@ -14,11 +14,11 @@ export abstract class DistrictRules {
     this.district = district
   }
 
-  isThiefActive(thief: ThiefState): boolean {
+  isThiefActive(_thief: ThiefState): boolean {
     return false
   }
 
-  getThiefLegalMoves(thief: ThiefState): Move[] {
+  getThiefLegalMoves(_thief: ThiefState): Move[] {
     return []
   }
 

@@ -1,6 +1,6 @@
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
-import { ThiefState } from '../PlayerState'
+import {ThiefState} from '../PlayerState'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -9,7 +9,7 @@ export default class Palace extends DistrictRules {
   getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
     if (partners.length === 0) {
-      if (this.state.tutorial === true && this.state.eventDeck.length >= 4){
+      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
 
         // TO DO : Delete when we can control AutoMoves in Tutorial
 
@@ -36,19 +36,19 @@ export default class Palace extends DistrictRules {
     else return 1
   }
 
-  getThiefLegalMoves(thief: ThiefState): Move[] {
+  getThiefLegalMoves(): Move[] {
 
     // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
 
-    if (this.state.tutorial === true){
+    if (this.state.tutorial) {
       return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
     } else return []
   }
 
   isThiefActive(thief: ThiefState): boolean {
 
-  // TO DO : Delete isThiefActive when we can control AutoMoves in Tutorial
+    // TO DO : Delete isThiefActive when we can control AutoMoves in Tutorial
 
-    return this.state.tutorial === true && thief.role === PlayerRole.YellowThief
+    return this.state.tutorial && thief.role === PlayerRole.YellowThief
   }
 }

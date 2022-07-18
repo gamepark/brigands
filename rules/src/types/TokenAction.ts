@@ -1,5 +1,5 @@
 enum TokenAction {
-    Stealing=1, Kicking, Fleeing
+  Stealing = 1, Kicking, Fleeing
 }
 
 export default TokenAction

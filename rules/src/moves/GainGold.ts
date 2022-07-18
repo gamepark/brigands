@@ -1,7 +1,7 @@
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import {isPrinceState, isThiefState} from '../PlayerState'
+import {isThiefState} from '../PlayerState'
 import {isPartner, isPartnerView} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
 import Move from './Move'
@@ -13,7 +13,7 @@ type GainGold = {
   gold: number
   thief: PlayerRole
   district: DistrictName
-  noShare?:true
+  noShare?: true
 }
 
 export default GainGold
@@ -22,13 +22,15 @@ export function gainGold(state: GameState | GameView, move: GainGold) {
 
   const thief = getThieves(state).find(p => p.role === move.thief)!
 
-  if (move.noShare === true){
-    if (move.district === DistrictName.CityHall || move.district === DistrictName.Convoy){
+  if (move.noShare === true) {
+    if (move.district === DistrictName.CityHall || move.district === DistrictName.Convoy) {
       if (isThiefState(thief)) {
         thief.gold += move.gold
       }
       thief.partners.forEach(part => {
-        if (isPartner(part) && part.district === move.district) {part.solvingDone = true}
+        if (isPartner(part) && part.district === move.district) {
+          part.solvingDone = true
+        }
       })
       delete state.city.find(d => d.name === move.district)!.dice
     } else {
@@ -36,10 +38,12 @@ export function gainGold(state: GameState | GameView, move: GainGold) {
         thief.gold += move.gold
       }
       thief.partners.forEach(part => {
-        if (isPartner(part) && part.district === DistrictName.Treasure) {part.solvingDone = true}
+        if (isPartner(part) && part.district === DistrictName.Treasure) {
+          part.solvingDone = true
+        }
       })
       state.city.find(d => d.name === move.district)!.gold = 0
-    } 
+    }
   } else {
 
     if (move.district === DistrictName.Treasure) {
@@ -49,14 +53,14 @@ export function gainGold(state: GameState | GameView, move: GainGold) {
       }
       treasure.gold! -= move.gold
     }
-  
+
     if (isThiefState(thief)) {
       thief.gold += move.gold
     }
 
-    if (move.district === DistrictName.Market){
+    if (move.district === DistrictName.Market) {
       thief.partners.forEach(part => {
-        if (isPartner(part) && part.district === DistrictName.Market){
+        if (isPartner(part) && part.district === DistrictName.Market) {
           part.solvingDone = true
         }
       })

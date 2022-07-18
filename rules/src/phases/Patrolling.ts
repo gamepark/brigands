@@ -20,15 +20,17 @@ export default class Patrolling extends PhaseRules {
         prince.patrols.includes(i) && i !== 1 && patrollingMoves.push({type: MoveType.PlayHeadStart, district: i})
       }
       if (prince.gold > 4 && !prince.abilities[2] && i !== prince.patrols[2]) {
-        !prince.patrols.includes(i) && prince.abilities[1] !== prince.patrols[2] && patrollingMoves.push({type: MoveType.PlacePatrol, district: i, patrolNumber: 2})
+        !prince.patrols.includes(i) && prince.abilities[1] !== prince.patrols[2] && patrollingMoves.push({
+          type: MoveType.PlacePatrol, district: i, patrolNumber: 2
+        })
       }
       if (prince.patrols.every(pat => pat !== -1)) {
         patrollingMoves.push({type: MoveType.TellYouAreReady, playerId: prince.role})
       }
       if (prince.patrols.some(pat => pat === -1)) {
-          prince.patrols.forEach((pat, index) => pat === -1 && !prince.patrols.includes(i) && patrollingMoves.push({
-            type: MoveType.PlacePatrol, district: i, patrolNumber: index
-          }))
+        prince.patrols.forEach((pat, index) => pat === -1 && !prince.patrols.includes(i) && patrollingMoves.push({
+          type: MoveType.PlacePatrol, district: i, patrolNumber: index
+        }))
       }
     }
     return patrollingMoves

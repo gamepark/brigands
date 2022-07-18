@@ -1,4 +1,4 @@
-import PlayerState from "./PlayerState";
+import PlayerState from './PlayerState'
 
 import {ThiefView} from './types/Thief'
 

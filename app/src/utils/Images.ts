@@ -88,22 +88,24 @@ import weekCardTavern1 from '../images/WeekCardTavern1.jpg'
 import weekCardTavern2 from '../images/WeekCardTavern2.jpg'
 
 const Images = {
-    cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
-    cardCityHall, cardHarbor, cardMarket, cardPalace, cardTavern, cardTreasure, cardConvoy,
-    iconCityHall, iconHarbor, iconMarket, iconPalace, iconTavern, iconTreasure, iconConvoy,
-    districtCityHall1, districtCityHall2, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail, districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
-    princePanel,
-    patrol, mercenary, victoryToken,
-    coin1,coin2,coin5,
-    dice2, dice3, dice4,
-    partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
-    tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
-    tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,
-    tokenStealBlue, tokenStealGreen, tokenStealPurple, tokenStealRed, tokenStealYellow,
-    weekCardBack,
-    weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1, weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
-    headStartToken,
-    background
+  cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
+  cardCityHall, cardHarbor, cardMarket, cardPalace, cardTavern, cardTreasure, cardConvoy,
+  iconCityHall, iconHarbor, iconMarket, iconPalace, iconTavern, iconTreasure, iconConvoy,
+  districtCityHall1, districtCityHall2, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail,
+  districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
+  princePanel,
+  patrol, mercenary, victoryToken,
+  coin1, coin2, coin5,
+  dice2, dice3, dice4,
+  partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
+  tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
+  tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,
+  tokenStealBlue, tokenStealGreen, tokenStealPurple, tokenStealRed, tokenStealYellow,
+  weekCardBack,
+  weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1,
+  weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
+  headStartToken,
+  background
 }
 
 export default Images
