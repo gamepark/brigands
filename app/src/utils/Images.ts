@@ -19,17 +19,14 @@ import dice2 from '../images/Dice_2.jpg'
 import dice3 from '../images/Dice_3.jpg'
 import dice4 from '../images/Dice_4.jpg'
 
-import districtCityHall1 from '../images/DistrictCityHall1.jpg'
-import districtCityHall2 from '../images/DistrictCityHall2.jpg'
-import districtConvoy1 from '../images/DistrictConvoy1.jpg'
-import districtConvoy2 from '../images/DistrictConvoy2.jpg'
-import districtHarbor from '../images/DistrictHarbor.jpg'
-import districtJail from '../images/DistrictJail.jpg'
-import districtMarket from '../images/DistrictMarket.jpg'
-import districtPalace1 from '../images/DistrictPalace1.jpg'
-import districtPalace2 from '../images/DistrictPalace2.jpg'
-import districtTavern from '../images/DistrictTavern.jpg'
-import districtTreasure from '../images/DistrictTreasure.jpg'
+import cityHall from '../images/districts/city-hall.png'
+import convoy from '../images/districts/convoy.png'
+import harbour from '../images/districts/harbour.png'
+import jail from '../images/districts/jail.png'
+import market from '../images/districts/market.png'
+import palace from '../images/districts/palace.png'
+import tavern from '../images/districts/tavern.png'
+import treasure from '../images/districts/treasure.png'
 
 import iconCityHall from '../images/IconCityHall.png'
 import iconConvoy from '../images/IconConvoy.png'
@@ -91,8 +88,7 @@ const Images = {
   cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
   cardCityHall, cardHarbor, cardMarket, cardPalace, cardTavern, cardTreasure, cardConvoy,
   iconCityHall, iconHarbor, iconMarket, iconPalace, iconTavern, iconTreasure, iconConvoy,
-  districtCityHall1, districtCityHall2, districtHarbor, districtMarket, districtPalace1, districtPalace2, districtTavern, districtTreasure, districtJail,
-  districtConvoy1, districtConvoy2, // ADD CONVOY TILE HERE
+  cityHall, convoy, harbour, jail, market, palace, tavern, treasure,
   princePanel,
   patrol, mercenary, victoryToken,
   coin1, coin2, coin5,

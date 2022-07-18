@@ -85,7 +85,7 @@ const DistrictTile: FC<Props> = ({
 
   return (
 
-    <div {...props} ref={dropRef} css={[districtStyle(getDistrictImage(district.name, nbPlayers))]}>
+    <div {...props} ref={dropRef} css={districtStyle(districtImage[district.name])}>
 
       <div css={districtNotResolvedCache(isDistrictNotResolved)}/>
 
@@ -186,27 +186,15 @@ const districtStyle = (image: string) => css`
   background-position: top;
 `
 
-export function getDistrictImage(district: number, nbPlayers: number): string {
-  switch (district) {
-    case 1 :
-      return Images.districtJail
-    case 2 :
-      return Images.districtTavern
-    case 3 :
-      return Images.districtMarket
-    case 4 :
-      return Images.districtHarbor
-    case 5 :
-      return nbPlayers < 4 ? Images.districtCityHall1 : Images.districtCityHall2
-    case 6 :
-      return Images.districtTreasure
-    case 7 :
-      return nbPlayers < 4 ? Images.districtPalace1 : Images.districtPalace2
-    case 8 :
-      return nbPlayers < 5 ? Images.districtConvoy1 : Images.districtConvoy2
-    default :
-      return 'error : no BG'
-  }
+export const districtImage: Record<DistrictName, string> = {
+  [DistrictName.Jail]: Images.jail,
+  [DistrictName.Tavern]: Images.tavern,
+  [DistrictName.Market]: Images.market,
+  [DistrictName.Harbor]: Images.harbour,
+  [DistrictName.CityHall]: Images.cityHall,
+  [DistrictName.Treasure]: Images.treasure,
+  [DistrictName.Palace]: Images.palace,
+  [DistrictName.Convoy]: Images.convoy
 }
 
 export default DistrictTile

@@ -9,7 +9,7 @@ import {TFunction} from 'i18next'
 import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
 import Button from '../utils/Button'
-import {getDistrictImage} from './DistrictTile'
+import {districtImage} from './DistrictTile'
 
 const DistrictHelpPopUp: FC<{ district: DistrictName, nbPlayers: number, color: PlayerRole, close: () => void }> = ({district, nbPlayers, color, close}) => {
   const {t} = useTranslation()
@@ -18,7 +18,7 @@ const DistrictHelpPopUp: FC<{ district: DistrictName, nbPlayers: number, color: 
       <div css={popupStyle} onClick={event => event.stopPropagation()}>
         <div css={closePopupStyle} onClick={close}><FontAwesomeIcon icon={faTimes}/></div>
         <h2>{getDistrictName(district, t)}</h2>
-        <Picture src={getDistrictImage(district, nbPlayers)}/>
+        <Picture src={districtImage[district]}/>
         <p> {getDistrictHelpText(district, nbPlayers, t)} </p>
         <Button pRole={color} css={buttonPosition} onClick={close}>{t('OK')}</Button>
       </div>
