@@ -24,7 +24,7 @@ export function judgePrisoners(state: GameState | GameView) {
     }
   }))
 
-  prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
+  prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.currentDistrict!].name)] = -1
 }
 
 export function isJudgePrisoners(move: Move | MoveView): move is JudgePrisoners {

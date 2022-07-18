@@ -22,8 +22,8 @@ import {PhaseRules} from './PhaseRules'
 
 export default class Solving extends PhaseRules {
   isThiefActive(thief: ThiefState): boolean {
-    if (this.state.districtResolved === undefined) return false
-    const district = this.state.city[this.state.districtResolved]
+    if (this.state.currentDistrict === undefined) return false
+    const district = this.state.city[this.state.currentDistrict]
     const kickerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.kick.some(t => t === index))
     const runnerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && thief.tokens.move.some(t => t === index))
     if (kickerPartners.length > 0) {
@@ -39,8 +39,8 @@ export default class Solving extends PhaseRules {
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
-    if (this.state.districtResolved === undefined) return []
-    const district = this.state.city[this.state.districtResolved]
+    if (this.state.currentDistrict === undefined) return []
+    const district = this.state.city[this.state.currentDistrict]
 
     const kickerPartners: Partner[] = thief.partners.filter((p, index) => p.district === district.name && isThisPartnerHasKickToken(thief, index))
     if (kickerPartners.length > 0) {
@@ -77,10 +77,10 @@ export default class Solving extends PhaseRules {
   }
 
   getAutomaticMove(): Move | void {
-    if (this.state.districtResolved === undefined) return
+    if (this.state.currentDistrict === undefined) return
 
     const prince = getPrince(this.state)
-    const district: District = this.state.city[this.state.districtResolved]
+    const district: District = this.state.city[this.state.currentDistrict]
     const districtHasPatrol = prince.patrols.some(patrol => patrol === district.name)
 
     if (districtHasPatrol && prince.abilities[1] === district.name) {

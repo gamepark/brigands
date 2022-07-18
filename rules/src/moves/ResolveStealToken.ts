@@ -48,7 +48,7 @@ export function resolveStealToken(state: GameState | GameView, {steals}: Resolve
           return true
         } else {
           const partner = player.partners[ts]
-          return isPartnerView(partner) || partner.district !== state.city[state.districtResolved!].name
+          return isPartnerView(partner) || partner.district !== state.city[state.currentDistrict!].name
         }
       })
     }
@@ -58,7 +58,7 @@ export function resolveStealToken(state: GameState | GameView, {steals}: Resolve
 
 export function createSteals(state: GameState): Steal[] {
 
-  const districtResolved: DistrictName = state.city[state.districtResolved!].name
+  const districtResolved: DistrictName = state.city[state.currentDistrict!].name
   const thieves = state.players.filter(isThiefState)
   const resultArray: Steal[] = []
 

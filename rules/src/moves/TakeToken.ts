@@ -16,13 +16,13 @@ export default TakeToken
 
 export function takeToken(state: GameState | GameView, move: TakeToken) {
   const thief = getThieves(state).find(p => p.role === move.role)!
-  if (state.city[state.districtResolved!].name === DistrictName.Jail) {
-    thief.partners.find(p => isPartner(p) && p.district === state.city[state.districtResolved!].name && p.tokensTaken === 0)!.tokensTaken = 1
+  if (state.city[state.currentDistrict!].name === DistrictName.Jail) {
+    thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name && p.tokensTaken === 0)!.tokensTaken = 1
   } else {
-    if (thief.partners.find(p => isPartner(p) && p.district === state.city[state.districtResolved!].name)!.tokensTaken === undefined) {
-      thief.partners.find(p => isPartner(p) && p.district === state.city[state.districtResolved!].name)!.tokensTaken = 1
+    if (thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken === undefined) {
+      thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken = 1
     } else {
-      thief.partners.find(p => isPartner(p) && p.district === state.city[state.districtResolved!].name)!.tokensTaken!++
+      thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken!++
     }
   }
 

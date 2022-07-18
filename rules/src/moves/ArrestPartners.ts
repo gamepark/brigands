@@ -16,7 +16,7 @@ export default ArrestPartners
 export function arrestPartners(state: GameState | GameView) {
   const prince = getPrince(state)
   const thieves = getThieves(state)
-  const district = state.city[state.districtResolved!]
+  const district = state.city[state.currentDistrict!]
 
   thieves.forEach(thief => getPartners(thief).filter(isPartner).forEach((partner, index) => {
     if (partner.district === district.name) {
@@ -33,9 +33,9 @@ export function arrestPartners(state: GameState | GameView) {
     }
   }))
 
-  if (prince.patrols.find(p => p === state.city[state.districtResolved!].name)) {
-    prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.districtResolved!].name)] = -1
-    if (prince.abilities[1] === state.city[state.districtResolved!].name) {
+  if (prince.patrols.find(p => p === state.city[state.currentDistrict!].name)) {
+    prince.patrols[getPrince(state).patrols.findIndex(p => p === state.city[state.currentDistrict!].name)] = -1
+    if (prince.abilities[1] === state.city[state.currentDistrict!].name) {
       prince.abilities[1] = false
     }
   }

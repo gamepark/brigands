@@ -11,7 +11,7 @@ import PatrolInHand from '@gamepark/brigands/types/PatrolInHand'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
 import {usePlay, usePlayerId, useSound} from '@gamepark/react-client'
-import {FC, HTMLAttributes} from 'react'
+import {FC} from 'react'
 import {ResetSelectedHeadStart, resetSelectedHeadStartMove} from '../localMoves/SetSelectedHeadStart'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
 import {ResetSelectedPatrol, resetSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
@@ -23,7 +23,7 @@ type Props = {
   city: District[]
   phase: Phase | undefined
   prince: PrinceState
-  districtResolved: number | undefined
+  currentDistrict: number | undefined
   nbPlayers: number
   partnersOfPlayerId?: Partner[]
   isPlayerReady?: boolean
@@ -33,11 +33,11 @@ type Props = {
   selectedHeadStart?: boolean
   open: (district: DistrictName) => void
 
-} & HTMLAttributes<HTMLDivElement>
+}
 
 const City: FC<Props> = ({
-                           city, phase, prince, districtResolved, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand,
-                           selectedPatrol, selectedHeadStart, open, ...props
+                           city, phase, prince, currentDistrict, nbPlayers, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand,
+                           selectedPatrol, selectedHeadStart, open
                          }) => {
 
   const play = usePlay<Move>()
@@ -89,60 +89,46 @@ const City: FC<Props> = ({
   }
 
   return (
-
     <>
+      {city.map((district, index) =>
+        <DistrictTile key={district.name}
+                      css={[districtPosition(index), phase === Phase.Solving && currentDistrict !== index && reduceBrightness]}
+                      district={district}
+                      phase={phase}
+                      prince={prince}
+                      nbPlayers={nbPlayers}
+                      nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
+                      isPlayerReady={isPlayerReady}
+                      selectedPartner={selectedPartner}
+                      selectedPatrol={selectedPatrol}
+                      selectedHeadStart={selectedHeadStart}
+                      onClick={() => playerId === PlayerRole.Prince
+                        ? selectedPatrol === undefined && selectedHeadStart === undefined
+                          ? open(district.name)
+                          : phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined
+                            ? playPlacePatrol(district.name)
+                            : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
 
-      <div {...props} css={cityStyle}>
+                        : selectedPartner === undefined && selectedTokenInHand === undefined
+                          ? open(district.name)
+                          : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
 
-        {city.map((district, index) =>
-
-          <DistrictTile key={index}
-                        css={[districtSize]}
-                        district={district}
-                        phase={phase}
-                        prince={prince}
-                        nbPlayers={nbPlayers}
-                        nbPartners={partnersOfPlayerId ? partnersOfPlayerId.filter(part => part.district === district.name).length : undefined}
-                        isPlayerReady={isPlayerReady}
-                        isDistrictNotResolved={districtResolved !== undefined ? districtResolved !== index : undefined}
-
-                        selectedPartner={selectedPartner}
-                        selectedPatrol={selectedPatrol}
-                        selectedHeadStart={selectedHeadStart}
-                        onClick={() => playerId === PlayerRole.Prince
-                          ? selectedPatrol === undefined && selectedHeadStart === undefined
-                            ? open(district.name)
-                            : phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined
-                              ? playPlacePatrol(district.name)
-                              : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
-
-                          : selectedPartner === undefined && selectedTokenInHand === undefined
-                            ? open(district.name)
-                            : playerId !== undefined && district.name !== DistrictName.Jail && playPlacePartner(selectedPartner, district.name)}
-
-          />
-        )}
-
-      </div>
-
+        />
+      )}
     </>
-
   )
-
 }
 
-const districtSize = css`
-  width: 11.3%;
-  height: 100%;
-  margin: 0 0.25em;
-  box-shadow: 0 0 0.3em 0.15em black;
+const districtPosition = (index: number) => css`
+  position: absolute;
+  top: 68em;
+  left: 32em;
+  transform-origin: center -46%;
+  transform: rotate(${(index + 1) * 45}deg);
 `
 
-
-const cityStyle = css`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
+const reduceBrightness = css`
+  filter: brightness(50%);
 `
 
 export default City

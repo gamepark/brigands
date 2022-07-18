@@ -8,7 +8,7 @@ type GameState = {
   phase?: Phase
   eventDeck: number[]
   event: number
-  districtResolved?: number
+  currentDistrict?: number
   tutorial: boolean
 }
 

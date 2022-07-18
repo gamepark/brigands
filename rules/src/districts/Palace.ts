@@ -15,7 +15,7 @@ export default class Palace extends DistrictRules {
 
         return
       } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
       }
     }
     if (partners.length > this.maxPartners()) {
@@ -41,7 +41,7 @@ export default class Palace extends DistrictRules {
     // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
 
     if (this.state.tutorial) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
     } else return []
   }
 

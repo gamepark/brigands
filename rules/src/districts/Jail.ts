@@ -27,7 +27,7 @@ export default class Jail extends DistrictRules {
       }
     }
     if (this.state.tutorial && jailMoves.length === 0) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
     } else {
       return jailMoves
     }
@@ -49,7 +49,7 @@ export default class Jail extends DistrictRules {
 
         return
       } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
       }
     }
     if (partners.every(p => p.solvingDone === true)) {

@@ -66,13 +66,11 @@ export default function GameDisplay({game, audioLoader}: Props) {
   return (
     <>
       <Letterbox css={letterBoxStyle} top={0}>
-        <div css={perspective}>
-
           <PrincePanel css={[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
                        player={players.find(isPrinceState)!}
                        city={game.city}
                        phase={game.phase}
-                       partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.districtResolved!].name)).length : undefined}
+                       partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
                        selectedPatrol={game.selectedPatrol}
                        selectedHeadStart={game.selectedHeadStart}
           />
@@ -87,17 +85,16 @@ export default function GameDisplay({game, audioLoader}: Props) {
                              players={players.filter(isThief)}
                              prince={players.find(isPrinceState)!}
                              phase={game.phase}
-                             resolvedDistrict={game.districtResolved !== undefined ? game.city[game.districtResolved].name : undefined}
+                             resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
                              event={game.event}
                              selectedTokensInBank={game.selectedTokensInBank}
           />
 
 
-          <City css={cityPosition}
-                city={game.city}
+          <City city={game.city}
                 phase={game.phase}
                 prince={players.find(isPrinceState)!}
-                districtResolved={game.districtResolved}
+                currentDistrict={game.currentDistrict}
                 nbPlayers={game.players.length}
                 partnersOfPlayerId={game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
                 isPlayerReady={(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
@@ -108,13 +105,13 @@ export default function GameDisplay({game, audioLoader}: Props) {
                 open={(district) => setDistrictPopUpClosed(district)}
           />
 
-          {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.districtResolved !== undefined ? game.city[game.districtResolved].name : undefined), game.players.find(isPrinceState)!) &&
+          {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
           <TavernPopUp player={players.find(isThiefState)!}
           />
           }
 
-          {game.districtResolved !== undefined && game.city[game.districtResolved].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.districtResolved].dice !== undefined && game.city[game.districtResolved].dice!.length !== 0)) &&
-          <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.districtResolved].dice}
+          {game.currentDistrict !== undefined && game.city[game.currentDistrict].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.currentDistrict].dice !== undefined && game.city[game.currentDistrict].dice!.length !== 0)) &&
+          <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
           />}
 
 
@@ -129,7 +126,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
                            phase={game.phase}
                            city={game.city}
                            numberOfThieves={players.filter(isThief).length}
-                           districtResolved={game.districtResolved === undefined ? undefined : game.city[game.districtResolved]}
+                           districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
                            thieves={getThieves(game)}
                            displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
                            partnersForCards={revealPartnersAnimation
@@ -147,9 +144,6 @@ export default function GameDisplay({game, audioLoader}: Props) {
             )}
 
           </div>
-
-        </div>
-
         {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
 
         {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)}/>}
@@ -160,28 +154,14 @@ export default function GameDisplay({game, audioLoader}: Props) {
 
       {playerId !== undefined && districtPopUpClosed !== true &&
       <DistrictHelpPopUp district={districtPopUpClosed} nbPlayers={game.players.length} color={playerId} close={() => setDistrictPopUpClosed(true)}/>}
-
     </>
   )
 }
-
-const perspective = css`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-
-  transform-style: preserve-3d;
-  transform: perspective(150em) rotateX(10deg) scale(1.13);
-  transform-origin: bottom;
-`
 
 const thiefTokensInBankPosition = css`
   position: absolute;
   width: 25%;
   height: 23%;
-
 `
 
 const panelPlayerPosition = css`
@@ -242,14 +222,6 @@ const weekCardsPanelPosition = css`
   position: absolute;
   width: 22%;
   height: 22%;
-`
-
-const cityPosition = css`
-  position: absolute;
-  top: 38%;
-  left: 0;
-  width: 100%;
-  height: 20%;
 `
 
 const princePanelPosition = css`

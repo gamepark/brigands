@@ -23,7 +23,7 @@ export default class Tavern extends DistrictRules {
       }
     }
     if (this.state.tutorial && tavernMoves.length === 0){
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
     } else {
       return tavernMoves
     }
@@ -39,7 +39,7 @@ export default class Tavern extends DistrictRules {
 
         return
       } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
       }
     }
     const thiefWithBet = this.getThieves().find(thief => thief.partners.find(partner => partner.district === DistrictName.Tavern && partner.goldForTavern !== undefined))

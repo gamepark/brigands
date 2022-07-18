@@ -22,7 +22,7 @@ export function solvePartner(state: GameState | GameView, move: SolvePartner) {
     thief.partners[move.partnerNumber].tokensTaken = 0
   }
 
-  if (state.city[state.districtResolved!].name === DistrictName.Jail) {
-    delete state.city[state.districtResolved!].dice
+  if (state.city[state.currentDistrict!].name === DistrictName.Jail) {
+    delete state.city[state.currentDistrict!].dice
   }
 }

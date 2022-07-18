@@ -19,7 +19,7 @@ export type KickOrNotView = {
 
 export function kickOrNot(state: GameState | GameView, move: KickOrNot) {
   const kicker = getThieves(state).find(p => p.role === move.kickerRole)!
-  const district = state.city[state.districtResolved!]
+  const district = state.city[state.currentDistrict!]
   const partner = getPartners(kicker).filter(isPartner).find((partner, index) => partner.district === district.name && kicker.tokens.kick.some(t => t === index) && partner.kickOrNot === undefined)!
   partner.kickOrNot = move.playerToKick
 }

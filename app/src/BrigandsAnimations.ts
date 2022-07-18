@@ -10,7 +10,7 @@ const brigandsAnimations: Animations<GameView, MoveView, PlayerRole> = {
 
   getAnimationDuration(move: MoveView, {state}) {
 
-    if (move.type === MoveType.ArrestPartners && getThieves(state).some(p => p.partners.some(part => isPartner(part) && part.district === state.city[state.districtResolved!].name))) {
+    if (move.type === MoveType.ArrestPartners && getThieves(state).some(p => p.partners.some(part => isPartner(part) && part.district === state.city[state.currentDistrict!].name))) {
       return 2
     } else if (move.type === MoveType.BetGold) {
       return 2

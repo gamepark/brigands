@@ -19,7 +19,7 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
   if (move.districtResolved === 7) {
     const prince = getPrince(state)
     const thieves = getThieves(state)
-    delete state.districtResolved
+    delete state.currentDistrict
     takeBackPatrols(prince)
     cleanPartners(thieves)
     cleanTokens(thieves)
@@ -33,7 +33,7 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
     }))
 
     delete district.dice
-    state.districtResolved!++
+    state.currentDistrict!++
   }
 }
 

@@ -27,7 +27,7 @@ export default class Harbor extends DistrictRules {
     // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
 
     if (this.state.tutorial && harborMoves.length === 0) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
     } else {
       return harborMoves
     }
@@ -41,7 +41,7 @@ export default class Harbor extends DistrictRules {
 
         return
       } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
       }
     }
     const tokensToTake = this.isDistrictEvent() ? 3 : 2

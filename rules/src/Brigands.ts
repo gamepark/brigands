@@ -60,7 +60,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         phase: Phase.NewDay,
         eventDeck: setupEventDeck(),
         event: -1,
-        districtResolved: undefined,
+        currentDistrict: undefined,
         tutorial: false
       }
       game.city.find(d => d.name === DistrictName.Treasure)!.gold = 0

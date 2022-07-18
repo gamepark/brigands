@@ -22,14 +22,14 @@ export default RevealPartnersDistricts
 
 export function revealPartnersDistricts(state: GameState | GameView) {
   state.phase = Phase.Solving
-  state.districtResolved = 0
+  state.currentDistrict = 0
 }
 
 export function revealPartnersDistrictsInView(state: GameView, move: RevealPartnersDistrictsView) {
   state.players.filter(isThief).forEach(thief => {
     thief.partners = move.partnersObject.find(obj => obj.role === thief.role)!.partners
   })
-  state.districtResolved = 0
+  state.currentDistrict = 0
   state.phase = Phase.Solving
 }
 

@@ -19,7 +19,7 @@ export type RevealKickOrNotView = RevealKickOrNot & {
 export function revealKickOrNot(state: GameState | GameView) {
 
   const thieves = getThieves(state)
-  const districtResolved: DistrictName = state.city[state.districtResolved!].name
+  const districtResolved: DistrictName = state.city[state.currentDistrict!].name
 
   thieves.forEach(thief => {
     thief.partners.forEach((part, index) => {
@@ -28,15 +28,15 @@ export function revealKickOrNot(state: GameState | GameView) {
           const victimThief = thieves.find(p => p.role === part.kickOrNot)!
           const indexOfVictimPartnerWithNoToken: number = victimThief.partners.findIndex((victim, index) => isPartner(victim) && victim.district === districtResolved && !isThisPartnerHasAnyToken(victimThief, index))
           if (indexOfVictimPartnerWithNoToken !== -1) {
-            (victimThief.partners[indexOfVictimPartnerWithNoToken] as Partner).district = state.city[state.districtResolved! + 1].name
+            (victimThief.partners[indexOfVictimPartnerWithNoToken] as Partner).district = state.city[state.currentDistrict! + 1].name
           } else {
             const indexOfVictimPartnerWithToken: number = victimThief.partners.findIndex((victim, index) => isPartner(victim) && victim.district === districtResolved && isThisPartnerHasAnyToken(victimThief, index))
             if (indexOfVictimPartnerWithToken !== -1) {
-              (victimThief.partners[indexOfVictimPartnerWithToken] as Partner).district = state.city[state.districtResolved! + 1].name
+              (victimThief.partners[indexOfVictimPartnerWithToken] as Partner).district = state.city[state.currentDistrict! + 1].name
               victimThief.tokens.move.splice(victimThief.tokens.move.indexOf(indexOfVictimPartnerWithToken), 1)
             }
           }
-          if (state.city[state.districtResolved! + 1].name === DistrictName.Jail) {
+          if (state.city[state.currentDistrict! + 1].name === DistrictName.Jail) {
             (state.players.find(isPrinceState)! as PrinceState).victoryPoints++
           }
         }

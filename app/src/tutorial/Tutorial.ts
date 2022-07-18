@@ -30,7 +30,7 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
     phase: Phase.NewDay,
     eventDeck: deckTab,
     event: -1,
-    districtResolved: undefined,
+    currentDistrict: undefined,
     tutorial: true
   }, [PlayerRole.YellowThief, PlayerRole.GreenThief, PlayerRole.Prince]],
 

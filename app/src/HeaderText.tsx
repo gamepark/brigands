@@ -195,7 +195,7 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
     }
 
     case Phase.Solving: {
-      const district = game.city[game.districtResolved!]
+      const district = game.city[game.currentDistrict!]
       const thief = getThieves(game).find(p => p.role === playerId)
 
       if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length === 0) {

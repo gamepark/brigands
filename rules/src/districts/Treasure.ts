@@ -16,7 +16,7 @@ export default class Treasure extends DistrictRules {
 
         return
       } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}
+        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
       }
     }
     if (partners.every(partner => partner.solvingDone === true)) {
@@ -56,7 +56,7 @@ export default class Treasure extends DistrictRules {
     // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
 
     if (this.state.tutorial) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.districtResolved!}]
+      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
     } else return []
   }
 

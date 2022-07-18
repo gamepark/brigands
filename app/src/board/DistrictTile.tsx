@@ -27,7 +27,6 @@ type Props = {
   nbPlayers: number
   nbPartners?: number
   isPlayerReady?: boolean
-  isDistrictNotResolved?: boolean
   selectedPartner?: number
   selectedPatrol?: PatrolInHand
   selectedHeadStart?: boolean
@@ -35,7 +34,7 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>
 
 const DistrictTile: FC<Props> = ({
-                                   district, prince, phase, nbPlayers, nbPartners, isPlayerReady, isDistrictNotResolved, selectedPartner, selectedPatrol,
+                                   district, prince, phase, nbPlayers, nbPartners, isPlayerReady, selectedPartner, selectedPatrol,
                                    selectedHeadStart, ...props
                                  }) => {
 
@@ -85,9 +84,7 @@ const DistrictTile: FC<Props> = ({
 
   return (
 
-    <div {...props} ref={dropRef} css={districtStyle(districtImage[district.name])}>
-
-      <div css={districtNotResolvedCache(isDistrictNotResolved)}/>
+    <div ref={dropRef} css={[districtStyle(districtImage[district.name])]} {...props} >
 
       <div css={[dropSize,
         selectedPartner !== undefined && district.name !== DistrictName.Jail && canClickStyle,
@@ -111,14 +108,6 @@ const DistrictTile: FC<Props> = ({
     </div>
   )
 }
-
-const districtNotResolvedCache = (isDistrictNotResolved?: boolean) => css`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  ${isDistrictNotResolved === true ? `background-color:rgba(0,0,0,0.6);` : `background-color:rgba(0,0,0,0);`}
-  transition: background-color 0.5s ease-in;
-`
 
 const blurEffect = css`
   filter: blur(10em);
@@ -177,13 +166,22 @@ const coinPosition = (firstI: number, secondI: number) => css`
   box-shadow: 0 0 1em 0.2em black;
 `
 
-const districtStyle = (image: string) => css`
-  position: relative;
+const districtWidth = 31
+const districtImageRatio = 1653 / 1638
 
+const districtStyle = (image: string) => css`
+  width: ${districtWidth}em;
+  height: ${districtWidth * districtImageRatio}em;
   background-image: url(${image});
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;
+  clip-path: polygon(30.6% 0, 69.4% 0, 100% 73.2%, 82.9% 78.7%, 82.9% 100%, 17.6% 100%, 17.7% 78.9%, 0% 73.3%);
+  cursor: pointer;
+  
+  &:hover {
+    filter: brightness(110%);
+  }
 `
 
 export const districtImage: Record<DistrictName, string> = {
