@@ -66,83 +66,83 @@ export default function GameDisplay({game, audioLoader}: Props) {
   return (
     <>
       <Letterbox css={letterBoxStyle} top={0}>
-          <PrincePanel css={[princePanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince]}
-                       player={players.find(isPrinceState)!}
-                       city={game.city}
-                       phase={game.phase}
-                       partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
-                       selectedPatrol={game.selectedPatrol}
-                       selectedHeadStart={game.selectedHeadStart}
-          />
+        <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
+                     player={players.find(isPrinceState)!}
+                     city={game.city}
+                     phase={game.phase}
+                     partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
+                     selectedPatrol={game.selectedPatrol}
+                     selectedHeadStart={game.selectedHeadStart}
+        />
 
 
-          <WeekCardsPanel css={[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}
-                          event={game.event}
-                          eventDeck={game.eventDeck}
-                          city={game.city}/>
+        <WeekCardsPanel css={[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}
+                        event={game.event}
+                        eventDeck={game.eventDeck}
+                        city={game.city}/>
 
-          <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank]}
-                             players={players.filter(isThief)}
-                             prince={players.find(isPrinceState)!}
-                             phase={game.phase}
-                             resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
-                             event={game.event}
-                             selectedTokensInBank={game.selectedTokensInBank}
-          />
-
-
-          <City city={game.city}
-                phase={game.phase}
-                prince={players.find(isPrinceState)!}
-                currentDistrict={game.currentDistrict}
-                partnersOfPlayerId={game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
-                isPlayerReady={(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
-                selectedPartner={game.selectedPartner?.partnerNumber}
-                selectedTokenInHand={game.selectedTokenInHand}
-                selectedPatrol={game.selectedPatrol}
-                selectedHeadStart={game.selectedHeadStart}
-                open={(district) => setDistrictPopUpClosed(district)}
-          />
-
-          {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
-          <TavernPopUp player={players.find(isThiefState)!}
-          />
-          }
-
-          {game.currentDistrict !== undefined && game.city[game.currentDistrict].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.currentDistrict].dice !== undefined && game.city[game.currentDistrict].dice!.length !== 0)) &&
-          <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
-          />}
-
-
-          <div css={[panelPlayerPosition, (playerId === undefined || playerId === PlayerRole.Prince) ? displayTopThieves : displayBottomThieves]}>
-
-            {players.filter(isThief).map((p, index) =>
-
-              <PanelPlayer key={index}
-                           positionForPartners={index}
-                           css={panelPlayerSize}
-                           player={p}
+        <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank]}
+                           players={players.filter(isThief)}
+                           prince={players.find(isPrinceState)!}
                            phase={game.phase}
-                           city={game.city}
-                           numberOfThieves={players.filter(isThief).length}
-                           districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
-                           thieves={getThieves(game)}
-                           displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
-                           partnersForCards={revealPartnersAnimation
-                             ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners
-                             : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
-                           }
-                           prince={game.players.find(isPrinceState)!}
-                           partnerSelected={game.selectedPartner?.partnerNumber}
-                           tokensInBankSelected={game.selectedTokensInBank}
-                           eventCard={game.event}
-                           deckSize={game.eventDeck}
-                           tokenInHandSelected={game.selectedTokenInHand}
-                           tutorial={game.tutorial}
-              />
-            )}
+                           resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
+                           event={game.event}
+                           selectedTokensInBank={game.selectedTokensInBank}
+        />
 
-          </div>
+
+        <City city={game.city}
+              phase={game.phase}
+              prince={players.find(isPrinceState)!}
+              currentDistrict={game.currentDistrict}
+              partnersOfPlayerId={game.phase === Phase.Planning ? partnersOfPlayerId : undefined}
+              isPlayerReady={(game.phase === Phase.Planning && playerId !== PlayerRole.Prince && playerId !== undefined) ? players.find(p => p.role === playerId)!.isReady : undefined}
+              selectedPartner={game.selectedPartner?.partnerNumber}
+              selectedTokenInHand={game.selectedTokenInHand}
+              selectedPatrol={game.selectedPatrol}
+              selectedHeadStart={game.selectedHeadStart}
+              open={(district) => setDistrictPopUpClosed(district)}
+        />
+
+        {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
+        <TavernPopUp player={players.find(isThiefState)!}
+        />
+        }
+
+        {game.currentDistrict !== undefined && game.city[game.currentDistrict].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.currentDistrict].dice !== undefined && game.city[game.currentDistrict].dice!.length !== 0)) &&
+        <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
+        />}
+
+
+        <div css={[panelPlayerPosition, (playerId === undefined || playerId === PlayerRole.Prince) ? displayTopThieves : displayBottomThieves]}>
+
+          {players.filter(isThief).map((p, index) =>
+
+            <PanelPlayer key={index}
+                         positionForPartners={index}
+                         css={panelPlayerSize}
+                         player={p}
+                         phase={game.phase}
+                         city={game.city}
+                         numberOfThieves={players.filter(isThief).length}
+                         districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
+                         thieves={getThieves(game)}
+                         displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
+                         partnersForCards={revealPartnersAnimation
+                           ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners
+                           : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
+                         }
+                         prince={game.players.find(isPrinceState)!}
+                         partnerSelected={game.selectedPartner?.partnerNumber}
+                         tokensInBankSelected={game.selectedTokensInBank}
+                         eventCard={game.event}
+                         deckSize={game.eventDeck}
+                         tokenInHandSelected={game.selectedTokenInHand}
+                         tutorial={game.tutorial}
+            />
+          )}
+
+        </div>
         {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
 
         {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)}/>}
@@ -204,12 +204,15 @@ const displayTopThieves = css`
 `
 
 const displayBottomPrince = css`
-  top: 66%;
+  position: absolute;
+  left: 94em;
+  bottom: 0;
 `
 
 const displayTopPrince = css`
-  top: 7%;
-  transform: scale(0.95, 0.95);
+  position: absolute;
+  left: 94em;
+  top: 4em;
 `
 
 const panelPlayerSize = css`
@@ -221,13 +224,6 @@ const weekCardsPanelPosition = css`
   position: absolute;
   width: 22%;
   height: 22%;
-`
-
-const princePanelPosition = css`
-  position: absolute;
-  left: 34.5%;
-  width: 31%;
-  height: 31%;
 `
 
 export const getPlayersStartingWith = (game: GameView, playerId?: PlayerRole) => {

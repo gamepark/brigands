@@ -65,7 +65,7 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
 
   return (
     <>
-      <div {...props} css={princePanelStyle}>
+      <div css={princePanelStyle} {...props}>
         <div css={playerInfosPosition}>
           <AvatarPanel playerInfo={playerInfo} role={player.role}/>
           <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
@@ -296,7 +296,12 @@ const patrolTokenSize = css`
 
 `
 
+const princePanelWidth = 82
+const princePanelRatio = 579 / 1160
+
 const princePanelStyle = css`
+  width: ${princePanelWidth}em;
+  height: ${princePanelWidth * princePanelRatio}em;
   background-image: url(${Images.princePanel});
   background-size: contain;
   background-repeat: no-repeat;
