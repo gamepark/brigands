@@ -13,7 +13,7 @@ import TokenAction from '@gamepark/brigands/types/TokenAction'
 import {usePlay, usePlayerId} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
 import SetSelectedTokensInBank, {setSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
-import {getGlowingPlayerColor} from './PanelPlayer'
+import {getGlowingPlayerColor} from './ThiefPanel'
 import ThiefToken from './ThiefToken'
 
 type Props = {

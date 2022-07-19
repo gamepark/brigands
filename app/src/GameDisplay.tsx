@@ -18,7 +18,7 @@ import {useMemo, useState} from 'react'
 import City from './board/City'
 import DicePopUp from './board/DicePopUp'
 import DistrictHelpPopUp from './board/DistrictHelpPopUp'
-import PanelPlayer from './board/PanelPlayer'
+import ThiefPanel from './board/ThiefPanel'
 import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
 import ThiefTokensInBank from './board/ThiefTokensInBank'
@@ -27,6 +27,7 @@ import WelcomePopUp from './board/WelcomePopUp'
 import BrigandsSounds from './sounds/BrigandsSounds'
 import TutorialPopup from './tutorial/TutorialPopUp'
 import {AudioLoader} from './utils/AudioLoader'
+import {thiefPanelLeftPosition, thiefPanelTopPosition} from './utils/styles'
 
 type Props = {
   game: GameView
@@ -113,36 +114,31 @@ export default function GameDisplay({game, audioLoader}: Props) {
         <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
         />}
 
-
-        <div css={[panelPlayerPosition, (playerId === undefined || playerId === PlayerRole.Prince) ? displayTopThieves : displayBottomThieves]}>
-
           {players.filter(isThief).map((p, index) =>
-
-            <PanelPlayer key={index}
-                         positionForPartners={index}
-                         css={panelPlayerSize}
-                         player={p}
-                         phase={game.phase}
-                         city={game.city}
-                         numberOfThieves={players.filter(isThief).length}
-                         districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
-                         thieves={getThieves(game)}
-                         displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
-                         partnersForCards={revealPartnersAnimation
+            <ThiefPanel key={index}
+                        positionForPartners={index}
+                        css={thiefPanelPosition(index, playerId !== undefined && playerId !== PlayerRole.Prince)}
+                        player={p}
+                        phase={game.phase}
+                        city={game.city}
+                        numberOfThieves={players.filter(isThief).length}
+                        districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
+                        thieves={getThieves(game)}
+                        displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
+                        partnersForCards={revealPartnersAnimation
                            ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners
                            : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
                          }
-                         prince={game.players.find(isPrinceState)!}
-                         partnerSelected={game.selectedPartner?.partnerNumber}
-                         tokensInBankSelected={game.selectedTokensInBank}
-                         eventCard={game.event}
-                         deckSize={game.eventDeck}
-                         tokenInHandSelected={game.selectedTokenInHand}
-                         tutorial={game.tutorial}
+                        prince={game.players.find(isPrinceState)!}
+                        partnerSelected={game.selectedPartner?.partnerNumber}
+                        tokensInBankSelected={game.selectedTokensInBank}
+                        eventCard={game.event}
+                        deckSize={game.eventDeck}
+                        tokenInHandSelected={game.selectedTokenInHand}
+                        tutorial={game.tutorial}
             />
           )}
 
-        </div>
         {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
 
         {playerId !== undefined && showWelcomePopup && <WelcomePopUp player={player} game={game} close={() => setWelcomePopUpClosed(true)}/>}
@@ -163,15 +159,10 @@ const thiefTokensInBankPosition = css`
   height: 23%;
 `
 
-const panelPlayerPosition = css`
+const thiefPanelPosition = (index: number, isThief: boolean) => css`
   position: absolute;
-  transform-style: preserve-3d;
-  left: 5%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  width: 90%;
-  height: 25%;
+  top: ${thiefPanelTopPosition(index, isThief)}em;
+  left: ${thiefPanelLeftPosition(index)}em;
 `
 
 const displayBottomBank = css`
@@ -195,14 +186,6 @@ const displayTopWeekCard = css`
   transform: scale(0.9, 0.9);
 `
 
-const displayBottomThieves = css`
-  top: 65%;
-`
-
-const displayTopThieves = css`
-  top: 7%;
-`
-
 const displayBottomPrince = css`
   position: absolute;
   left: 94em;
@@ -213,11 +196,6 @@ const displayTopPrince = css`
   position: absolute;
   left: 94em;
   top: 4em;
-`
-
-const panelPlayerSize = css`
-  width: 18%;
-  height: 100%;
 `
 
 const weekCardsPanelPosition = css`

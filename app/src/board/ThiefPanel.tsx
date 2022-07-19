@@ -29,6 +29,7 @@ import SetSelectedTokenInHand, {ResetSelectedTokenInHand, resetSelectedTokenInHa
 import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
+import {playerPanelHeight, playerPanelWidth} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
@@ -55,7 +56,7 @@ type Props = {
 
 } & HTMLAttributes<HTMLDivElement>
 
-const PanelPlayer: FC<Props> = ({
+const ThiefPanel: FC<Props> = ({
                                   player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards,
                                   displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, deckSize, tokenInHandSelected, tutorial, ...props
                                 }) => {
@@ -145,13 +146,13 @@ const PanelPlayer: FC<Props> = ({
   return (
 
     <>
-      <div css={avatarPosition(positionForPartners, numberOfThieves)}>
-        <AvatarPanel playerInfo={playerInfo} role={player.role}/>
-        <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
-        <PlayerTimer playerId={player.role} css={[timerStyle]}/>
-      </div>
+      <div ref={dropRef} css={[preserve, panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]} {...props}>
 
-      <div {...props} ref={dropRef} css={[preserve, panelPlayerStyle(getPlayerColor(player.role)), canDrop && canDropStyle, canDrop && isOver && isOverStyle]}>
+        <div>
+          <AvatarPanel playerInfo={playerInfo} role={player.role}/>
+          <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
+          <PlayerTimer playerId={player.role} css={[timerStyle]}/>
+        </div>
 
         <div css={goldZonePosition}>
 
@@ -327,16 +328,6 @@ const PanelPlayer: FC<Props> = ({
     </>
   )
 }
-
-const avatarPosition = (position: number, nbThieves: number) => css`
-  position: absolute;
-  width: 17.5%;
-  top: 1%;
-  ${nbThieves === 5 && `left:${1.20 + position * 20}%;`}
-  ${nbThieves === 4 && `left:${3.75 + position * 25}%;`}
-  ${nbThieves === 3 && `left:${7.75 + position * 33.5}%;`}
-  ${nbThieves === 2 && `left:${16.25 + position * 50}%;`}
-`
 
 function isEmphazing(role: PlayerRole, partnerIndex: number, thieves: (ThiefState | ThiefView)[], phase: Phase | undefined, districtResolved: District | undefined): boolean {
   if (districtResolved === undefined || (districtResolved.name !== DistrictName.Jail && districtResolved.name !== DistrictName.Tavern)) return false
@@ -768,8 +759,9 @@ const tokenSize = css`
 
 const panelPlayerStyle = (color: string) => css`
   border: 0.5em solid ${color};
-  border-radius: 10%;
-
+  border-radius: 2em;
+  width: ${playerPanelWidth}em;
+  height: ${playerPanelHeight}em;
 `
 
 const preserve = css`
@@ -810,4 +802,4 @@ export function getGlowingPlayerColor(role: PlayerRole): string {
   }
 }
 
-export default PanelPlayer
+export default ThiefPanel

@@ -2,7 +2,7 @@
 import {css} from '@emotion/react'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ButtonHTMLAttributes, FC} from 'react'
-import {getPlayerColor} from '../board/PanelPlayer'
+import {getPlayerColor} from '../board/ThiefPanel'
 
 type Props = {
   pRole?: PlayerRole

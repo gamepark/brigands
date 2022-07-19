@@ -18,10 +18,11 @@ import SetSelectedHeadStart, {setSelectedHeadStartMove} from '../localMoves/SetS
 import SetSelectedPatrol, {setSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
+import {headerHeight, playerPanelHeight, playerPanelMinLeft, playerPanelThiefTop, playerPanelWidth} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import HeadStart from './HeadStart'
-import {getPlayerColor} from './PanelPlayer'
 import PatrolToken from './PatrolToken'
+import {getPlayerColor} from './ThiefPanel'
 
 type Props = {
   player: PrinceState
@@ -65,12 +66,12 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
 
   return (
     <>
+      <div css={playerInfosPosition(playerId !== undefined && playerId !== PlayerRole.Prince)}>
+        <AvatarPanel playerInfo={playerInfo} role={player.role}/>
+        <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
+        <PlayerTimer playerId={player.role} css={[timerStyle]}/>
+      </div>
       <div css={princePanelStyle} {...props}>
-        <div css={playerInfosPosition}>
-          <AvatarPanel playerInfo={playerInfo} role={player.role}/>
-          <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
-          <PlayerTimer playerId={player.role} css={[timerStyle]}/>
-        </div>
         <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}/>
         {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
         {judgePartnersAnimation && partnersArrestedCount &&
@@ -255,14 +256,14 @@ const timerStyle = css`
   padding-top: 0.2em;
 `
 
-const playerInfosPosition = css`
+const playerInfosPosition = (isThief: boolean) => css`
   position: absolute;
-  top: 0;
-  left: -60%;
-  width: 58%;
-  height: 28%;
+  width: ${playerPanelWidth}em;
+  height: ${playerPanelHeight}em;
+  top: ${isThief ? playerPanelThiefTop : headerHeight + 2 + playerPanelHeight}em;
+  left: ${playerPanelMinLeft + playerPanelWidth + 1}em;
   border: 0.5em solid white;
-  border-radius: 10% / 35%;
+  border-radius: 2em;
 `
 
 const patrolCanceled = (isPrince: number) => css`
