@@ -1,6 +1,6 @@
 enum MoveType {
   DrawEvent,
-  PlacePartner,
+  PlaceMeeple,
   TellYouAreReady,
   MoveOnNextPhase,
   RevealPartnersDistricts,

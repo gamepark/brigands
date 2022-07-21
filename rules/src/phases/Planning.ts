@@ -2,7 +2,7 @@ import {isThisPartnerHasAnyToken} from '../Brigands'
 import DistrictName from '../districts/DistrictName'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
-import PlacePartner from '../moves/PlacePartner'
+import PlaceMeeple, {placeMeepleMove} from '../moves/PlaceMeeple'
 import PlaceToken from '../moves/PlaceToken'
 import TellYouAreReady from '../moves/TellYouAreReady'
 import {ThiefState} from '../PlayerState'
@@ -18,14 +18,14 @@ export default class Planning extends PhaseRules {
     if (thief.isReady) {
       return []
     }
-    const planningMoves: (PlacePartner | PlaceToken | TellYouAreReady)[] = []
+    const planningMoves: (PlaceMeeple | PlaceToken | TellYouAreReady)[] = []
     if (thief.partners.every(part => part.district !== undefined)) {
       planningMoves.push({type: MoveType.TellYouAreReady, playerId: thief.role})
     }
     thief.partners.forEach((part, index) => {
       if (part.district === undefined) {
         for (let i = 2; i < 9; i++) {
-          planningMoves.push({type: MoveType.PlacePartner, playerId: thief.role, district: i, partnerNumber: index})
+          planningMoves.push(placeMeepleMove(thief.role, i, index))
         }
       } else if (!isThisPartnerHasAnyToken(thief, index) && part.district !== DistrictName.Jail) {
         const playableTokens: TokenAction[] = getTokensInHand(thief)

@@ -2,6 +2,7 @@
 import {css} from '@emotion/react'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import MoveType from '@gamepark/brigands/moves/MoveType'
+import {placeMeepleMove} from '@gamepark/brigands/moves/PlaceMeeple'
 import {PrinceState} from '@gamepark/brigands/PlayerState'
 import HeadStartToken from '@gamepark/brigands/types/HeadStartToken'
 import PartnerInHand, {isPartnerInHand} from '@gamepark/brigands/types/PartnerInHand'
@@ -13,6 +14,7 @@ import {useDrop} from 'react-dnd'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
+import {cityCenterLeft, cityCenterTop} from '../utils/styles'
 import {districtImage} from './DistrictTile'
 
 type Props = {
@@ -46,7 +48,7 @@ const DistrictTile: FC<Props> = ({prince, selectedPatrol, selectedHeadStart, ...
         moveSound.play()
         playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
         playResetSelectedPartner(resetSelectedPartnerMove(), {local: true})
-        return {type: MoveType.PlacePartner, playerId, district: DistrictName.Jail, partnerNumber: item.partnerNumber}
+        return placeMeepleMove(playerId!, DistrictName.Jail, item.partnerNumber)
       } else {
         moveSound.play()
         return {type: MoveType.PlayHeadStart, district: DistrictName.Jail}
@@ -93,8 +95,8 @@ const jailSize = 31.5
 
 const districtStyle = (image: string) => css`
   position: absolute;
-  left: 31.8em;
-  top: 37.8em;
+  left: ${cityCenterLeft - jailSize / 2}em;
+  top: ${cityCenterTop - jailSize / 2}em;
   width: ${jailSize}em;
   height: ${jailSize}em;
   background-image: url(${image});

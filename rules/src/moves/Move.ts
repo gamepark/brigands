@@ -7,7 +7,7 @@ import KickOrNot from './KickOrNot'
 import MoveOnDistrictResolved from './MoveOnDistrictResolved'
 import MoveOnNextPhase from './MoveOnNextPhase'
 import MovePartner from './MovePartner'
-import PlacePartner from './PlacePartner'
+import PlaceMeeple from './PlaceMeeple'
 import PlacePatrol from './PlacePatrol'
 import PlaceToken from './PlaceToken'
 import PlayHeadStart from './PlayHeadStart'
@@ -22,7 +22,7 @@ import TakeToken from './TakeToken'
 import TellYouAreReady from './TellYouAreReady'
 import ThrowDice from './ThrowDice'
 
-type Move = DrawEvent | PlacePartner | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts
+type Move = DrawEvent | PlaceMeeple | PlaceToken | TellYouAreReady | MoveOnNextPhase | PlacePatrol | RevealPartnersDistricts
   | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
   | ResolveStealToken | KickOrNot | RevealKickOrNot | MovePartner
   | JudgePrisoners | PlayHeadStart

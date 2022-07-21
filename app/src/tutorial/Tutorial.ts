@@ -3,10 +3,8 @@ import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameState from '@gamepark/brigands/GameState'
 import Move from '@gamepark/brigands/moves/Move'
-import MoveType from '@gamepark/brigands/moves/MoveType'
 import Phase from '@gamepark/brigands/phases/Phase'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
-import TokenAction from '@gamepark/brigands/types/TokenAction'
 import {TutorialDescription} from '@gamepark/react-client'
 
 const tabCity: District[] = [
@@ -38,20 +36,20 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
 
     // Turn 1
 
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Market},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Market},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Market}],
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.CityHall},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.CityHall},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.CityHall}],
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Harbor},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Harbor},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Harbor}],
+    /*[{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Market},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Market},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Market}],
+    [{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.CityHall},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.CityHall},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.CityHall}],
+    [{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Harbor},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Harbor},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Harbor}],
     {type: MoveType.TellYouAreReady, playerId: PlayerRole.YellowThief},
 
-    {type: MoveType.PlacePartner, playerId: PlayerRole.GreenThief, partnerNumber: 0, district: DistrictName.CityHall},
-    {type: MoveType.PlacePartner, playerId: PlayerRole.GreenThief, partnerNumber: 1, district: DistrictName.Treasure},
-    {type: MoveType.PlacePartner, playerId: PlayerRole.GreenThief, partnerNumber: 2, district: DistrictName.Treasure},
+    {type: MoveType.PlaceMeeple, playerId: PlayerRole.GreenThief, partnerNumber: 0, district: DistrictName.CityHall},
+    {type: MoveType.PlaceMeeple, playerId: PlayerRole.GreenThief, partnerNumber: 1, district: DistrictName.Treasure},
+    {type: MoveType.PlaceMeeple, playerId: PlayerRole.GreenThief, partnerNumber: 2, district: DistrictName.Treasure},
     {type: MoveType.TellYouAreReady, playerId: PlayerRole.GreenThief},
 
     {type: MoveType.PlacePatrol, patrolNumber: 0, district: DistrictName.Palace},
@@ -78,28 +76,28 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
 
     // Turn 2
 
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Convoy},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Convoy},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Convoy}],
+    [{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Convoy},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Convoy},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Convoy}],
     [{type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 0, tokenAction: TokenAction.Stealing},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 1, tokenAction: TokenAction.Stealing},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 2, tokenAction: TokenAction.Stealing}],
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Palace},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Palace},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Palace}],
+    [{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Palace},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Palace},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Palace}],
     [{type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 0, tokenAction: TokenAction.Fleeing},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 1, tokenAction: TokenAction.Fleeing},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 2, tokenAction: TokenAction.Fleeing}],
-    [{type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Tavern},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Tavern},
-      {type: MoveType.PlacePartner, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Tavern}],
+    [{type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 0, district: DistrictName.Tavern},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 1, district: DistrictName.Tavern},
+      {type: MoveType.PlaceMeeple, playerId: PlayerRole.YellowThief, partnerNumber: 2, district: DistrictName.Tavern}],
     [{type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 0, tokenAction: TokenAction.Kicking},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 1, tokenAction: TokenAction.Kicking},
       {type: MoveType.PlaceToken, role: PlayerRole.YellowThief, partnerNumber: 2, tokenAction: TokenAction.Kicking}],
     {type: MoveType.TellYouAreReady, playerId: PlayerRole.YellowThief},
 
-    {type: MoveType.PlacePartner, playerId: PlayerRole.GreenThief, partnerNumber: 0, district: DistrictName.Tavern},
-    {type: MoveType.PlacePartner, playerId: PlayerRole.GreenThief, partnerNumber: 1, district: DistrictName.Convoy},
+    {type: MoveType.PlaceMeeple, playerId: PlayerRole.GreenThief, partnerNumber: 0, district: DistrictName.Tavern},
+    {type: MoveType.PlaceMeeple, playerId: PlayerRole.GreenThief, partnerNumber: 1, district: DistrictName.Convoy},
     {type: MoveType.TellYouAreReady, playerId: PlayerRole.GreenThief},
 
     {type: MoveType.PlacePatrol, patrolNumber: 0, district: DistrictName.Jail},
@@ -116,7 +114,7 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
     {type: MoveType.KickOrNot, kickerRole: PlayerRole.YellowThief, playerToKick: PlayerRole.GreenThief},
     {type: MoveType.BetGold, role: PlayerRole.YellowThief, gold: 3},
     {type: MoveType.MoveOnDistrictResolved, districtResolved: 5},
-    {type: MoveType.MoveOnDistrictResolved, districtResolved: 6}
+    {type: MoveType.MoveOnDistrictResolved, districtResolved: 6}*/
 
   ]
 

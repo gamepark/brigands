@@ -7,7 +7,7 @@ import PlayerRole from './types/PlayerRole'
 export default function canUndo(action: Action<Move | MoveView, PlayerRole>, consecutiveActions: Action<Move | MoveView, PlayerRole>[]): boolean {
 
   switch (action.move.type) {
-    case MoveType.PlacePartner:
+    case MoveType.PlaceMeeple:
     case MoveType.PlaceToken: {
       return !consecutiveActions.some(consecAction => consecAction.playerId === action.playerId && consecAction.move.type === MoveType.TellYouAreReady)
     }

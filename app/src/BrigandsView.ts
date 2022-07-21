@@ -11,7 +11,7 @@ import {moveOnNextPhase} from '@gamepark/brigands/moves/MoveOnNextPhase'
 import {movePartner} from '@gamepark/brigands/moves/MovePartner'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
-import {placePartnerInView} from '@gamepark/brigands/moves/PlacePartner'
+import {placeMeeple} from '@gamepark/brigands/moves/PlaceMeeple'
 import {placePatrol} from '@gamepark/brigands/moves/PlacePatrol'
 import {placeToken} from '@gamepark/brigands/moves/PlaceToken'
 import {playHeadStart} from '@gamepark/brigands/moves/PlayHeadStart'
@@ -48,8 +48,8 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
     switch (move.type) {
       case MoveType.DrawEvent:
         return drawEventInView(this.state, move)
-      case MoveType.PlacePartner:
-        return placePartnerInView(this.state, move)
+      case MoveType.PlaceMeeple:
+        return placeMeeple(this.state, move)
       case MoveType.PlaceToken:
         return placeToken(this.state, move)
       case MoveType.TellYouAreReady:

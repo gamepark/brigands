@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import {css} from '@emotion/react'
 import Move from '@gamepark/brigands/moves/Move'
-import PlacePartner from '@gamepark/brigands/moves/PlacePartner'
+import PlaceMeeple from '@gamepark/brigands/moves/PlaceMeeple'
 import PlaceToken from '@gamepark/brigands/moves/PlaceToken'
 import Phase from '@gamepark/brigands/phases/Phase'
 import Partner, {PartnerView} from '@gamepark/brigands/types/Partner'
@@ -32,20 +32,12 @@ const PartnerComponent: FC<Props> = ({role, partners, tokens, partnerNumber, pha
 
   const play = usePlay<Move>()
   const item = {...draggableItem}
-  const onDrop = (move: PlacePartner | PlaceToken) => {
+  const onDrop = (move: PlaceMeeple | PlaceToken) => {
     play(move)
   }
 
   return (
-    <Draggable canDrag={draggable}
-               type={type}
-               item={item}
-               drop={onDrop}
-               {...props}
-
-      // TODO : Add the property ref={dropRef} here, on the Draggable element
-
-               css={[partnerStyle(getPartnerImage(role))]}>
+    <Draggable canDrag={draggable} type={type} item={item} drop={onDrop} css={[partnerStyle(getPartnerImage(role))]} {...props}>
 
       {tokens.steal.find(token => token === partnerNumber) !== undefined
       && <ThiefToken css={[tokenSize, phase !== Phase.Solving ? tokenPositionForPlanning : tokenPositionForSolving]}

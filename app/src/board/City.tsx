@@ -4,6 +4,7 @@ import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import Move from '@gamepark/brigands/moves/Move'
 import MoveType from '@gamepark/brigands/moves/MoveType'
+import {placeMeepleMove} from '@gamepark/brigands/moves/PlaceMeeple'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {PrinceState} from '@gamepark/brigands/PlayerState'
 import Partner from '@gamepark/brigands/types/Partner'
@@ -53,12 +54,7 @@ const City: FC<Props> = ({
   function playPlacePartner(selectedPartner: number | undefined, district: DistrictName) {
     if (selectedPartner !== undefined && playerId !== undefined) {
       moveSound.play()
-      play({
-        type: MoveType.PlacePartner,
-        district,
-        partnerNumber: selectedPartner,
-        playerId
-      })
+      play(placeMeepleMove(playerId, district, selectedPartner))
       playResetSelectPartner(resetSelectedPartnerMove(), {local: true})
       selectedTokenInHand !== undefined && play({
         type: MoveType.PlaceToken,

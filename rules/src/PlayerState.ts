@@ -1,3 +1,4 @@
+import DistrictName from './districts/DistrictName'
 import PlayerView from './PlayerView'
 import PlayerRole from './types/PlayerRole'
 import Prince from './types/Prince'
@@ -9,6 +10,7 @@ export default PlayerState
 
 type PlayerCommon = {
   role: PlayerRole
+  meeples: (DistrictName | null)[]
   gold: number
   isReady: boolean
 }

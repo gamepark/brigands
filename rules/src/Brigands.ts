@@ -19,7 +19,7 @@ import {moveOnNextPhase} from './moves/MoveOnNextPhase'
 import {movePartner} from './moves/MovePartner'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
-import {getPlacePartnerView, placePartner} from './moves/PlacePartner'
+import {placeMeeple} from './moves/PlaceMeeple'
 import {placePatrol} from './moves/PlacePatrol'
 import {placeToken} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
@@ -113,8 +113,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     switch (move.type) {
       case MoveType.DrawEvent:
         return drawEvent(this.state)
-      case MoveType.PlacePartner:
-        return placePartner(this.state, move)
+      case MoveType.PlaceMeeple:
+        return placeMeeple(this.state, move)
       case MoveType.PlaceToken:
         return placeToken(this.state, move)
       case MoveType.TellYouAreReady:
@@ -188,13 +188,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       case MoveType.DrawEvent:
         return getDrawEventView(this.state)
 
-      case MoveType.PlacePartner :
-        if (playerId === move.playerId) {
-          return move
-        } else {
-          return getPlacePartnerView(this.getThieves().find(p => p.role === move.playerId)!, move)
-        }
-
       case MoveType.RevealPartnersDistricts:
         return getRevealPartnersDistrictView(this.getThieves())
 
@@ -263,6 +256,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
       options.id === PlayerRole.Prince
         ? {
           role: options.id,
+          meeples: [2,2,2],
           gold: 0,
           isReady: false,
           victoryPoints: 0,
@@ -271,6 +265,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         }
         : {
           role: options.id,
+          meeples: [2,2,2],
           gold: 3,
           isReady: false,
           partners: [{}, {}, {}],

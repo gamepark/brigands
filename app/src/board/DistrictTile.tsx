@@ -3,6 +3,7 @@ import {css} from '@emotion/react'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import MoveType from '@gamepark/brigands/moves/MoveType'
+import {placeMeepleMove} from '@gamepark/brigands/moves/PlaceMeeple'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {PrinceState} from '@gamepark/brigands/PlayerState'
 import HeadStartToken from '@gamepark/brigands/types/HeadStartToken'
@@ -68,7 +69,7 @@ const DistrictTile: FC<Props> = ({
         moveSound.play()
         playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
         playResetSelectedPartner(resetSelectedPartnerMove(), {local: true})
-        return {type: MoveType.PlacePartner, playerId, district: district.name, partnerNumber: item.partnerNumber}
+        return placeMeepleMove(playerId!, district.name, item.partnerNumber)
       } else {
         moveSound.play()
         return {type: MoveType.PlayHeadStart, district: district.name}

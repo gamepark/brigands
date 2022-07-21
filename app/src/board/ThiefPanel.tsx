@@ -29,7 +29,7 @@ import SetSelectedTokenInHand, {ResetSelectedTokenInHand, resetSelectedTokenInHa
 import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
-import {playerPanelHeight, playerPanelWidth} from '../utils/styles'
+import {getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
@@ -253,27 +253,14 @@ const ThiefPanel: FC<Props> = ({
 
       </div>
 
-      {partnersView.map((partner, index) =>
+      {player.meeples.map((district, index) =>
         <PartnerComponent key={index}
                           css={[partnerSize,
                             (partnerSelected === index && player.role === playerId && isSelectedStyle),
-                            (!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase, player.role) : false) && glowingBrigand(getGlowingPlayerColor(player.role)),
-                            (phase !== Phase.Solving && phase !== undefined)
-                              ? isPartnerView(partner)
-                                ? cardsPlayed === 1
-                                  ? partnerOnOnlyCard(positionForPartners, index, numberOfThieves)
-                                  : cardsPlayed === 2
-                                    ? partnerOnOneOfTwoCards(positionForPartners, index, partner.card, numberOfThieves)
-                                    : partnerOnOneOfThreeCards(positionForPartners, partner.card, numberOfThieves)
-                                : partner.district === DistrictName.Jail
-                                  ? onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
-                                  : partnerHandPosition(positionForPartners, index, numberOfThieves)
-                              : isPartner(partner)
-                                ? partner.district === undefined
-                                  ? partnerHandPosition(positionForPartners, index, numberOfThieves)
-                                  : onCity(positionForPartners, index, city.findIndex(d => d.name === partner.district), (playerId === PlayerRole.Prince || playerId === undefined) ? -1.32 : 1, isEmphazing(player.role, index, thieves, phase, districtResolved))
-                                : partnerHandPosition(positionForPartners, index, numberOfThieves)      // Not Perfect
-
+                            !district && isPartnerDraggable(phase, player.role) && glowingBrigand(getGlowingPlayerColor(player.role)),
+                            district ?
+                              onCity(positionForPartners, index, city.findIndex(d => d.name === district), isEmphazing(player.role, index, thieves, phase, districtResolved)) :
+                              partnerHandPosition(positionForPartners, index, numberOfThieves)
                           ]}
                           role={player.role}
                           partners={player.partners}
@@ -281,11 +268,11 @@ const ThiefPanel: FC<Props> = ({
                           tokens={player.tokens}
                           phase={phase}
 
-                          draggable={!isPartnerView(partner) ? partner.district !== DistrictName.Jail && isPartnerDraggable(phase, player.role) : false}
+                          draggable={!district && isPartnerDraggable(phase, player.role)}
                           type={'PartnerInHand'}
                           draggableItem={{partnerNumber: index}}
 
-                          onClick={() => phase === Phase.Planning && player.role === playerId && isPartner(partner) && partner.district === undefined && playSelectPartner(setSelectedPartnerMove(index), {local: true})}
+                          onClick={() => phase === Phase.Planning && player.role === playerId && !district && playSelectPartner(setSelectedPartnerMove(index), {local: true})}
 
         />
       )}
@@ -621,40 +608,10 @@ const validationButtonPosition = css`
   font-size: 3.5em;
 `
 
-const onCity = (positionForPartners: number, index: number, district: number, prince: number, isEscaping: boolean) => css`
-  top: ${prince * (-100) + index * 8}%;
-  left: ${1.0 + district * 12.5 + positionForPartners * 2}%;
+const onCity = (positionForPartners: number, index: number, district: number, isEscaping: boolean) => css`
+  top: ${getThiefMeepleDistrictTop(positionForPartners, index, district)}em;
+  left: ${getThiefMeepleDistrictLeft(positionForPartners, index, district)}em;
   ${isEscaping && `transform:translateZ(4em) scale(1.4,1.4);`};
-  ${transitionPartner};
-`
-
-const partnerOnOneOfThreeCards = (positionForPartners: number, card: number, nbThieves: number) => css`
-  top: ${76}%;
-  ${nbThieves === 5 && `left:${2.5 + card * 5.2 + positionForPartners * 20}%;`}
-  ${nbThieves === 4 && `left:${5.1 + card * 5.2 + positionForPartners * 25}%;`}
-  ${nbThieves === 3 && `left:${9.2 + card * 5.2 + positionForPartners * 33.4}%;`}
-  ${nbThieves === 2 && `left:${17.6 + card * 5.2 + positionForPartners * 50}%;`}
-
-  ${transitionPartner};
-`
-
-const partnerOnOneOfTwoCards = (positionForPartners: number, index: number, card: number, nbThieves: number) => css`
-  top: ${76 + index * 15}%;
-  ${nbThieves === 5 && `left:${4.2 + card * 7 + positionForPartners * 20}%;`}
-  ${nbThieves === 4 && `left:${6.7 + card * 7 + positionForPartners * 25}%;`}
-  ${nbThieves === 3 && `left:${10.8 + card * 7 + positionForPartners * 33.4}%;`}
-  ${nbThieves === 2 && `left:${19.3 + card * 7 + positionForPartners * 50}%;`}
-
-  ${transitionPartner};
-`
-
-const partnerOnOnlyCard = (positionForPartners: number, index: number, nbThieves: number) => css`
-  top: ${76 + index * 15}%;
-  ${nbThieves === 5 && `left:${7.8 + positionForPartners * 20}%;`}
-  ${nbThieves === 4 && `left:${10.3 + positionForPartners * 25}%;`}
-  ${nbThieves === 3 && `left:${14.4 + positionForPartners * 33.4}%;`}
-  ${nbThieves === 2 && `left:${22.8 + positionForPartners * 50}%;`}
-
   ${transitionPartner};
 `
 
@@ -709,8 +666,8 @@ const scoreDivStyle = css`
 
 const partnerSize = css`
   position: absolute;
-  width: 3.5em;
-  height: 3.5em;
+  width: ${meepleSize}em;
+  height: ${meepleSize}em;
   z-index: 7;
 `
 
