@@ -217,7 +217,7 @@ const ThiefPanel: FC<Props> = ({
                    pRole={player.role}>{t('Kick')}</Button>
         }
 
-        {(phase === Phase.Planning || phase === Phase.Patrolling) && <div css={cardsPanelPosition}>
+        {phase === Phase.Planning && <div css={cardsPanelPosition}>
 
           {[...Array(cardsPlayed)].map((_, index) => <DistrictCard key={index}
                                                                    color={player.role}

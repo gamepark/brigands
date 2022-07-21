@@ -15,7 +15,6 @@ import {usePlay, usePlayerId, useSound} from '@gamepark/react-client'
 import {FC} from 'react'
 import {ResetSelectedHeadStart, resetSelectedHeadStartMove} from '../localMoves/SetSelectedHeadStart'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
-import {ResetSelectedPatrol, resetSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
 import DistrictTile from './DistrictTile'
@@ -43,7 +42,6 @@ const City: FC<Props> = ({
 
   const play = usePlay<Move>()
   const playResetSelectPartner = usePlay<ResetSelectedPartner>()
-  const playResetSelectPatrol = usePlay<ResetSelectedPatrol>()
   const playResetSelectHeadStart = usePlay<ResetSelectedHeadStart>()
   const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
   const playerId = usePlayerId<PlayerRole>()
@@ -63,18 +61,6 @@ const City: FC<Props> = ({
         tokenAction: selectedTokenInHand.tokenAction
       })
       playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
-    }
-  }
-
-  function playPlacePatrol(district: DistrictName) {
-    if (selectedPatrol !== undefined && selectedPatrol.index !== undefined) {
-      moveSound.play()
-      play({
-        type: MoveType.PlacePatrol,
-        district,
-        patrolNumber: selectedPatrol.index
-      })
-      playResetSelectPatrol(resetSelectedPatrolMove(), {local: true})
     }
   }
 
@@ -101,9 +87,7 @@ const City: FC<Props> = ({
                       onClick={() => playerId === PlayerRole.Prince
                         ? selectedPatrol === undefined && selectedHeadStart === undefined
                           ? open(district.name)
-                          : phase === Phase.Patrolling && !prince.patrols.includes(district.name) && selectedPatrol !== undefined
-                            ? playPlacePatrol(district.name)
-                            : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
+                          : selectedHeadStart === true && district.name !== DistrictName.Jail && prince.patrols.includes(district.name) && playPlaceHeadStart(district.name)
 
                         : selectedPartner === undefined && selectedTokenInHand === undefined
                           ? open(district.name)

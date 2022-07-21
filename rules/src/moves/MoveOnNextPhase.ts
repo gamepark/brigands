@@ -15,10 +15,6 @@ export function moveOnNextPhase(state: GameState | GameView) {
       state.phase = Phase.Planning
       break
     case Phase.Planning:
-      state.phase = Phase.Patrolling
-      state.players.forEach(p => p.isReady = false)
-      break
-    case Phase.Patrolling:
       state.phase = Phase.Solving
       state.players.forEach(p => p.isReady = false)
       break

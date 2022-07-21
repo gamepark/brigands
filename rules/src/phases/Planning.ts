@@ -1,11 +1,14 @@
 import {isThisPartnerHasAnyToken} from '../Brigands'
 import DistrictName from '../districts/DistrictName'
+import JudgePrisoners from '../moves/JudgePrisoners'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import PlaceMeeple, {placeMeepleMove} from '../moves/PlaceMeeple'
+import PlacePatrol from '../moves/PlacePatrol'
 import PlaceToken from '../moves/PlaceToken'
+import PlayHeadStart from '../moves/PlayHeadStart'
 import TellYouAreReady from '../moves/TellYouAreReady'
-import {ThiefState} from '../PlayerState'
+import {PrinceState, ThiefState} from '../PlayerState'
 import TokenAction from '../types/TokenAction'
 import {PhaseRules} from './PhaseRules'
 
@@ -35,6 +38,32 @@ export default class Planning extends PhaseRules {
       }
     })
     return planningMoves
+  }
+
+  getPrinceLegalMoves(prince: PrinceState): Move[] {
+    if (prince.isReady) {
+      return []
+    }
+    const patrollingMoves: (PlacePatrol | JudgePrisoners | PlayHeadStart | TellYouAreReady)[] = []
+    for (let i = 1; i < 9; i++) {
+      if (prince.gold > 1 && prince.abilities[1] === false) {
+        prince.patrols.includes(i) && i !== 1 && patrollingMoves.push({type: MoveType.PlayHeadStart, district: i})
+      }
+      if (prince.gold > 4 && !prince.abilities[2] && i !== prince.patrols[2]) {
+        !prince.patrols.includes(i) && prince.abilities[1] !== prince.patrols[2] && patrollingMoves.push({
+          type: MoveType.PlacePatrol, district: i, patrolNumber: 2
+        })
+      }
+      if (prince.patrols.every(pat => pat !== -1)) {
+        patrollingMoves.push({type: MoveType.TellYouAreReady, playerId: prince.role})
+      }
+      if (prince.patrols.some(pat => pat === -1)) {
+        prince.patrols.forEach((pat, index) => pat === -1 && !prince.patrols.includes(i) && patrollingMoves.push({
+          type: MoveType.PlacePatrol, district: i, patrolNumber: index
+        }))
+      }
+    }
+    return patrollingMoves
   }
 
   getAutomaticMove(): Move | void {

@@ -14,13 +14,11 @@ import {PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamep
 import {Picture} from '@gamepark/react-components'
 import {FC, HTMLAttributes} from 'react'
 import {useTranslation} from 'react-i18next'
-import SetSelectedHeadStart, {setSelectedHeadStartMove} from '../localMoves/SetSelectedHeadStart'
 import SetSelectedPatrol, {setSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
 import {headerHeight, playerPanelHeight, playerPanelMinLeft, playerPanelThiefTop, playerPanelWidth} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
-import HeadStart from './HeadStart'
 import PatrolToken from './PatrolToken'
 import {getPlayerColor} from './ThiefPanel'
 
@@ -40,7 +38,6 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
   const {t} = useTranslation()
   const play = usePlay<Move>()
   const playSelectPatrol = usePlay<SetSelectedPatrol>()
-  const playSelectHeadStart = usePlay<SetSelectedHeadStart>()
 
   const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
   const judgePartnersAnimation = useAnimation<JudgePrisoners>(animation => isJudgePrisoners(animation.move))
@@ -50,18 +47,11 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
       return false
     }
     if (patrolIndex !== 2) {
-      return phase === Phase.Patrolling && role === playerId && statePatrol === -1
+      return phase === Phase.Planning && role === playerId && statePatrol === -1
     } else {
-      return player.gold > 4 && !player.abilities[2] && player.abilities[1] !== player.patrols[2] && phase === Phase.Patrolling && role === playerId && statePatrol !== -2
+      return player.gold > 4 && !player.abilities[2] && player.abilities[1] !== player.patrols[2] && phase === Phase.Planning && role === playerId && statePatrol !== -2
     }
 
-  }
-
-  function isHeadStartTokenDraggable(phase: Phase | undefined): boolean {
-    if (player.isReady) {
-      return false
-    }
-    return phase === Phase.Patrolling && player.role === playerId && player.gold > 1 && player.abilities[1] === false
   }
 
   return (
@@ -96,17 +86,10 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
                      onClick={() => isPatrolDraggable(phase, player.role, patrol, index) && playSelectPatrol(setSelectedPatrolMove(patrol, index), {local: true})}
         />
       )}
-      {player.role === playerId && phase === Phase.Patrolling && player.patrols.every(pat => pat !== -1) && !player.isReady
+      {player.role === playerId && phase === Phase.Planning && player.patrols.every(pat => pat !== -1) && !player.isReady
       && <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]}
                  onClick={() => play({type: MoveType.TellYouAreReady, playerId: player.role})} pRole={player.role}>{t('Validate')}</Button>
       }
-      <HeadStart
-        css={[headStartSize, selectedHeadStart === true && hSIsSelected, isHeadStartTokenDraggable(phase) && glowingPrince, player.abilities[1] === false ? headStartOnHand((playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : headStartOnDistrict(city.findIndex(d => d.name === player.abilities[1]))]}
-        draggable={isHeadStartTokenDraggable(phase)}
-        type={'HeadStartToken'}
-        draggableItem={{}}
-        onClick={() => phase === Phase.Patrolling && player.role === playerId && player.abilities[1] === false && player.gold >= 2 && playSelectHeadStart(setSelectedHeadStartMove(), {local: true})}
-      />
     </>
   )
 }
@@ -166,30 +149,6 @@ const arrestPartnersHintPosition = (duration: number) => css`
 
 const glowingPrince = css`
   animation: ${glowingWhiteKeyframes} 1s infinite alternate;
-`
-
-const headStartOnHand = (isPrince: number) => css`
-  top: ${31.5 + isPrince * 60}%;
-  left: 60.1%;
-`
-
-const headStartOnDistrict = (district: number) => css`
-  top: 52%;
-  left: ${8 + (district * 11.25)}%;
-`
-
-const headStartSize = css`
-  position: absolute;
-  height: 5%;
-  width: 3%;
-  z-index: 1;
-  filter: drop-shadow(0 0 0.5em black);
-  transition: transform 0.2s linear;
-`
-
-const hSIsSelected = css`
-  transform: translateZ(4em);
-  transition: transform 0.2s linear;
 `
 
 const validationButtonPosition = css`

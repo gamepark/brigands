@@ -4,14 +4,12 @@ import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getPrince, getThieves} from '@gamepark/brigands/GameView'
 import {EventArray} from '@gamepark/brigands/material/Events'
-import PlacePatrol, {isPlaceCaptain} from '@gamepark/brigands/moves/PlacePatrol'
-import PlayHeadStart, {isPlayHeadStart} from '@gamepark/brigands/moves/PlayHeadStart'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
 import {isPartner} from '@gamepark/brigands/types/Partner'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
-import {Player as PlayerInfo, useAnimation, usePlayerId, usePlayers} from '@gamepark/react-client'
+import {Player as PlayerInfo, usePlayerId, usePlayers} from '@gamepark/react-client'
 import {TFunction} from 'i18next'
 import {useTranslation} from 'react-i18next'
 
@@ -28,27 +26,6 @@ export default function HeaderText({loading, game}: Props) {
     return <HeaderGameOverText game={game}/>
   } else {
     return <HeaderOnGoingGameText game={game}/>
-  }
-}
-
-function getDistrictName(district: DistrictName, t: TFunction): string {
-  switch (district) {
-    case DistrictName.Jail:
-      return t('the Jail')
-    case DistrictName.CityHall:
-      return t('the Cityhall')
-    case DistrictName.Convoy:
-      return t('the Convoy')
-    case DistrictName.Harbor:
-      return t('the Harbor')
-    case DistrictName.Market:
-      return t('the Market')
-    case DistrictName.Palace:
-      return t('the Palace')
-    case DistrictName.Tavern:
-      return t('the Tavern')
-    case DistrictName.Treasure:
-      return t('the Treasure')
   }
 }
 
@@ -143,10 +120,6 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
   const playerId = usePlayerId<PlayerRole>()
   const players = usePlayers<PlayerRole>()
 
-  const playHeadStartAnimation = useAnimation<PlayHeadStart>(animation => isPlayHeadStart(animation.move))
-  const moveCaptainAnimation = useAnimation<PlacePatrol>(animation => isPlaceCaptain(animation.move))
-
-
   switch (game.phase) {
     case Phase.NewDay: {
       return <> {t('new.day')} </>
@@ -168,29 +141,6 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
         } else {
           return <> {t('planning.you.place.partners')} </>
         }
-      }
-    }
-
-    case Phase.Patrolling: {
-      const prince = getPrince(game)
-      if (prince.isReady) {
-        return <> {t('patrolling.reveal')} </>
-      } else if (playHeadStartAnimation || moveCaptainAnimation) {
-        if (playHeadStartAnimation) {
-          return <> {t('patrolling.playing.head.start', {district: getDistrictName(playHeadStartAnimation.move.district, t)})} </>
-        } else if (moveCaptainAnimation) {
-          return <> {t('patrolling.move.captain', {district: getDistrictName(moveCaptainAnimation.move.district, t)})} </>
-        } else {
-          return <> {t('no.powers')} </>
-        }
-      } else if (playerId === PlayerRole.Prince) {
-        if (prince.patrols.every(pat => pat !== -1)) {
-          return <> {t('patrolling.you.clic.ready')} </>
-        } else {
-          return <> {t('patrolling.you.place.patrols')} </>
-        }
-      } else {
-        return <> {t('patrolling.you.wait', {prince: getPseudo(getPrince(game).role, players, t)})} </>
       }
     }
 

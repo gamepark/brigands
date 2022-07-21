@@ -34,7 +34,6 @@ import {takeToken} from './moves/TakeToken'
 import {tellYouAreReady} from './moves/TellYouAreReady'
 import {throwDice} from './moves/ThrowDice'
 import NewDay from './phases/NewDay'
-import Patrolling from './phases/Patrolling'
 import Phase from './phases/Phase'
 import {PhaseRules} from './phases/PhaseRules'
 import Planning from './phases/Planning'
@@ -80,8 +79,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return new NewDay(this.state)
       case Phase.Planning:
         return new Planning(this.state)
-      case Phase.Patrolling:
-        return new Patrolling(this.state)
       case Phase.Solving:
         return new Solving(this.state)
     }
@@ -216,8 +213,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   giveTime(): number {
     switch (this.state.phase) {
       case Phase.Planning:
-        return 120
-      case Phase.Patrolling:
         return 120
       case Phase.Solving:
         return 30
