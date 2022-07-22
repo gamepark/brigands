@@ -45,7 +45,7 @@ function getAlternativeAvatar(role: PlayerRole): string {
     case PlayerRole.YellowThief :
       return Images.tokenKickYellow
     default :
-      return Images.mercenary
+      return Images.patrol
   }
 }
 

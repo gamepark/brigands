@@ -17,7 +17,10 @@ import {useTranslation} from 'react-i18next'
 import SetSelectedPatrol, {setSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
-import {headerHeight, playerPanelHeight, playerPanelMinLeft, playerPanelThiefTop, playerPanelWidth} from '../utils/styles'
+import {
+  getPrinceMeepleDistrictLeft, getPrinceMeepleDistrictTop, headerHeight, meepleSize, playerPanelHeight, playerPanelMinLeft, playerPanelThiefTop,
+  playerPanelWidth
+} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import PatrolToken from './PatrolToken'
 import {getPlayerColor} from './ThiefPanel'
@@ -42,16 +45,11 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
   const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))
   const judgePartnersAnimation = useAnimation<JudgePrisoners>(animation => isJudgePrisoners(animation.move))
 
-  function isPatrolDraggable(phase: Phase | undefined, role: PlayerRole, statePatrol: number, patrolIndex: number): boolean {
+  function isPatrolDraggable(phase: Phase | undefined, role: PlayerRole, district: number | null): boolean {
     if (player.isReady) {
       return false
     }
-    if (patrolIndex !== 2) {
-      return phase === Phase.Planning && role === playerId && statePatrol === -1
-    } else {
-      return player.gold > 4 && !player.abilities[2] && player.abilities[1] !== player.patrols[2] && phase === Phase.Planning && role === playerId && statePatrol !== -2
-    }
-
+    return phase === Phase.Planning && role === playerId && !district
   }
 
   return (
@@ -73,17 +71,16 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
           [...Array(coin)].map((_, i) => <Picture key={i + '_' + index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)}/>)
         )}
       </div>
-      {player.patrols.map((patrol, index) =>
+      {player.meeples.map((district, index) =>
         <PatrolToken key={index}
-                     css={[patrolTokenSize, isPatrolDraggable(phase, player.role, patrol, index) && glowingPrince,
+                     css={[patrolTokenSize, isPatrolDraggable(phase, player.role, district) && glowingPrince,
                        selectedPatrol?.index === index && patrolIsSelectedStyle,
-                       patrol === -1 ? patrolInHand(index, (playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0) : patrol === -2 ? patrolCanceled(playerId === PlayerRole.Prince ? 1 : 0) : patrolInDistrict(city.findIndex(d => d.name === patrol))
+                       district ? patrolInDistrict(index, city.findIndex(d => d.name === district)) : patrolInHand(index, (playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0)
                      ]}
-                     isMercenary={index === 2}
-                     draggable={isPatrolDraggable(phase, player.role, patrol, index)}
+                     draggable={isPatrolDraggable(phase, player.role, district)}
                      type={'PatrolInHand'}
                      draggableItem={{patrolNumber: index}}
-                     onClick={() => isPatrolDraggable(phase, player.role, patrol, index) && playSelectPatrol(setSelectedPatrolMove(patrol, index), {local: true})}
+                     onClick={() => isPatrolDraggable(phase, player.role, district) && playSelectPatrol(setSelectedPatrolMove(district ?? -1, index), {local: true})}
         />
       )}
       {player.role === playerId && phase === Phase.Planning && player.patrols.every(pat => pat !== -1) && !player.isReady
@@ -225,21 +222,15 @@ const playerInfosPosition = (isThief: boolean) => css`
   border-radius: 2em;
 `
 
-const patrolCanceled = (isPrince: number) => css`
-  top: ${24 + isPrince * 55}%;
-  left: 41.8%;
-  transition: top 1s ease-in-out, left 1s ease-in-out;
-`
-
 const patrolInHand = (index: number, isPrince: number) => css`
-  top: ${8 + isPrince * 58}%;
-  left: ${index !== 2 ? 36.6 + index * 24 : 48.5}%;
+  top: ${isPrince ? playerPanelThiefTop + 5 : headerHeight + 2 + playerPanelHeight + 5}em;
+  left: ${playerPanelMinLeft + playerPanelWidth + 2 + index * (meepleSize + 1)}em;
   transition: top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
-const patrolInDistrict = (district: number) => css`
-  top: 51.8%;
-  left: ${4 + (district * 11.6)}%;
+const patrolInDistrict = (meepleIndex: number, district: number) => css`
+  top: ${getPrinceMeepleDistrictTop(meepleIndex, district)}em;
+  left: ${getPrinceMeepleDistrictLeft(meepleIndex, district)}em;
   transition: top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
@@ -251,8 +242,8 @@ const patrolIsSelectedStyle = css`
 const patrolTokenSize = css`
   position: absolute;
   z-index: 1;
-  height: 7%;
-  width: 3%;
+  height: ${meepleSize}em;
+  width: ${meepleSize}em;
 
 `
 

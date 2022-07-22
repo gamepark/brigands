@@ -35,7 +35,6 @@ import iconMarket from '../images/IconMarket.png'
 import iconPalace from '../images/IconPalace.png'
 import iconTavern from '../images/IconTavern.png'
 import iconTreasure from '../images/IconTreasure.png'
-import mercenary from '../images/Mercenary.png'
 
 import partnerBlue from '../images/PartnerBlue.png'
 import partnerGreen from '../images/PartnerGreen.png'
@@ -90,7 +89,7 @@ const Images = {
   iconCityHall, iconHarbor, iconMarket, iconPalace, iconTavern, iconTreasure, iconConvoy,
   cityHall, convoy, harbour, jail, market, palace, tavern, treasure,
   princePanel,
-  patrol, mercenary, victoryToken,
+  patrol, victoryToken,
   coin1, coin2, coin5,
   dice2, dice3, dice4,
   partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,

@@ -10,6 +10,10 @@ type TellYouAreReady = {
 
 export default TellYouAreReady
 
+export function tellYouAreReadyMove(playerId: PlayerRole): TellYouAreReady {
+  return {type: MoveType.TellYouAreReady, playerId}
+}
+
 export function tellYouAreReady(state: GameState | GameView, move: TellYouAreReady) {
   state.players.find(p => p.role === move.playerId)!.isReady = true
 }

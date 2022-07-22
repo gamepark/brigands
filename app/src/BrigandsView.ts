@@ -12,7 +12,6 @@ import {movePartner} from '@gamepark/brigands/moves/MovePartner'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import MoveView from '@gamepark/brigands/moves/MoveView'
 import {placeMeeple} from '@gamepark/brigands/moves/PlaceMeeple'
-import {placePatrol} from '@gamepark/brigands/moves/PlacePatrol'
 import {placeToken} from '@gamepark/brigands/moves/PlaceToken'
 import {playHeadStart} from '@gamepark/brigands/moves/PlayHeadStart'
 import {resolveStealToken} from '@gamepark/brigands/moves/ResolveStealToken'
@@ -56,8 +55,6 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return tellYouAreReady(this.state, move)
       case MoveType.MoveOnNextPhase:
         return moveOnNextPhase(this.state)
-      case MoveType.PlacePatrol:
-        return placePatrol(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
       case MoveType.ThrowDice:

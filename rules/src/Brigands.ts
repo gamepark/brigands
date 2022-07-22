@@ -19,8 +19,7 @@ import {moveOnNextPhase} from './moves/MoveOnNextPhase'
 import {movePartner} from './moves/MovePartner'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
-import {placeMeeple} from './moves/PlaceMeeple'
-import {placePatrol} from './moves/PlacePatrol'
+import {placeMeeple, placeMeepleMove} from './moves/PlaceMeeple'
 import {placeToken} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
 import {resolveStealToken} from './moves/ResolveStealToken'
@@ -31,7 +30,7 @@ import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
 import {takeBackPartner} from './moves/TakeBackPartner'
 import {takeToken} from './moves/TakeToken'
-import {tellYouAreReady} from './moves/TellYouAreReady'
+import {tellYouAreReady, tellYouAreReadyMove} from './moves/TellYouAreReady'
 import {throwDice} from './moves/ThrowDice'
 import NewDay from './phases/NewDay'
 import Phase from './phases/Phase'
@@ -92,9 +91,27 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   getLegalMoves(role: PlayerRole): Move[] {
-    const player = this.state.players.find(p => p.role === role)
-    const phaseRules = this.getPhaseRules()
-    if (!player || !phaseRules) return []
+    const player = this.state.players.find(p => p.role === role)!
+    if (this.state.phase === Phase.Planning) {
+      if (player.isReady) return []
+      const moves: Move[] = []
+      if (player.meeples.includes(null)) {
+        for (let meeple = 0; meeple < player.meeples.length; meeple++) {
+          if (!player.meeples[meeple]) {
+            for (const district of districtNames) {
+              if (canPlaceMeeple(player, district)) {
+                moves.push(placeMeepleMove(role, district, meeple))
+              }
+            }
+          }
+        }
+      } else {
+        moves.push(tellYouAreReadyMove(role))
+      }
+      // TODO: place action token on district with a team and without a token
+      return moves
+    }
+    const phaseRules = this.getPhaseRules()!
     return isThief(player) ? phaseRules.getThiefLegalMoves(player) : phaseRules.getPrinceLegalMoves(player)
   }
 
@@ -118,8 +135,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return tellYouAreReady(this.state, move)
       case MoveType.MoveOnNextPhase:
         return moveOnNextPhase(this.state)
-      case MoveType.PlacePatrol:
-        return placePatrol(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistricts(this.state)
       case MoveType.ThrowDice:
@@ -315,4 +330,8 @@ export function isThisPartnerHasKickToken(thief: ThiefState | ThiefView, partner
 
 export function isThisPartnerHasMoveToken(thief: ThiefState | ThiefView, partnerNumber: number): boolean {
   return thief.tokens.move.some(t => t === partnerNumber)
+}
+
+export function canPlaceMeeple(player: PlayerState, district: DistrictName) {
+  return !isThief(player) || district !== DistrictName.Jail // TODO: remove cards taken by Prince spy
 }

@@ -36,8 +36,6 @@ const brigandsAnimations: Animations<GameView, MoveView, PlayerRole> = {
       return 0
     } else if (move.type === MoveType.DrawEvent) {
       return 6
-    } else if (move.type === MoveType.PlacePatrol) {
-      return move.patrolNumber === 2 ? 2 : 0
     } else if (move.type === MoveType.JudgePrisoners) {
       return 2
     } else if (move.type === MoveType.PlayHeadStart) {

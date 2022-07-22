@@ -43,7 +43,7 @@ const DistrictTile: FC<Props> = ({prince, selectedPatrol, selectedHeadStart, ...
     drop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
       if (isPatrolInHand(item)) {
         moveSound.play()
-        return {type: MoveType.PlacePatrol, patrolNumber: item.patrolNumber, district: DistrictName.Jail}
+        return placeMeepleMove(playerId!, DistrictName.Jail, item.patrolNumber)
       } else if (isPartnerInHand(item)) {
         moveSound.play()
         playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})

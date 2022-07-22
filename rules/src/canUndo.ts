@@ -19,7 +19,6 @@ export default function canUndo(action: Action<Move | MoveView, PlayerRole>, con
           && !consecutiveActions.some(consecutiveAction => consecutiveAction.consequences.some(consequence => consequence.type === MoveType.MoveOnNextPhase))
       }
     }
-    case MoveType.PlacePatrol:
     case MoveType.JudgePrisoners:
     case MoveType.PlayHeadStart:
       return !consecutiveActions.some(consecutiveAction => consecutiveAction.move.type === MoveType.TellYouAreReady)

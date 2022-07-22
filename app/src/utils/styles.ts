@@ -31,38 +31,38 @@ export const cityCenterLeft = 47.5
 
 export const meepleSize = 4.5
 
-export function getThiefMeepleDistrictTop(thiefIndex: number, pawnIndex: number, districtIndex: number) {
-  const radius = getThiefMeepleDistrictRadius(thiefIndex, pawnIndex)
-  const angle = getThiefMeepleDistrictAngle(thiefIndex, pawnIndex, districtIndex)
+export function getThiefMeepleDistrictTop(thiefIndex: number, meepleIndex: number, districtIndex: number) {
+  const radius = getThiefMeepleDistrictRadius(thiefIndex, meepleIndex)
+  const angle = getThiefMeepleDistrictAngle(thiefIndex, meepleIndex, districtIndex)
   return cityCenterTop - Math.sin(angle) * radius - meepleSize / 2
 }
 
-export function getThiefMeepleDistrictLeft(thiefIndex: number, pawnIndex: number, districtIndex: number) {
-  const radius = getThiefMeepleDistrictRadius(thiefIndex, pawnIndex)
-  const angle = getThiefMeepleDistrictAngle(thiefIndex, pawnIndex, districtIndex)
+export function getThiefMeepleDistrictLeft(thiefIndex: number, meepleIndex: number, districtIndex: number) {
+  const radius = getThiefMeepleDistrictRadius(thiefIndex, meepleIndex)
+  const angle = getThiefMeepleDistrictAngle(thiefIndex, meepleIndex, districtIndex)
   return cityCenterLeft - Math.cos(angle) * radius - meepleSize / 2
 }
 
-function getThiefMeepleDistrictRadius(thiefIndex: number, pawnIndex: number) {
-  return getThiefMeepleDistrictLine(thiefIndex, pawnIndex) * 3.7 + jailSize / 2 + 6.5
+function getThiefMeepleDistrictRadius(thiefIndex: number, meepleIndex: number) {
+  return getThiefMeepleDistrictLine(thiefIndex, meepleIndex) * 3.7 + jailSize / 2 + 6.5
 }
 
-function getThiefMeepleDistrictLine(thiefIndex: number, pawnIndex: number) {
+function getThiefMeepleDistrictLine(thiefIndex: number, meepleIndex: number) {
   switch (thiefIndex) {
     case 0:
     case 1:
-      return pawnIndex > 0 ? 0 : 1
+      return meepleIndex > 0 ? 0 : 1
     case 2:
     case 3:
-      return pawnIndex === 2 ? 2 : pawnIndex === 1 ? 3 : 4
+      return meepleIndex === 2 ? 2 : meepleIndex === 1 ? 3 : 4
     default:
       return 3
   }
 }
 
 const thiefMeepleDeltaAngle = [
-  [11, 6, 15],
-  [-11, -15, -6],
+  [10, 6, 15],
+  [-10, -15, -6],
   [18, 14, 17],
   [-18, -14, -17],
   [-6, 0, 6]
@@ -70,4 +70,16 @@ const thiefMeepleDeltaAngle = [
 
 function getThiefMeepleDistrictAngle(thiefIndex: number, pawnIndex: number, districtIndex: number) {
   return ((5 - districtIndex) * 45 + thiefMeepleDeltaAngle[thiefIndex][pawnIndex]) * Math.PI / 180
+}
+
+export function getPrinceMeepleDistrictTop(meepleIndex: number, districtIndex: number) {
+  const radius = 2 * 3.7 + jailSize / 2 + 6.5
+  const angle = ((5 - districtIndex) * 45 + (meepleIndex - 1) * 7) * Math.PI / 180
+  return cityCenterTop - Math.sin(angle) * radius - meepleSize / 2
+}
+
+export function getPrinceMeepleDistrictLeft(meepleIndex: number, districtIndex: number) {
+  const radius = 3.7 + jailSize / 2 + 6.5
+  const angle = ((5 - districtIndex) * 45 + (meepleIndex - 1) * 7) * Math.PI / 180
+  return cityCenterLeft - Math.cos(angle) * radius - meepleSize / 2
 }
