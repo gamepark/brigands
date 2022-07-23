@@ -9,6 +9,8 @@ type MoveOnNextPhase = {
 
 export default MoveOnNextPhase
 
+export const moveOnNextPhaseMove: MoveOnNextPhase = {type: MoveType.MoveOnNextPhase}
+
 export function moveOnNextPhase(state: GameState | GameView) {
   switch (state.phase) {
     case Phase.NewDay:

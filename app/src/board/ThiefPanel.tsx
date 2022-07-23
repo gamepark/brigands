@@ -10,6 +10,7 @@ import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
 import Move from '@gamepark/brigands/moves/Move'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import ResolveStealToken, {isResolveStealToken} from '@gamepark/brigands/moves/ResolveStealToken'
+import {takeTokenMove} from '@gamepark/brigands/moves/TakeToken'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import Partner, {getPartnersView, isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
@@ -122,20 +123,16 @@ const ThiefPanel: FC<Props> = ({
       canDrop: monitor.canDrop(),
       isOver: monitor.isOver()
     }),
-    drop: (item: ThiefTokenInBank) => {
+    drop: () => {
       playResetTokensInBank(resetSelectedTokensInBankMove(), {local: true})
-      return {type: MoveType.TakeToken, role: playerId, token: item.tokenAction}
+      return takeTokenMove(playerId!)
     }
   })
 
   function playTakeTokens(tokensInBankSelected: ThiefTokenInBank[]) {
-    tokensInBankSelected.forEach(tok => {
-      play({
-        type: MoveType.TakeToken,
-        role: player.role,
-        token: tok.tokenAction
-      })
-    })
+    for (const _ of tokensInBankSelected) {
+      play(takeTokenMove(player.role))
+    }
     playResetTokensInBank(resetSelectedTokensInBankMove(), {local: true})
   }
 

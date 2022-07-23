@@ -1,40 +1,20 @@
-import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
-import GameView, {getThieves} from '../GameView'
-import {isPartner} from '../types/Partner'
+import GameView from '../GameView'
 import PlayerRole from '../types/PlayerRole'
-import TokenAction from '../types/TokenAction'
 import MoveType from './MoveType'
 
 type TakeToken = {
   type: MoveType.TakeToken
   role: PlayerRole
-  token: TokenAction
 }
 
 export default TakeToken
 
-export function takeToken(state: GameState | GameView, move: TakeToken) {
-  const thief = getThieves(state).find(p => p.role === move.role)!
-  if (state.city[state.currentDistrict!].name === DistrictName.Jail) {
-    thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name && p.tokensTaken === 0)!.tokensTaken = 1
-  } else {
-    if (thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken === undefined) {
-      thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken = 1
-    } else {
-      thief.partners.find(p => isPartner(p) && p.district === state.city[state.currentDistrict!].name)!.tokensTaken!++
-    }
-  }
+export function takeTokenMove(role: PlayerRole): TakeToken {
+  return {type: MoveType.TakeToken, role}
+}
 
-  switch (move.token) {
-    case TokenAction.Stealing:
-      thief.tokens.steal.push(-1)
-      break
-    case TokenAction.Kicking:
-      thief.tokens.kick.push(-1)
-      break
-    case TokenAction.Fleeing:
-      thief.tokens.move.push(-1)
-      break
-  }
+export function takeToken(state: GameState | GameView, move: TakeToken) {
+  const player = state.players.find(player => player.role === move.role)!
+  player.actions.push(null)
 }

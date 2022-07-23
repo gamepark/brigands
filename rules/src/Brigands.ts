@@ -9,13 +9,13 @@ import GameView from './GameView'
 import {EventArray} from './material/Events'
 import {arrestPartners} from './moves/ArrestPartners'
 import {betGold} from './moves/BetGold'
-import {drawEvent, getDrawEventView} from './moves/DrawEvent'
+import {drawEvent, drawEventMove, getDrawEventView} from './moves/DrawEvent'
 import {gainGold} from './moves/GainGold'
 import {judgePrisoners} from './moves/JudgePrisoners'
 import {kickOrNot} from './moves/KickOrNot'
 import Move from './moves/Move'
 import {moveOnDistrictResolved} from './moves/MoveOnDistrictResolved'
-import {moveOnNextPhase} from './moves/MoveOnNextPhase'
+import {moveOnNextPhase, moveOnNextPhaseMove} from './moves/MoveOnNextPhase'
 import {movePartner} from './moves/MovePartner'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
@@ -29,7 +29,7 @@ import {getRevealPartnersDistrictView, revealPartnersDistricts} from './moves/Re
 import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
 import {takeBackPartner} from './moves/TakeBackPartner'
-import {takeToken} from './moves/TakeToken'
+import {takeToken, takeTokenMove} from './moves/TakeToken'
 import {tellYouAreReady, tellYouAreReadyMove} from './moves/TellYouAreReady'
 import {throwDice} from './moves/ThrowDice'
 import NewDay from './phases/NewDay'
@@ -119,6 +119,9 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   getAutomaticMoves(): Move[] {
+    if (this.state.phase === Phase.NewDay) {
+      return [...this.state.players.filter(p => p.actions.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
+    }
     const phaseRules = this.getPhaseRules()
     if (!phaseRules) return []
     if (princeWin(this.state) || lastTurnIsOver(this.state)) return [{type: MoveType.RevealGolds}]

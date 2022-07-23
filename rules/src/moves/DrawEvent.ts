@@ -2,7 +2,6 @@ import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getPrince} from '../GameView'
 import {EventArray} from '../material/Events'
-import Phase from '../phases/Phase'
 import Move from './Move'
 import MoveType from './MoveType'
 import MoveView from './MoveView'
@@ -10,6 +9,8 @@ import MoveView from './MoveView'
 type DrawEvent = { type: typeof MoveType.DrawEvent }
 
 export default DrawEvent
+
+export const drawEventMove: DrawEvent = {type: MoveType.DrawEvent}
 
 export type DrawEventView = DrawEvent & {
   event: number
@@ -32,7 +33,6 @@ function applyEvent(state: GameState | GameView) {
   prince.gold += event.goldForPrince
   state.city.find(d => d.name === DistrictName.Treasure)!.gold! += event.goldForTreasure
   prince.patrols[2] = state.city[event.positionOfCaptain].name
-  state.phase = Phase.Planning
 }
 
 export function isDrawEvent(move: Move | MoveView): move is DrawEvent {

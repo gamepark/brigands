@@ -6,7 +6,7 @@ import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Picture} from '@gamepark/react-components'
 import {PictureAttributes} from '@gamepark/react-components/dist/Picture/Picture'
 import Images from '../utils/Images'
-import {cityCenterLeft, cityCenterTop} from '../utils/styles'
+import {cityCenterLeft, cityCenterTop, playerPanelX, playerPanelY} from '../utils/styles'
 
 type Props = {
   player: PlayerRole
@@ -65,10 +65,10 @@ function actionTokenAngle(color: PlayerRole) {
   return 45 * (color - 1.5) * Math.PI / 180
 }
 
-const actionTokenPlayerPosition = (_color: PlayerRole, _index: number) => css`
+const actionTokenPlayerPosition = (color: PlayerRole, index: number) => css`
   position: absolute;
-  top: ${0}em;
-  left: ${0}em;
+  top: ${playerPanelY(color) + 14}em;
+  left: ${playerPanelX(color) + index * 3.9 + 1}em;
 `
 
 const actionTokenDistrictPosition = (_color: PlayerRole) => css`

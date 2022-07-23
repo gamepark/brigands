@@ -2,7 +2,7 @@ import {getTokensInBank} from '../Brigands'
 import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
-import TakeToken from '../moves/TakeToken'
+import TakeToken, {takeTokenMove} from '../moves/TakeToken'
 import {isPrinceState, ThiefState} from '../PlayerState'
 import {isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
@@ -23,7 +23,7 @@ export default class Jail extends DistrictRules {
     if (thief.partners.find(p => p.district === DistrictName.Jail && (p.tokensTaken === 0))) {
       const availableTokens: TokenAction[] = getTokensInBank(thief)
       for (let i = 0; i < availableTokens.length; i++) {
-        jailMoves.push({type: MoveType.TakeToken, role: thief.role, token: availableTokens[i]})
+        jailMoves.push(takeTokenMove(thief.role))
       }
     }
     if (this.state.tutorial && jailMoves.length === 0) {
