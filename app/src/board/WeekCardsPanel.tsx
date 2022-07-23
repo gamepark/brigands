@@ -7,23 +7,24 @@ import {DrawEventView, isDrawEvent} from '@gamepark/brigands/moves/DrawEvent'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
-import {FC, HTMLAttributes} from 'react'
+import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
 import Images from '../utils/Images'
+import {cityCenterLeft, weekCardHeight, weekCardWidth} from '../utils/styles'
 
 type Props = {
   event: number
   eventDeck: number
   city: District[]
-} & HTMLAttributes<HTMLDivElement>
+}
 
-const WeekCardsPanel: FC<Props> = ({event, eventDeck, city, ...props}) => {
+const WeekCardsPanel: FC<Props> = ({event, eventDeck, city}) => {
   const animationDrawEvent = useAnimation<DrawEventView>(animation => isDrawEvent(animation.move))
   const playerId = usePlayerId<PlayerRole>()
   const {t} = useTranslation()
   return (
-    <div {...props} css={weekCardsPanelStyle}>
-      <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district), playerId === PlayerRole.Prince || playerId === undefined),
+    <>
+      <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district)),
         revealedCardStyle(getWeekCardImage(event)),
         shadow,
         animationDrawEvent && fadeOut(animationDrawEvent.duration)]}/>
@@ -45,7 +46,7 @@ const WeekCardsPanel: FC<Props> = ({event, eventDeck, city, ...props}) => {
                                                                          css={[backCard, hiddenCardStyle, offsetDeck(i + 1), shadow]}/>)}
 
 
-    </div>
+    </>
 
   )
 
@@ -81,12 +82,11 @@ const shadow = css`
 `
 
 const offsetDeck = (index: number) => css`
-  width: 38%;
-  height: 100%;
+  width: ${weekCardWidth}em;
+  height: ${weekCardHeight}em;
   position: absolute;
-  top: 0;
-  left: ${60 - index * 5}%;
-  z-index: ${-1 - index};
+  top: ${70 - index * 0.2}em;
+  left: ${cityCenterLeft - weekCardWidth / 2 - index * 0.2}em;
 `
 
 const drawEventKeyFrames = (districtPosition: number, isPrinceView: boolean) => keyframes`
@@ -139,12 +139,12 @@ const backCard = css`
   backface-visibility: hidden;
 `
 
-const revealedCardPosition = (districtPosition: number, isPrinceView: boolean) => css`
+const revealedCardPosition = (_districtPosition: number) => css`
   position: absolute;
-  top: ${isPrinceView ? -147 : 137}%;
-  left: ${isPrinceView ? -31 + districtPosition * 52.5 : -47 + districtPosition * 58}%;
-  width: 38%;
-  height: 100%;
+  top: 45em;
+  left: 3em;
+  width: ${weekCardWidth}em;
+  height: ${weekCardHeight}em;
 
 `
 
@@ -159,10 +159,10 @@ const revealedCardStyle = (image: string) => css`
 
 const hiddenCardPosition = css`
   position: absolute;
-  top: 0;
-  left: 60%;
-  width: 38%;
-  height: 100%;
+  width: ${weekCardWidth}em;
+  height: ${weekCardHeight}em;
+  top: ${70}em;
+  left: ${cityCenterLeft - weekCardWidth / 2}em;
   transform-style: preserve-3d;
 `
 
@@ -173,10 +173,6 @@ const hiddenCardStyle = css`
   background-position: top;
 
   border-radius: 15% / 10%;
-`
-
-const weekCardsPanelStyle = css`
-  transform-style: preserve-3d;
 `
 
 function getWeekCardImage(image: number): string {

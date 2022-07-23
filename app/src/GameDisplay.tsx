@@ -67,30 +67,6 @@ export default function GameDisplay({game, audioLoader}: Props) {
   return (
     <>
       <Letterbox css={letterBoxStyle} top={0}>
-        <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
-                     player={players.find(isPrinceState)!}
-                     city={game.city}
-                     phase={game.phase}
-                     partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
-                     selectedPatrol={game.selectedPatrol}
-                     selectedHeadStart={game.selectedHeadStart}
-        />
-
-
-        <WeekCardsPanel css={[weekCardsPanelPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomWeekCard : displayTopWeekCard]}
-                        event={game.event}
-                        eventDeck={game.eventDeck}
-                        city={game.city}/>
-
-        <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank]}
-                           players={players.filter(isThief)}
-                           prince={players.find(isPrinceState)!}
-                           phase={game.phase}
-                           resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
-                           event={game.event}
-                           selectedTokensInBank={game.selectedTokensInBank}
-        />
-
 
         <City city={game.city}
               phase={game.phase}
@@ -103,6 +79,29 @@ export default function GameDisplay({game, audioLoader}: Props) {
               selectedPatrol={game.selectedPatrol}
               selectedHeadStart={game.selectedHeadStart}
               open={(district) => setDistrictPopUpClosed(district)}
+        />
+
+        <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
+                     player={players.find(isPrinceState)!}
+                     city={game.city}
+                     phase={game.phase}
+                     partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
+                     selectedPatrol={game.selectedPatrol}
+                     selectedHeadStart={game.selectedHeadStart}
+        />
+
+
+        <WeekCardsPanel event={game.event}
+                        eventDeck={game.eventDeck}
+                        city={game.city}/>
+
+        <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank]}
+                           players={players.filter(isThief)}
+                           prince={players.find(isPrinceState)!}
+                           phase={game.phase}
+                           resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
+                           event={game.event}
+                           selectedTokensInBank={game.selectedTokensInBank}
         />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
@@ -175,17 +174,6 @@ const displayTopBank = css`
   top: 7%;
 `
 
-const displayBottomWeekCard = css`
-  top: 75%;
-  left: 12%;
-`
-
-const displayTopWeekCard = css`
-  top: 16%;
-  left: 14%;
-  transform: scale(0.9, 0.9);
-`
-
 const displayBottomPrince = css`
   position: absolute;
   left: 94em;
@@ -196,12 +184,6 @@ const displayTopPrince = css`
   position: absolute;
   left: 94em;
   top: 4em;
-`
-
-const weekCardsPanelPosition = css`
-  position: absolute;
-  width: 22%;
-  height: 22%;
 `
 
 export const getPlayersStartingWith = (game: GameView, playerId?: PlayerRole) => {

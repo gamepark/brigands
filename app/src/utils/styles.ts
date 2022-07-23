@@ -83,3 +83,7 @@ export function getPrinceMeepleDistrictLeft(meepleIndex: number, districtIndex: 
   const angle = ((5 - districtIndex) * 45 + (meepleIndex - 1) * 7) * Math.PI / 180
   return cityCenterLeft - Math.cos(angle) * radius - meepleSize / 2
 }
+
+export const weekCardHeight = 20
+export const weekCardRatio = 180 / 270
+export const weekCardWidth = weekCardHeight * weekCardRatio
