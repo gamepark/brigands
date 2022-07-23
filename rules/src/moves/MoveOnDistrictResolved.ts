@@ -22,7 +22,9 @@ export function moveOnDistrictResolved(state: GameState | GameView, move: MoveOn
     delete state.currentDistrict
     takeBackPatrols(prince)
     cleanPartners(thieves)
-    cleanTokens(thieves)
+    for (const thief of thieves) {
+      thief.tokens = thief.tokens.filter(token => token !== district.name)
+    }
     cleanAbilities(prince)
     state.players.forEach(p => p.isReady = false)
     state.phase = Phase.NewDay
@@ -53,24 +55,4 @@ function cleanPartners(thieves: (ThiefState | ThiefView)[]) {
     delete part.solvingDone
     delete part.tokensTaken
   }))
-}
-
-export function cleanTokens(thieves: (ThiefState | ThiefView)[]) {
-  for (const thief of thieves) {
-    for (let i = 0; i < thief.tokens.steal.length; i++) {
-      if (thief.tokens.steal[i] >= 0) {
-        thief.tokens.steal.splice(i, 1)
-      }
-    }
-    for (let i = 0; i < thief.tokens.kick.length; i++) {
-      if (thief.tokens.kick[i] >= 0) {
-        thief.tokens.kick.splice(i, 1)
-      }
-    }
-    for (let i = 0; i < thief.tokens.move.length; i++) {
-      if (thief.tokens.move[i] >= 0) {
-        thief.tokens.move.splice(i, 1)
-      }
-    }
-  }
 }

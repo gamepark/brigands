@@ -1,10 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import {getTokensInBank, isThisPartnerHasKickToken, isThisPartnerHasMoveToken} from '@gamepark/brigands/Brigands'
 import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
-import {EventArray} from '@gamepark/brigands/material/Events'
 import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
 import Move from '@gamepark/brigands/moves/Move'
@@ -12,13 +10,12 @@ import MoveType from '@gamepark/brigands/moves/MoveType'
 import ResolveStealToken, {isResolveStealToken} from '@gamepark/brigands/moves/ResolveStealToken'
 import {takeTokenMove} from '@gamepark/brigands/moves/TakeToken'
 import Phase from '@gamepark/brigands/phases/Phase'
-import {isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
+import {isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import Partner, {getPartnersView, isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import ThiefTokenInBank from '@gamepark/brigands/types/ThiefTokenInBank'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
-import TokenAction from '@gamepark/brigands/types/TokenAction'
 import {PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
 import {FC, HTMLAttributes} from 'react'
@@ -26,7 +23,7 @@ import {useDrop} from 'react-dnd'
 import {useTranslation} from 'react-i18next'
 import {resolveStealDurationUnit} from '../BrigandsAnimations'
 import SetSelectedPartner, {ResetSelectedPartner, resetSelectedPartnerMove, setSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
-import SetSelectedTokenInHand, {ResetSelectedTokenInHand, resetSelectedTokenInHandMove, setSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
+import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
@@ -37,7 +34,6 @@ import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
 import {decomposeGold, getCoin} from './PrincePanel'
-import ThiefToken from './ThiefToken'
 
 type Props = {
   player: ThiefState | ThiefView
@@ -65,7 +61,6 @@ const ThiefPanel: FC<Props> = ({
                                }) => {
 
   const playerId = usePlayerId<PlayerRole>()
-  const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
   const playerInfo = usePlayer(player.role)
   const {t} = useTranslation()
 
@@ -80,36 +75,9 @@ const ThiefPanel: FC<Props> = ({
     return phase === Phase.Planning && role === playerId && !player.isReady
   }
 
-  function isTokenDraggable(phase: Phase | undefined, role: PlayerRole, token: number): boolean {
-    return phase === Phase.Planning && role === playerId && !player.isReady && token === -1
-  }
-
-  function isEnoughTokensSelected(player: ThiefState | ThiefView, districtResolved: DistrictName | undefined, tokensInBankSelected: ThiefTokenInBank[] | undefined, eventCard: number): boolean {
-    if (districtResolved === undefined || (districtResolved !== DistrictName.Jail && districtResolved !== DistrictName.Harbor)) return false
-    else {
-      if (districtResolved === DistrictName.Harbor) {
-        if (tutorial === true && deckSize === 5) {
-          return tokensInBankSelected?.length === 1
-        }
-        const firstPartner = player.partners.find(part => isPartner(part) && part.district === DistrictName.Harbor)
-        const maxToTake = EventArray[eventCard].district === DistrictName.Harbor ? 3 : 2
-        if (firstPartner === undefined) return false
-        else {
-          const tokensAlreadyTaken = firstPartner.tokensTaken === undefined ? 0 : firstPartner.tokensTaken
-          return tokensInBankSelected !== undefined && tokensInBankSelected.length === Math.min(maxToTake - tokensAlreadyTaken, getTokensInBank(player).length)
-        }
-      } else {
-        const partnersJailed = player.partners.filter(part => isPartner(part) && part.district === DistrictName.Jail)
-        if (partnersJailed.length === 0 || partnersJailed.every(part => part.tokensTaken === 1)) return false
-        else return tokensInBankSelected !== undefined && tokensInBankSelected.length === Math.min(partnersJailed.length - partnersJailed.filter(part => part.tokensTaken === 1).length, getTokensInBank(player).length)
-      }
-    }
-  }
-
   const play = usePlay<Move>()
   const playSelectPartner = usePlay<SetSelectedPartner>()
   const playResetTokensInBank = usePlay<ResetSelectedTokensInBank>()
-  const playSetTokenInHand = usePlay<SetSelectedTokenInHand>()
 
   const playResetSelectedTokenInHand = usePlay<ResetSelectedTokenInHand>()
   const playResetSelectedPartner = usePlay<ResetSelectedPartner>()
@@ -128,13 +96,6 @@ const ThiefPanel: FC<Props> = ({
       return takeTokenMove(playerId!)
     }
   })
-
-  function playTakeTokens(tokensInBankSelected: ThiefTokenInBank[]) {
-    for (const _ of tokensInBankSelected) {
-      play(takeTokenMove(player.role))
-    }
-    playResetTokensInBank(resetSelectedTokensInBankMove(), {local: true})
-  }
 
   function playTellYouAreReady() {
     playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
@@ -159,62 +120,9 @@ const ThiefPanel: FC<Props> = ({
 
         </div>
 
-        <div css={tokenDivPosition}>
-          {player.tokens.kick.map((token, index) =>
-              token === -1 && <div key={index}
-                                   css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Kicking && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle]}>
-                <ThiefToken action={TokenAction.Kicking}
-                            css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}
-                            role={player.role}
-                            draggable={isTokenDraggable(phase, player.role, token)}
-                            type={'ThiefTokenInHand'}
-                            draggableItem={{tokenAction: TokenAction.Kicking}}
-                            onClick={() => phase === Phase.Planning && player.role === playerId && !player.isReady && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Kicking, index), {local: true})}
-
-                />
-              </div>
-          )}
-          {player.tokens.move.map((token, index) =>
-              token === -1 && <div key={index}
-                                   css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Fleeing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle]}>
-                <ThiefToken action={TokenAction.Fleeing}
-                            css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}
-                            role={player.role}
-                            draggable={isTokenDraggable(phase, player.role, token)}
-                            type={'ThiefTokenInHand'}
-                            draggableItem={{tokenAction: TokenAction.Fleeing}}
-                            onClick={() => phase === Phase.Planning && player.role === playerId && !player.isReady && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Fleeing, index), {local: true})}
-
-                />
-              </div>
-          )}
-          {player.tokens.steal.map((token, index) =>
-              token === -1 && <div key={index}
-                                   css={[tokenSize, tokenInHandSelected?.tokenAction === TokenAction.Stealing && tokenInHandSelected.index === index && player.role === playerId && tokenIsSelectedStyle]}>
-                <ThiefToken action={TokenAction.Stealing}
-                            css={[preserve, isTokenDraggable(phase, player.role, token) && glowingToken(getGlowingPlayerColor(player.role))]}
-                            role={player.role}
-                            draggable={isTokenDraggable(phase, player.role, token)}
-                            type={'ThiefTokenInHand'}
-                            draggableItem={{tokenAction: TokenAction.Stealing}}
-                            onClick={() => phase === Phase.Planning && player.role === playerId && !player.isReady && token === -1 && playSetTokenInHand(setSelectedTokenInHandMove(TokenAction.Stealing, index), {local: true})}
-
-                />
-              </div>
-          )}
-        </div>
-
         {isThiefState(player) && phase === undefined &&
-        <div><p css={scoreDivStyle}> {t('Score')} : {player.gold + player.tokens.steal.length + player.tokens.kick.length + player.tokens.move.length}</p>
+        <div><p css={scoreDivStyle}> {t('Score')} : {player.gold}</p>
         </div>}
-
-        {phase === Phase.Solving && thiefId !== false && isThiefState(thiefId) && thiefId.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(thiefId, index) && part.kickOrNot === undefined)
-        && (player.partners as Partner[]).some(part => part.district === districtResolved!.name && player.role !== playerId)
-        && prince.abilities[1] !== districtResolved!.name
-        && <Button css={[kickThisPlayerButtonPosition, glowingButton(getPlayerColor(player.role))]}
-                   onClick={() => play({type: MoveType.KickOrNot, kickerRole: thiefId.role, playerToKick: player.role})}
-                   pRole={player.role}>{t('Kick')}</Button>
-        }
 
         {phase === Phase.Planning && <div css={cardsPanelPosition}>
 
@@ -264,7 +172,6 @@ const ThiefPanel: FC<Props> = ({
                           role={player.role}
                           partners={player.partners}
                           partnerNumber={index}
-                          tokens={player.tokens}
                           phase={phase}
 
                           draggable={!district && isPartnerDraggable(phase, player.role)}
@@ -281,35 +188,9 @@ const ThiefPanel: FC<Props> = ({
                  pRole={player.role}>{t('Validate')}</Button>
       }
 
-      {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
-      && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
-      && prince.abilities[1] !== districtResolved!.name
-      && <Button css={[moveButtonPosition, glowingButton(getPlayerColor(player.role))]}
-                 onClick={() => play({type: MoveType.MovePartner, role: player.role, runner: player.role})} pRole={player.role}>{t('Move')}</Button>
-      }
-
-      {player.role === playerId && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasMoveToken(player, index))
-      && thieves.every(p => isThief(p) && p.partners.every((part, index) => !isPartnerView(part) && (part.district !== districtResolved!.name || !isThisPartnerHasKickToken(p, index))))
-      && prince.abilities[1] !== districtResolved!.name
-      && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]}
-                 onClick={() => play({type: MoveType.MovePartner, role: false, runner: player.role})} pRole={player.role}>{t('Don\'t Move')}</Button>
-      }
-
-
-      {player.role === playerId && thiefId !== false && phase === Phase.Solving && isThiefState(player) && player.partners.some((part, index) => part.district === districtResolved!.name && isThisPartnerHasKickToken(player, index) && part.kickOrNot === undefined)
-      && prince.abilities[1] !== districtResolved!.name
-      && <Button css={[dontMoveButtonPosition, glowingButton(getPlayerColor(player.role))]}
-                 onClick={() => play({type: MoveType.KickOrNot, kickerRole: thiefId.role, playerToKick: false})} pRole={player.role}>{t('Don\'t Kick')}</Button>
-      }
-
       {animationBetGold && (animationBetGold.move.role === player.role &&
         <div css={[betStyle(animationBetGold.move.gold), betSize, betPositionPlayer(positionForPartners, numberOfThieves),
           betGoldAnimation(animationBetGold.duration, city.findIndex(d => d.name === districtResolved!.name), (playerId === PlayerRole.Prince || playerId === undefined))]}/>)
-      }
-
-      {player.role === playerId && phase === Phase.Solving && isEnoughTokensSelected(player, districtResolved?.name, tokensInBankSelected, eventCard) &&
-      <Button css={[validationButtonPosition, glowingButton(getPlayerColor(player.role))]} onClick={() => playTakeTokens(tokensInBankSelected!)}
-              pRole={player.role}>{t('Take')}</Button>
       }
     </>
   )
@@ -360,19 +241,6 @@ function getStealTranslationLength(numberOfThieves: number): number {
       return 0
   }
 }
-
-const glowingTokenColoredKeyframes = (color: string) => keyframes`
-  0% {
-    box-shadow: 0 0 2em ${color};
-  }
-  80%, 100% {
-    box-shadow: 0 0 0.5em ${color};
-  }
-`
-
-const glowingToken = (color: string) => css`
-  animation: ${glowingTokenColoredKeyframes(color)} 1s infinite alternate;
-`
 
 const translateXKeyFrames = (deltaPositions: number, numberOfThieves: number) => keyframes`
   from {
@@ -564,12 +432,6 @@ const transitionPartner = css`
   transition: top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
-const kickThisPlayerButtonPosition = css`
-  font-size: 2.5em;
-  text-align: center;
-  margin: 0 4.08em;
-`
-
 const canDropStyle = css`
   background-color: rgba(0, 0, 0, 0.5);
   transition: background-color 0.5s linear;
@@ -578,24 +440,6 @@ const canDropStyle = css`
 const isOverStyle = css`
   background-color: rgba(0, 0, 0, 0.8);
   transition: background-color 0.5s linear;
-`
-
-const moveButtonPosition = css`
-  position: absolute;
-  width: 15%;
-  height: 25%;
-  top: -137%;
-  right: 20%;
-  font-size: 3em;
-`
-
-const dontMoveButtonPosition = css`
-  position: absolute;
-  width: 15%;
-  height: 25%;
-  top: -137%;
-  right: 4%;
-  font-size: 3em;
 `
 
 const validationButtonPosition = css`
@@ -687,28 +531,6 @@ const timerStyle = css`
   font-size: 2.5em;
   padding-top: 0.2em;
 `
-
-const tokenDivPosition = css`
-  margin: 1em 0.5em 0.5em 0.7em;
-  height: 20%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  transform-style: preserve-3d;
-`
-
-const tokenIsSelectedStyle = css`
-  transform: translateZ(4em);
-  transition: transform 0.2s linear;
-`
-
-const tokenSize = css`
-  transition: transform 0.2s linear;
-  height: 88%;
-  width: 15%;
-  transform-style: preserve-3d;
-`
-
 
 const panelPlayerStyle = (color: string) => css`
   border: 0.5em solid ${color};

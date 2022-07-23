@@ -5,7 +5,6 @@ import {betGold} from '@gamepark/brigands/moves/BetGold'
 import {drawEventInView} from '@gamepark/brigands/moves/DrawEvent'
 import {gainGold} from '@gamepark/brigands/moves/GainGold'
 import {judgePrisoners} from '@gamepark/brigands/moves/JudgePrisoners'
-import {kickOrNotInView} from '@gamepark/brigands/moves/KickOrNot'
 import {moveOnDistrictResolved} from '@gamepark/brigands/moves/MoveOnDistrictResolved'
 import {moveOnNextPhase} from '@gamepark/brigands/moves/MoveOnNextPhase'
 import {movePartner} from '@gamepark/brigands/moves/MovePartner'
@@ -16,7 +15,6 @@ import {placeToken} from '@gamepark/brigands/moves/PlaceToken'
 import {playHeadStart} from '@gamepark/brigands/moves/PlayHeadStart'
 import {resolveStealToken} from '@gamepark/brigands/moves/ResolveStealToken'
 import {revealGoldsInView} from '@gamepark/brigands/moves/RevealGolds'
-import {revealKickOrNotView} from '@gamepark/brigands/moves/RevealKickOrNot'
 import {revealPartnersDistrictsInView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import {solvePartner} from '@gamepark/brigands/moves/SolvePartner'
 import {spareGoldOnTreasure} from '@gamepark/brigands/moves/SpareGoldOnTreasure'
@@ -77,10 +75,6 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return arrestPartners(this.state)
       case MoveType.ResolveStealToken:
         return resolveStealToken(this.state, move)
-      case MoveType.KickOrNot:
-        return kickOrNotInView(this.state, move)
-      case MoveType.RevealKickOrNot:
-        return revealKickOrNotView(this.state, move)
       case MoveType.MovePartner:
         return movePartner(this.state, move)
       case MoveType.JudgePrisoners:

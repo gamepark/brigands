@@ -1,11 +1,10 @@
-import {getTokensInBank} from '../Brigands'
+import {MAX_ACTIONS} from '../Brigands'
 import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken, {takeTokenMove} from '../moves/TakeToken'
 import {ThiefState} from '../PlayerState'
 import PlayerRole from '../types/PlayerRole'
-import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
@@ -18,8 +17,7 @@ export default class Harbor extends DistrictRules {
 
     const harborMoves: TakeToken[] = []
     if (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))) {
-      const availableTokens: TokenAction[] = getTokensInBank(thief)
-      for (let i = 0; i < availableTokens.length; i++) {
+      if (thief.tokens.length < MAX_ACTIONS) {
         harborMoves.push(takeTokenMove(thief.role))
       }
     }
@@ -48,7 +46,7 @@ export default class Harbor extends DistrictRules {
     const thiefWithPartnerDone = this.getThieves().find(thief => {
       const partners = thief.partners.filter(part => part.district === DistrictName.Harbor)
       if (partners.length === 0) return false
-      return partners.some(partner => partner.tokensTaken === tokensToTake) || getTokensInBank(thief).length === 0
+      return partners.some(partner => partner.tokensTaken === tokensToTake) || thief.tokens.length === MAX_ACTIONS
     })
     if (thiefWithPartnerDone) {
       return {type: MoveType.TakeBackPartner, thief: thiefWithPartnerDone.role, district: DistrictName.Harbor}

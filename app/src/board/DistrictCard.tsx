@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import {isThisPartnerHasAnyToken} from '@gamepark/brigands/Brigands'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import Move from '@gamepark/brigands/moves/Move'
-import MoveType from '@gamepark/brigands/moves/MoveType'
+import {placeTokenMove} from '@gamepark/brigands/moves/PlaceToken'
 import {isRevealPartnersDistrict, RevealPartnersDistrictsView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {ThiefState} from '@gamepark/brigands/PlayerState'
@@ -36,7 +35,7 @@ const DistrictCard: FC<Props> = ({district, thief, color, partners, selectedToke
 
   const playerId = usePlayerId<PlayerRole>()
   const play = usePlay<Move>()
-  const indexOfFirstPartnerOnDistrict: number | undefined = partners !== undefined ? partners.findIndex((part, index) => part.district === district && !isThisPartnerHasAnyToken(thief, index)) : undefined
+  const indexOfFirstPartnerOnDistrict: number | undefined = partners !== undefined ? partners.findIndex(part => part.district === district) : undefined
 
   const moveSound = useSound(MoveTokenSound)
 
@@ -56,7 +55,7 @@ const DistrictCard: FC<Props> = ({district, thief, color, partners, selectedToke
       moveSound.play()
       playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
       playResetSelectedPartner(resetSelectedPartnerMove(), {local: true})
-      return {type: MoveType.PlaceToken, role: playerId, tokenAction: item.tokenAction, partnerNumber: indexOfFirstPartnerOnDistrict}
+      return placeTokenMove(playerId!, item.tokenAction, district!)
     }
   })
 
@@ -65,12 +64,7 @@ const DistrictCard: FC<Props> = ({district, thief, color, partners, selectedToke
 
   function playPlaceToken(partnerNumber: number, role: PlayerRole, tokenAction: TokenAction) {
     moveSound.play()
-    play({
-      type: MoveType.PlaceToken,
-      partnerNumber,
-      role,
-      tokenAction
-    })
+    play(placeTokenMove(role, tokenAction, partnerNumber))
     playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
     playResetSelectedPartner(resetSelectedPartnerMove(), {local: true})
   }

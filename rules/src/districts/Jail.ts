@@ -1,4 +1,4 @@
-import {getTokensInBank} from '../Brigands'
+import {MAX_ACTIONS} from '../Brigands'
 import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
@@ -6,7 +6,6 @@ import TakeToken, {takeTokenMove} from '../moves/TakeToken'
 import {isPrinceState, ThiefState} from '../PlayerState'
 import {isPartner} from '../types/Partner'
 import PlayerRole from '../types/PlayerRole'
-import TokenAction from '../types/TokenAction'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
@@ -14,15 +13,14 @@ export default class Jail extends DistrictRules {
 
 
   isThiefActive(thief: ThiefState): boolean {
-    return (getTokensInBank(thief).length !== 0 && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined)
+    return (thief.tokens.length < MAX_ACTIONS && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined)
       || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
   }
 
   getThiefLegalMoves(thief: ThiefState): Move[] {
     const jailMoves: TakeToken[] = []
     if (thief.partners.find(p => p.district === DistrictName.Jail && (p.tokensTaken === 0))) {
-      const availableTokens: TokenAction[] = getTokensInBank(thief)
-      for (let i = 0; i < availableTokens.length; i++) {
+      if (thief.tokens.length < MAX_ACTIONS) {
         jailMoves.push(takeTokenMove(thief.role))
       }
     }
@@ -42,7 +40,7 @@ export default class Jail extends DistrictRules {
       return {type: MoveType.JudgePrisoners}
     }
 
-    if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || getTokensInBank(p).length === 0)))) {
+    if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || p.tokens.length === MAX_ACTIONS)))) {
       if (this.state.tutorial && this.state.eventDeck.length >= 4) {
 
         // TO DO : Delete when we can control AutoMoves in Tutorial

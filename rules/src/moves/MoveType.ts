@@ -6,8 +6,6 @@ enum MoveType {
   RevealPartnersDistricts,
   PlaceToken,
   ResolveStealToken,
-  KickOrNot,
-  RevealKickOrNot,
   MovePartner,
   MoveOnDistrictResolved,
   ThrowDice,

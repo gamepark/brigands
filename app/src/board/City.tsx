@@ -54,12 +54,12 @@ const City: FC<Props> = ({
       moveSound.play()
       play(placeMeepleMove(playerId, district, selectedPartner))
       playResetSelectPartner(resetSelectedPartnerMove(), {local: true})
-      selectedTokenInHand !== undefined && play({
+      /*selectedTokenInHand !== undefined && play({
         type: MoveType.PlaceToken,
         partnerNumber: selectedPartner,
         role: playerId,
         tokenAction: selectedTokenInHand.tokenAction
-      })
+      })*/
       playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
     }
   }

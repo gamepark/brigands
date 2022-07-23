@@ -12,7 +12,6 @@ import {betGold} from './moves/BetGold'
 import {drawEvent, drawEventMove, getDrawEventView} from './moves/DrawEvent'
 import {gainGold} from './moves/GainGold'
 import {judgePrisoners} from './moves/JudgePrisoners'
-import {kickOrNot} from './moves/KickOrNot'
 import Move from './moves/Move'
 import {moveOnDistrictResolved} from './moves/MoveOnDistrictResolved'
 import {moveOnNextPhase, moveOnNextPhaseMove} from './moves/MoveOnNextPhase'
@@ -24,7 +23,6 @@ import {placeToken} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
 import {resolveStealToken} from './moves/ResolveStealToken'
 import {getRevealGoldsView, revealGolds} from './moves/RevealGolds'
-import {getRevealKickOrNotView, revealKickOrNot} from './moves/RevealKickOrNot'
 import {getRevealPartnersDistrictView, revealPartnersDistricts} from './moves/RevealPartnersDistricts'
 import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
@@ -37,11 +35,9 @@ import Phase from './phases/Phase'
 import {PhaseRules} from './phases/PhaseRules'
 import Planning from './phases/Planning'
 import Solving from './phases/Solving'
-import PlayerState, {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from './PlayerState'
+import PlayerState, {isPrinceState, isThief, isThiefState, PrinceState} from './PlayerState'
 import {getPartnersView} from './types/Partner'
 import PlayerRole from './types/PlayerRole'
-import {ThiefView} from './types/Thief'
-import TokenAction from './types/TokenAction'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>,
@@ -120,7 +116,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   getAutomaticMoves(): Move[] {
     if (this.state.phase === Phase.NewDay) {
-      return [...this.state.players.filter(p => p.actions.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
+      return [...this.state.players.filter(p => p.tokens.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
     }
     const phaseRules = this.getPhaseRules()
     if (!phaseRules) return []
@@ -163,10 +159,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return arrestPartners(this.state)
       case MoveType.ResolveStealToken:
         return resolveStealToken(this.state, move)
-      case MoveType.KickOrNot :
-        return kickOrNot(this.state, move)
-      case MoveType.RevealKickOrNot :
-        return revealKickOrNot(this.state)
       case MoveType.MovePartner :
         return movePartner(this.state, move)
       case MoveType.JudgePrisoners :
@@ -201,23 +193,13 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.getView(playerId)
   }
 
-  getMoveView(move: Move, playerId?: PlayerRole): MoveView {
+  getMoveView(move: Move, _playerId?: PlayerRole): MoveView {
     switch (move.type) {
       case MoveType.DrawEvent:
         return getDrawEventView(this.state)
 
       case MoveType.RevealPartnersDistricts:
         return getRevealPartnersDistrictView(this.getThieves())
-
-      case MoveType.KickOrNot:
-        if (playerId === move.kickerRole) {
-          return move
-        } else {
-          return {type: MoveType.KickOrNot, kickerRole: move.kickerRole}
-        }
-
-      case MoveType.RevealKickOrNot:
-        return getRevealKickOrNotView(this.getThieves())
 
       case MoveType.RevealGolds:
         return getRevealGoldsView(this.getThieves())
@@ -273,7 +255,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         ? {
           role: options.id,
           meeples: [null, null, null],
-          actions: [],
+          tokens: [],
           gold: 0,
           isReady: false,
           victoryPoints: 0,
@@ -283,11 +265,10 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         : {
           role: options.id,
           meeples: [null, null, null],
-          actions: [],
+          tokens: [],
           gold: 0,
           isReady: false,
-          partners: [{}, {}, {}],
-          tokens: {steal: [], kick: [], move: []}
+          partners: [{}, {}, {}]
         }
 
     ))
@@ -306,38 +287,6 @@ function setupCity(): District[] {
 function setupEventDeck(): number[] {
   const result = shuffle(Array.from(EventArray.keys()))
   return result.slice(0, 6)
-}
-
-export function getTokensInBank(thief: ThiefState | ThiefView): TokenAction[] {
-  const result: TokenAction[] = []
-  for (let i = 0; i < 2 - thief.tokens.steal.length; i++) {
-    result.push(TokenAction.Stealing)
-  }
-  for (let i = 0; i < 2 - thief.tokens.kick.length; i++) {
-    result.push(TokenAction.Kicking)
-  }
-  for (let i = 0; i < 2 - thief.tokens.move.length; i++) {
-    result.push(TokenAction.Fleeing)
-  }
-
-  return result
-
-}
-
-export function isThisPartnerHasAnyToken(thief: ThiefState | ThiefView, partnerNumber: number): boolean {
-  return thief.tokens.steal.some(t => t === partnerNumber) || thief.tokens.kick.some(t => t === partnerNumber) || thief.tokens.move.some(t => t === partnerNumber)
-}
-
-export function isThisPartnerHasStealToken(thief: ThiefState | ThiefView, partnerNumber: number): boolean {
-  return thief.tokens.steal.some(t => t === partnerNumber)
-}
-
-export function isThisPartnerHasKickToken(thief: ThiefState | ThiefView, partnerNumber: number): boolean {
-  return thief.tokens.kick.some(t => t === partnerNumber)
-}
-
-export function isThisPartnerHasMoveToken(thief: ThiefState | ThiefView, partnerNumber: number): boolean {
-  return thief.tokens.move.some(t => t === partnerNumber)
 }
 
 export function canPlaceMeeple(player: PlayerState, district: DistrictName) {

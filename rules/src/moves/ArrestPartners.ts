@@ -1,4 +1,3 @@
-import {isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasStealToken} from '../Brigands'
 import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getPrince, getThieves} from '../GameView'
@@ -18,18 +17,11 @@ export function arrestPartners(state: GameState | GameView) {
   const thieves = getThieves(state)
   const district = state.city[state.currentDistrict!]
 
-  thieves.forEach(thief => getPartners(thief).filter(isPartner).forEach((partner, index) => {
+  thieves.forEach(thief => getPartners(thief).filter(isPartner).forEach(partner => {
     if (partner.district === district.name) {
       partner.district = DistrictName.Jail
       delete partner.kickOrNot
       prince.victoryPoints++
-      if (isThisPartnerHasStealToken(thief, index)) {
-        thief.tokens.steal.splice(thief.tokens.steal.findIndex(ts => ts === index), 1)
-      } else if (isThisPartnerHasKickToken(thief, index)) {
-        thief.tokens.kick.splice(thief.tokens.kick.findIndex(tk => tk === index), 1)
-      } else if (isThisPartnerHasMoveToken(thief, index)) {
-        thief.tokens.move.splice(thief.tokens.move.findIndex(tm => tm === index), 1)
-      }
     }
   }))
 

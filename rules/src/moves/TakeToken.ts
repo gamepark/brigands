@@ -16,5 +16,5 @@ export function takeTokenMove(role: PlayerRole): TakeToken {
 
 export function takeToken(state: GameState | GameView, move: TakeToken) {
   const player = state.players.find(player => player.role === move.role)!
-  player.actions.push(null)
+  player.tokens.push(null)
 }

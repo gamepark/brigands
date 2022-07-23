@@ -1,8 +1,6 @@
-import DistrictName from '../districts/DistrictName'
 import GameState from '../GameState'
 import GameView, {getThieves} from '../GameView'
-import {isThief, isThiefState, ThiefState} from '../PlayerState'
-import {isPartnerView} from '../types/Partner'
+import {isThief, isThiefState} from '../PlayerState'
 import PlayerRole from '../types/PlayerRole'
 import Move from './Move'
 import MoveType from './MoveType'
@@ -43,14 +41,14 @@ export function resolveStealToken(state: GameState | GameView, {steals}: Resolve
 
   for (const player of state.players) {
     if (isThief(player)) {
-      player.tokens.steal = player.tokens.steal.filter(ts => {
+      /*player.tokens.steal = player.tokens.steal.filter(ts => {
         if (ts === -1) {
           return true
         } else {
           const partner = player.partners[ts]
           return isPartnerView(partner) || partner.district !== state.city[state.currentDistrict!].name
         }
-      })
+      })*/
     }
   }
 
@@ -58,12 +56,12 @@ export function resolveStealToken(state: GameState | GameView, {steals}: Resolve
 
 export function createSteals(state: GameState): Steal[] {
 
-  const districtResolved: DistrictName = state.city[state.currentDistrict!].name
+  //const districtResolved: DistrictName = state.city[state.currentDistrict!].name
   const thieves = state.players.filter(isThiefState)
   const resultArray: Steal[] = []
 
-  thieves.forEach(thief => {
-    if (thief.partners.some((part, index) => part.district === districtResolved && thief.tokens.steal.some(ts => ts === index))) {
+  thieves.forEach(_thief => {
+    /*if (thief.partners.some((part, index) => part.district === districtResolved && thief.tokens.steal.some(ts => ts === index))) {
       // thief has a Steal Token to use
       if (thieves.filter(p => p.partners.some(part => part.district === districtResolved)).length !== 1) {
         // thief isn't alone on the district
@@ -87,7 +85,7 @@ export function createSteals(state: GameState): Steal[] {
           }))
         }
       }
-    }
+    }*/
   })
 
   return resultArray

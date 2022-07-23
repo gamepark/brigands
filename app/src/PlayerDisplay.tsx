@@ -13,8 +13,8 @@ export function PlayerDisplay({player, me}: Props) {
   return <>
     {[...Array(MAX_ACTIONS)].map((_, index) =>
       me ?
-        <DraggableActionToken key={index} player={player.role} css={actionTokenPosition(player.actions[index], player.role, index)}/> :
-        <ActionToken key={index} player={player.role} css={actionTokenPosition(player.actions[index], player.role, index)}/>
+        <DraggableActionToken key={index} player={player.role} css={actionTokenPosition(player.tokens[index], player.role, index)}/> :
+        <ActionToken key={index} player={player.role} css={actionTokenPosition(player.tokens[index], player.role, index)}/>
     )}
   </>
 }

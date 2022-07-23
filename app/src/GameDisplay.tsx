@@ -1,6 +1,5 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import {isThisPartnerHasAnyToken} from '@gamepark/brigands/Brigands'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getThieves} from '@gamepark/brigands/GameView'
 import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
@@ -54,7 +53,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
         && districtResolved === DistrictName.Tavern
         && role !== undefined && role !== PlayerRole.Prince
         && (playerList.find(p => p.role === role) as ThiefState).partners.some(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined)
-        && playerList.filter(p => p.partners.some((part, index) => !isPartnerView(part) && part.district === DistrictName.Tavern && isThisPartnerHasAnyToken(p, index))).length === 0
+        && playerList.filter(p => p.partners.some(part => !isPartnerView(part) && part.district === DistrictName.Tavern)).length === 0
         && !prince.patrols.some(pat => pat === DistrictName.Tavern))
       && !betAnimation && !gainGoldAnimation && !diceAnimation
   }

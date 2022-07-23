@@ -1,5 +1,4 @@
 /** @jsxImportSource @emotion/react */
-import {isThisPartnerHasAnyToken, isThisPartnerHasKickToken, isThisPartnerHasMoveToken, isThisPartnerHasStealToken} from '@gamepark/brigands/Brigands'
 import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getPrince, getThieves} from '@gamepark/brigands/GameView'
@@ -33,7 +32,7 @@ function getMaxScoreThief(thieves: (ThiefState | ThiefView)[]): number {
   let max: number = 0
   thieves.forEach(p => {
     if (isThiefState(p)) {
-      const numberOfToken: number = p.tokens.steal.length + p.tokens.kick.length + p.tokens.move.length
+      const numberOfToken: number = p.tokens.length
       if (p.gold + numberOfToken > max) {
         max = p.gold + numberOfToken
       }
@@ -81,7 +80,7 @@ function HeaderGameOverText({game}: { game: GameView }) {
       return <> {t('game.over.player.win.prince', {player: getPseudo(prince.role, players, t), score: getPrince(game).victoryPoints})} </>
     }
   } else {
-    const winnerThieves = thieves.filter(p => isThiefState(p) && p.gold + p.tokens.steal.length + p.tokens.kick.length + p.tokens.move.length === maxScoreThief)
+    const winnerThieves = thieves.filter(p => isThiefState(p) && p.gold + p.tokens.length === maxScoreThief)
     if (winnerThieves.length === 1) {
       if (playerId === winnerThieves[0].role) {
         return <> {t('game.over.you.win.thief', {score: maxScoreThief})} </>
@@ -152,14 +151,14 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
         return <> {t('solving.end.of.district')} </>
       } else if (getPrince(game).patrols.some(pat => pat === district.name && getPrince(game).abilities[1] === district.name)) {
         return <> {t('solving.fast.arrest')} </>
-      } else if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasAnyToken(p, index))).length > 0) {
+      } else if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length > 0) {
 
-        if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasStealToken(p, index))).length > 0) {
+        if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length > 0) {
           return <> {t('solving.steal.token')} </>
-        } else if (getThieves(game).filter(p => p.partners.some((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(p, index))).length > 0) {
-          if (thief !== undefined && thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index))) {
-            if (thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined)) {
-              return <> {t('solving.kick.token.choose', {howManyTimesLeft: thief.partners.filter((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasKickToken(thief, index) && part.kickOrNot === undefined).length})} </>
+        } else if (getThieves(game).filter(p => p.partners.some(part => isPartner(part) && part.district === district.name)).length > 0) {
+          if (thief !== undefined && thief.partners.find(part => isPartner(part) && part.district === district.name)) {
+            if (thief.partners.find(part => isPartner(part) && part.district === district.name && part.kickOrNot === undefined)) {
+              return <> {t('solving.kick.token.choose', {howManyTimesLeft: thief.partners.filter(part => isPartner(part) && part.district === district.name && part.kickOrNot === undefined).length})} </>
             } else {
               return <> {t('solving.kick.token.wait')} </>
             }
@@ -167,7 +166,7 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
             return <> {t('solving.kick.token.wait')} </>
           }
         } else {
-          if (thief !== undefined && thief.partners.find((part, index) => isPartner(part) && part.district === district.name && isThisPartnerHasMoveToken(thief, index))) {
+          if (thief !== undefined && thief.partners.find(part => isPartner(part) && part.district === district.name)) {
             <> {t('solving.move.token.choose')} </>
           }
           return <> {t('solving.move.token.wait')} </>

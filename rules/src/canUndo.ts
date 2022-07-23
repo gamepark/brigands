@@ -25,9 +25,6 @@ export default function canUndo(action: Action<Move | MoveView, PlayerRole>, con
     case MoveType.TakeToken:
       return !action.consequences.some(consequence => consequence.type === MoveType.MoveOnDistrictResolved)
         && !consecutiveActions.some(consecutiveAction => consecutiveAction.consequences.some(consequence => consequence.type === MoveType.MoveOnDistrictResolved))
-    case MoveType.KickOrNot:
-      return !action.consequences.some(consequence => consequence.type === MoveType.RevealKickOrNot)
-        && !consecutiveActions.some(consecutiveAction => consecutiveAction.consequences.some(consequence => consequence.type === MoveType.RevealKickOrNot))
     default:
       return false
   }
