@@ -84,14 +84,17 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   isTurnToPlay(playerId: PlayerRole): boolean {
-    const player = this.state.players.find(p => p.role === playerId)
+    const player = this.state.players.find(player => player.role === playerId)!
+    if (this.state.phase === Phase.Planning) {
+      return !player.isReady
+    }
     const phaseRules = this.getPhaseRules()
     if (!player || !phaseRules) return false
     return isThief(player) ? phaseRules.isThiefActive(player) : phaseRules.isPrinceActive(player)
   }
 
   getLegalMoves(role: PlayerRole): Move[] {
-    const player = this.state.players.find(p => p.role === role)!
+    const player = this.state.players.find(player => player.role === role)!
     if (this.state.phase === Phase.Planning) {
       if (player.isReady) return []
       const moves: Move[] = []
@@ -335,7 +338,7 @@ export function isThisPartnerHasMoveToken(thief: ThiefState | ThiefView, partner
 }
 
 export function canPlaceMeeple(player: PlayerState, district: DistrictName) {
-  return !isThief(player) || district !== DistrictName.Jail // TODO: remove cards taken by Prince spy
+  return player.role === PlayerRole.Prince || district !== DistrictName.Jail // TODO: remove cards taken by Prince spy
 }
 
 export const MAX_ACTIONS = 6
