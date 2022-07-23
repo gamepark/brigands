@@ -29,7 +29,9 @@ import SetSelectedTokenInHand, {ResetSelectedTokenInHand, resetSelectedTokenInHa
 import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
-import {getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth} from '../utils/styles'
+import {
+  getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, thiefPanelLeftPosition, thiefPanelTopPosition
+} from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
@@ -260,7 +262,7 @@ const ThiefPanel: FC<Props> = ({
                             !district && isPartnerDraggable(phase, player.role) && glowingBrigand(getGlowingPlayerColor(player.role)),
                             district ?
                               onCity(positionForPartners, index, city.findIndex(d => d.name === district), isEmphazing(player.role, index, thieves, phase, districtResolved)) :
-                              partnerHandPosition(positionForPartners, index, numberOfThieves)
+                              partnerHandPosition(positionForPartners, index, playerId !== undefined && playerId !== PlayerRole.Prince)
                           ]}
                           role={player.role}
                           partners={player.partners}
@@ -615,12 +617,9 @@ const onCity = (positionForPartners: number, index: number, district: number, is
   ${transitionPartner};
 `
 
-const partnerHandPosition = (positionForPartners: number, index: number, nbThieves: number) => css`
-  top: ${18}%;
-  ${nbThieves === 5 && `left:${6 + positionForPartners * 20 + index * 2.5}%;`}
-  ${nbThieves === 4 && `left:${8.5 + positionForPartners * 25 + index * 2.5}%;`}
-  ${nbThieves === 3 && `left:${12.5 + positionForPartners * 33.5 + index * 2.5}%;`}
-  ${nbThieves === 2 && `left:${21 + positionForPartners * 50 + index * 2.5}%;`}
+const partnerHandPosition = (thiefIndex: number, meepleIndex: number, isThief: boolean) => css`
+  top: ${thiefPanelTopPosition(thiefIndex, isThief) + 9}em;
+  left: ${thiefPanelLeftPosition(thiefIndex) + 1 + meepleIndex * 4.5}em;
 
   ${transitionPartner};
 `

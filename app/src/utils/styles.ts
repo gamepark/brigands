@@ -69,7 +69,7 @@ const thiefMeepleDeltaAngle = [
 ]
 
 function getThiefMeepleDistrictAngle(thiefIndex: number, pawnIndex: number, districtIndex: number) {
-  return ((5 - districtIndex) * 45 + thiefMeepleDeltaAngle[thiefIndex][pawnIndex]) * Math.PI / 180
+  return ((districtIndex - 1) * 45 + thiefMeepleDeltaAngle[thiefIndex][pawnIndex]) * Math.PI / 180
 }
 
 export function getPrinceMeepleDistrictTop(meepleIndex: number, districtIndex: number) {

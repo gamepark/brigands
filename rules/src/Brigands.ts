@@ -266,7 +266,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
       options.id === PlayerRole.Prince
         ? {
           role: options.id,
-          meeples: [2,2,2],
+          meeples: [null, null, null],
           actions: [],
           gold: 0,
           isReady: false,
@@ -276,9 +276,9 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         }
         : {
           role: options.id,
-          meeples: [2,2,2],
+          meeples: [null, null, null],
           actions: [],
-          gold: 3,
+          gold: 0,
           isReady: false,
           partners: [{}, {}, {}],
           tokens: {steal: [], kick: [], move: []}

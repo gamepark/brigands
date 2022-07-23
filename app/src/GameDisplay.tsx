@@ -81,7 +81,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
               open={(district) => setDistrictPopUpClosed(district)}
         />
 
-        {game.players.map(player => <PlayerDisplay player={player} me={player.role === playerId}/>)}
+        {game.players.map(player => <PlayerDisplay key={player.role} player={player} me={player.role === playerId}/>)}
 
         <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
                      player={players.find(isPrinceState)!}
