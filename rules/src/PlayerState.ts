@@ -11,6 +11,7 @@ export default PlayerState
 type PlayerCommon = {
   role: PlayerRole
   meeples: (DistrictName | null)[]
+  actions: (DistrictName | null)[]
   gold: number
   isReady: boolean
 }

@@ -60,15 +60,15 @@ function getTokenBackground(action: TokenAction, role: PlayerRole): string {
     case TokenAction.Kicking : {
       switch (role) {
         case PlayerRole.BlueThief :
-          return Images.tokenKickBlue
+          return Images.actionTokenBlue
         case PlayerRole.GreenThief :
-          return Images.tokenKickGreen
+          return Images.actionTokenGreen
         case PlayerRole.PurpleThief :
-          return Images.tokenKickPurple
+          return Images.actionTokenPurple
         case PlayerRole.RedThief :
-          return Images.tokenKickRed
+          return Images.actionTokenRed
         case PlayerRole.YellowThief :
-          return Images.tokenKickYellow
+          return Images.actionTokenYellow
         case PlayerRole.Prince :
           return 'error:princeState detected'
       }

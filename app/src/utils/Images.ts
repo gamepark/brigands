@@ -13,7 +13,7 @@ import coin1 from '../images/Coin1.png'
 import coin2 from '../images/Coin2.png'
 import coin5 from '../images/Coin5.png'
 
-import headStartToken from '../images/coupdavance.png'
+import actionTokenWhite from '../images/coupdavance.png'
 
 import dice2 from '../images/Dice_2.jpg'
 import dice3 from '../images/Dice_3.jpg'
@@ -49,12 +49,11 @@ import sealGreen from '../images/SealGreen.png'
 import sealPurple from '../images/SealPurple.png'
 import sealRed from '../images/SealRed.png'
 import sealYellow from '../images/SealYellow.png'
-
-import tokenKickBlue from '../images/TokenKickBlue.png'
-import tokenKickGreen from '../images/TokenKickGreen.png'
-import tokenKickPurple from '../images/TokenKickPurple.png'
-import tokenKickRed from '../images/TokenKickRed.png'
-import tokenKickYellow from '../images/TokenKickYellow.png'
+import actionTokenBlue from '../images/TokenKickBlue.png'
+import actionTokenGreen from '../images/TokenKickGreen.png'
+import actionTokenPurple from '../images/TokenKickPurple.png'
+import actionTokenRed from '../images/TokenKickRed.png'
+import actionTokenYellow from '../images/TokenKickYellow.png'
 
 import tokenMoveBlue from '../images/TokenMoveBlue.png'
 import tokenMoveGreen from '../images/TokenMoveGreen.png'
@@ -93,13 +92,12 @@ const Images = {
   coin1, coin2, coin5,
   dice2, dice3, dice4,
   partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
-  tokenKickBlue, tokenKickGreen, tokenKickPurple, tokenKickRed, tokenKickYellow,
+  actionTokenWhite, actionTokenBlue, actionTokenGreen, actionTokenPurple, actionTokenRed, actionTokenYellow,
   tokenMoveBlue, tokenMoveGreen, tokenMovePurple, tokenMoveRed, tokenMoveYellow,
   tokenStealBlue, tokenStealGreen, tokenStealPurple, tokenStealRed, tokenStealYellow,
   weekCardBack,
   weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1,
   weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
-  headStartToken,
   background
 }
 

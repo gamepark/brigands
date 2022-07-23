@@ -267,6 +267,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         ? {
           role: options.id,
           meeples: [2,2,2],
+          actions: [],
           gold: 0,
           isReady: false,
           victoryPoints: 0,
@@ -276,6 +277,7 @@ export function setupPlayers(players: BrigandsPlayerOptions[]): PlayerState[] {
         : {
           role: options.id,
           meeples: [2,2,2],
+          actions: [],
           gold: 3,
           isReady: false,
           partners: [{}, {}, {}],
@@ -335,3 +337,5 @@ export function isThisPartnerHasMoveToken(thief: ThiefState | ThiefView, partner
 export function canPlaceMeeple(player: PlayerState, district: DistrictName) {
   return !isThief(player) || district !== DistrictName.Jail // TODO: remove cards taken by Prince spy
 }
+
+export const MAX_ACTIONS = 6

@@ -20,7 +20,7 @@ const HeadStart: FC<Props> = ({draggable = false, type = '', draggableItem, ...p
 }
 
 const headStartTokenStyle = css`
-  background-image: url(${Images.headStartToken});
+  background-image: url(${Images.actionTokenWhite});
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;

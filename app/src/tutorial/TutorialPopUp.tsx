@@ -728,7 +728,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
         top: 11,
         left: 57
       },
-      image: Images.tokenKickYellow
+      image: Images.actionTokenYellow
     }
   ], [
     {
@@ -981,7 +981,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image: Images.tokenKickYellow
+      image: Images.actionTokenYellow
     },
     {
       title: (t: TFunction) => t('title.place.kick.token'),

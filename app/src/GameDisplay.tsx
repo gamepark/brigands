@@ -18,12 +18,12 @@ import {useMemo, useState} from 'react'
 import City from './board/City'
 import DicePopUp from './board/DicePopUp'
 import DistrictHelpPopUp from './board/DistrictHelpPopUp'
-import ThiefPanel from './board/ThiefPanel'
 import PrincePanel from './board/PrincePanel'
 import TavernPopUp from './board/TavernPopUp'
-import ThiefTokensInBank from './board/ThiefTokensInBank'
+import ThiefPanel from './board/ThiefPanel'
 import WeekCardsPanel from './board/WeekCardsPanel'
 import WelcomePopUp from './board/WelcomePopUp'
+import {PlayerDisplay} from './PlayerDisplay'
 import BrigandsSounds from './sounds/BrigandsSounds'
 import TutorialPopup from './tutorial/TutorialPopUp'
 import {AudioLoader} from './utils/AudioLoader'
@@ -81,6 +81,8 @@ export default function GameDisplay({game, audioLoader}: Props) {
               open={(district) => setDistrictPopUpClosed(district)}
         />
 
+        {game.players.map(player => <PlayerDisplay player={player} me={player.role === playerId}/>)}
+
         <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
                      player={players.find(isPrinceState)!}
                      city={game.city}
@@ -94,15 +96,6 @@ export default function GameDisplay({game, audioLoader}: Props) {
         <WeekCardsPanel event={game.event}
                         eventDeck={game.eventDeck}
                         city={game.city}/>
-
-        <ThiefTokensInBank css={[thiefTokensInBankPosition, playerId === undefined || playerId === PlayerRole.Prince ? displayBottomBank : displayTopBank]}
-                           players={players.filter(isThief)}
-                           prince={players.find(isPrinceState)!}
-                           phase={game.phase}
-                           resolvedDistrict={game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined}
-                           event={game.event}
-                           selectedTokensInBank={game.selectedTokensInBank}
-        />
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
         <TavernPopUp player={players.find(isThiefState)!}
@@ -152,26 +145,10 @@ export default function GameDisplay({game, audioLoader}: Props) {
   )
 }
 
-const thiefTokensInBankPosition = css`
-  position: absolute;
-  width: 25%;
-  height: 23%;
-`
-
 const thiefPanelPosition = (index: number, isThief: boolean) => css`
   position: absolute;
   top: ${thiefPanelTopPosition(index, isThief)}em;
   left: ${thiefPanelLeftPosition(index)}em;
-`
-
-const displayBottomBank = css`
-  left: 66%;
-  top: 66%;
-`
-
-const displayTopBank = css`
-  left: 65%;
-  top: 7%;
 `
 
 const displayBottomPrince = css`
