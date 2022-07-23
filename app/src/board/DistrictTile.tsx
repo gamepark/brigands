@@ -19,7 +19,6 @@ import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetS
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
 import Images from '../utils/Images'
-import {decomposeGold, getCoin} from './PrincePanel'
 
 type Props = {
   district: District
@@ -91,14 +90,6 @@ const DistrictTile: FC<Props> = ({
         [...Array(nbPartners)].map((_, i) => <Picture key={i} alt={t('temporary partner')} src={Images.partnerGreen}
                                                       css={[temporaryPartnerPosition(i), isPlayerReady === true && blurEffect]}/>)
         }
-
-        {district.gold !== undefined &&
-        <div css={goldOnTreasureDisplay}>
-          {decomposeGold(district.gold).map((coin, index) =>
-            [...Array(coin)].map((_, index2) => <Picture key={index2 + '_' + index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, index2)}/>)
-          )}
-        </div>
-        }
       </div>
     </div>
   )
@@ -142,25 +133,6 @@ const isOverStyle = css`
   background-color: rgba(255, 255, 255, 0.5);
 `
 
-const goldOnTreasureDisplay = css`
-  position: relative;
-  width: 90%;
-  height: 50%;
-  top: 5%;
-  left: 5%;
-`
-
-const coinPosition = (firstI: number, secondI: number) => css`
-  position: absolute;
-  top: ${25 + 25 * firstI}%;
-  left: ${10 + 10 * secondI}%;
-  width: ${30 - firstI * 2.75}%;
-  height: ${55 - firstI * 5}%;
-
-  border-radius: 100%;
-  box-shadow: 0 0 1em 0.2em black;
-`
-
 const districtWidth = 31
 const districtImageRatio = 1653 / 1638
 
@@ -173,7 +145,7 @@ const districtStyle = (image: string) => css`
   background-position: top;
   clip-path: polygon(30.6% 0, 69.4% 0, 100% 73.2%, 82.9% 78.7%, 82.9% 100%, 17.6% 100%, 17.7% 78.9%, 0% 73.3%);
   cursor: pointer;
-  
+
   &:hover {
     filter: brightness(110%);
   }

@@ -1,29 +1,14 @@
+import PlayerRole from '@gamepark/brigands/types/PlayerRole'
+
 export const headerHeight = 7
 export const playerPanelWidth = 26.5
-export const playerPanelHeight = 25
-export const playerPanelMinLeft = 95
+export const playerPanelHeight = 26
+export const playerPanelXMin = 95
 export const playerPanelThiefTop = 48
 export const playerPanelPrinceTop = 50
 
-export function thiefPanelTopPosition(index: number, isThief: boolean) {
-  if (isThief) {
-    return index < 2 ? playerPanelThiefTop : playerPanelThiefTop + playerPanelHeight + 1
-  } else {
-    return index < 2 ? headerHeight + 1 : headerHeight + 2 + playerPanelHeight
-  }
-}
-
-export function thiefPanelLeftPosition(index: number) {
-  switch (index) {
-    case 0:
-    case 2:
-      return playerPanelMinLeft + playerPanelWidth * 2 + 2
-    case 3:
-      return playerPanelMinLeft + playerPanelWidth + 1
-    default:
-      return playerPanelMinLeft
-  }
-}
+export const playerPanelX = (color: PlayerRole) => color % 3 * (playerPanelWidth + 1) + playerPanelXMin
+export const playerPanelY = (color: PlayerRole) => color < 4 ? headerHeight + 2 + playerPanelHeight : headerHeight + 1
 
 export const jailSize = 31.5
 export const cityCenterTop = 53.5
@@ -84,6 +69,6 @@ export function getPrinceMeepleDistrictLeft(meepleIndex: number, districtIndex: 
   return cityCenterLeft - Math.cos(angle) * radius - meepleSize / 2
 }
 
-export const weekCardHeight = 20
+export const weekCardHeight = 18.6
 export const weekCardRatio = 180 / 270
 export const weekCardWidth = weekCardHeight * weekCardRatio

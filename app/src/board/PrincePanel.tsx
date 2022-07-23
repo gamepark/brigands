@@ -12,14 +12,13 @@ import PatrolInHand from '@gamepark/brigands/types/PatrolInHand'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {PlayerTimer, useAnimation, usePlay, usePlayer, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
-import {FC, HTMLAttributes} from 'react'
+import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
 import SetSelectedPatrol, {setSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import Button from '../utils/Button'
 import Images from '../utils/Images'
 import {
-  getPrinceMeepleDistrictLeft, getPrinceMeepleDistrictTop, headerHeight, meepleSize, playerPanelHeight, playerPanelMinLeft, playerPanelThiefTop,
-  playerPanelWidth
+  getPrinceMeepleDistrictLeft, getPrinceMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, playerPanelX, playerPanelY
 } from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import PatrolToken from './PatrolToken'
@@ -31,10 +30,9 @@ type Props = {
   phase: Phase | undefined
   partnersArrestedCount?: number
   selectedPatrol?: PatrolInHand
-  selectedHeadStart?: boolean
-} & HTMLAttributes<HTMLDivElement>
+}
 
-const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, selectedPatrol, selectedHeadStart, ...props}) => {
+const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, selectedPatrol}) => {
 
   const playerId = usePlayerId<PlayerRole>()
   const playerInfo = usePlayer(player.role)
@@ -54,12 +52,12 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
 
   return (
     <>
-      <div css={playerInfosPosition(playerId !== undefined && playerId !== PlayerRole.Prince)}>
+      <div css={playerInfosPosition}>
         <AvatarPanel playerInfo={playerInfo} role={player.role}/>
         <h1 css={[nameStyle]}>{playerInfo?.name === undefined ? getPlayerName(player.role, t) : playerInfo?.name}</h1>
         <PlayerTimer playerId={player.role} css={[timerStyle]}/>
       </div>
-      <div css={princePanelStyle} {...props}>
+      <div css={princePanelStyle}>
         <div css={[victoryPointStyle, victoryPointPosition(player.victoryPoints)]}/>
         {arrestPartnersAnimation && <p css={arrestPartnersHintPosition(arrestPartnersAnimation.duration)}> + {partnersArrestedCount} </p>}
         {judgePartnersAnimation && partnersArrestedCount &&
@@ -67,15 +65,12 @@ const PrincePanel: FC<Props> = ({player, city, phase, partnersArrestedCount, sel
         {[...Array(Math.floor(player.victoryPoints / 10))].map((_, i) =>
           <Picture key={i} alt={t('victory Token')} src={Images.victoryToken} css={[victoryTokenPosition(i), shadow]}/>
         )}
-        {decomposeGold(player.gold).map((coin, index) =>
-          [...Array(coin)].map((_, i) => <Picture key={i + '_' + index} alt={t('Coin')} src={getCoin(index)} css={coinPosition(index, i)}/>)
-        )}
       </div>
       {player.meeples.map((district, index) =>
         <PatrolToken key={index}
                      css={[patrolTokenSize, isPatrolDraggable(phase, player.role, district) && glowingPrince,
                        selectedPatrol?.index === index && patrolIsSelectedStyle,
-                       district ? patrolInDistrict(index, city.findIndex(d => d.name === district)) : patrolInHand(index, (playerId === PlayerRole.Prince || playerId === undefined) ? 1 : 0)
+                       district ? patrolInDistrict(index, city.findIndex(d => d.name === district)) : patrolInHand(index)
                      ]}
                      draggable={isPatrolDraggable(phase, player.role, district)}
                      type={'PatrolInHand'}
@@ -158,17 +153,6 @@ const validationButtonPosition = css`
   font-size: 3.5em;
 `
 
-const coinPosition = (firstI: number, secondI: number) => css`
-  position: absolute;
-  top: ${50 + 16 * firstI}%;
-  left: ${10 + 4 * secondI}%;
-  width: ${11 - firstI * 2.75}%;
-  height: ${20 - firstI * 5}%;
-
-  border-radius: 100%;
-  box-shadow: 0 0 1em 0.2em black;
-`
-
 const victoryTokenPosition = (points: number) => css`
   position: absolute;
   bottom: ${20 + 7.5 * (Math.floor(points / 2) + points % 2)}%;
@@ -212,19 +196,19 @@ const timerStyle = css`
   padding-top: 0.2em;
 `
 
-const playerInfosPosition = (isThief: boolean) => css`
+const playerInfosPosition = css`
   position: absolute;
   width: ${playerPanelWidth}em;
   height: ${playerPanelHeight}em;
-  top: ${isThief ? playerPanelThiefTop : headerHeight + 2 + playerPanelHeight}em;
-  left: ${playerPanelMinLeft + playerPanelWidth + 1}em;
+  left: ${playerPanelX(PlayerRole.Prince)}em;
+  top: ${playerPanelY(PlayerRole.Prince)}em;
   border: 0.5em solid white;
   border-radius: 2em;
 `
 
-const patrolInHand = (index: number, isPrince: number) => css`
-  top: ${isPrince ? playerPanelThiefTop + 5 : headerHeight + 2 + playerPanelHeight + 5}em;
-  left: ${playerPanelMinLeft + playerPanelWidth + 2 + index * (meepleSize + 1)}em;
+const patrolInHand = (index: number) => css`
+  left: ${playerPanelX(PlayerRole.Prince) + 1 + index * 4.5}em;
+  top: ${playerPanelY(PlayerRole.Prince) + 9}em;
   transition: top 1s ease-in-out, left 1s ease-in-out, transform 0.2s linear;
 `
 
@@ -247,10 +231,13 @@ const patrolTokenSize = css`
 
 `
 
-const princePanelWidth = 82
+const princePanelWidth = 84
 const princePanelRatio = 579 / 1160
 
 const princePanelStyle = css`
+  position: absolute;
+  left: 94em;
+  bottom: 0;
   width: ${princePanelWidth}em;
   height: ${princePanelWidth * princePanelRatio}em;
   background-image: url(${Images.princePanel});

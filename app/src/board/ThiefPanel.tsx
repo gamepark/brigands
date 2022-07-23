@@ -30,7 +30,7 @@ import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../local
 import Button from '../utils/Button'
 import Images from '../utils/Images'
 import {
-  getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, thiefPanelLeftPosition, thiefPanelTopPosition
+  getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, playerPanelX, playerPanelY
 } from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
 import DistrictCard from './DistrictCard'
@@ -59,9 +59,9 @@ type Props = {
 } & HTMLAttributes<HTMLDivElement>
 
 const ThiefPanel: FC<Props> = ({
-                                  player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards,
-                                  displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, deckSize, tokenInHandSelected, tutorial, ...props
-                                }) => {
+                                 player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards,
+                                 displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, deckSize, tokenInHandSelected, tutorial, ...props
+                               }) => {
 
   const playerId = usePlayerId<PlayerRole>()
   const thiefId = (playerId === PlayerRole.Prince || playerId === undefined) ? false : (thieves.find(p => p.role === playerId)! as (ThiefState | ThiefView))
@@ -262,7 +262,7 @@ const ThiefPanel: FC<Props> = ({
                             !district && isPartnerDraggable(phase, player.role) && glowingBrigand(getGlowingPlayerColor(player.role)),
                             district ?
                               onCity(positionForPartners, index, city.findIndex(d => d.name === district), isEmphazing(player.role, index, thieves, phase, districtResolved)) :
-                              partnerHandPosition(positionForPartners, index, playerId !== undefined && playerId !== PlayerRole.Prince)
+                              partnerHandPosition(player.role, index)
                           ]}
                           role={player.role}
                           partners={player.partners}
@@ -617,9 +617,9 @@ const onCity = (positionForPartners: number, index: number, district: number, is
   ${transitionPartner};
 `
 
-const partnerHandPosition = (thiefIndex: number, meepleIndex: number, isThief: boolean) => css`
-  top: ${thiefPanelTopPosition(thiefIndex, isThief) + 9}em;
-  left: ${thiefPanelLeftPosition(thiefIndex) + 1 + meepleIndex * 4.5}em;
+const partnerHandPosition = (color: PlayerRole, meepleIndex: number) => css`
+  left: ${playerPanelX(color) + 1 + meepleIndex * 4.5}em;
+  top: ${playerPanelY(color) + 9}em;
 
   ${transitionPartner};
 `

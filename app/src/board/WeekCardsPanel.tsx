@@ -141,8 +141,8 @@ const backCard = css`
 
 const revealedCardPosition = (_districtPosition: number) => css`
   position: absolute;
-  top: 45em;
-  left: 3em;
+  top: 44.4em;
+  left: 2.8em;
   width: ${weekCardWidth}em;
   height: ${weekCardHeight}em;
 

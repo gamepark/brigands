@@ -27,7 +27,7 @@ import {PlayerDisplay} from './PlayerDisplay'
 import BrigandsSounds from './sounds/BrigandsSounds'
 import TutorialPopup from './tutorial/TutorialPopUp'
 import {AudioLoader} from './utils/AudioLoader'
-import {thiefPanelLeftPosition, thiefPanelTopPosition} from './utils/styles'
+import {playerPanelX, playerPanelY} from './utils/styles'
 
 type Props = {
   game: GameView
@@ -83,13 +83,11 @@ export default function GameDisplay({game, audioLoader}: Props) {
 
         {game.players.map(player => <PlayerDisplay key={player.role} player={player} me={player.role === playerId}/>)}
 
-        <PrincePanel css={!playerId || playerId === PlayerRole.Prince ? displayBottomPrince : displayTopPrince}
-                     player={players.find(isPrinceState)!}
+        <PrincePanel player={players.find(isPrinceState)!}
                      city={game.city}
                      phase={game.phase}
                      partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
                      selectedPatrol={game.selectedPatrol}
-                     selectedHeadStart={game.selectedHeadStart}
         />
 
 
@@ -109,7 +107,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
           {players.filter(isThief).map((p, index) =>
             <ThiefPanel key={index}
                         positionForPartners={index}
-                        css={thiefPanelPosition(index, playerId !== undefined && playerId !== PlayerRole.Prince)}
+                        css={thiefPanelPosition(p.role)}
                         player={p}
                         phase={game.phase}
                         city={game.city}
@@ -145,22 +143,10 @@ export default function GameDisplay({game, audioLoader}: Props) {
   )
 }
 
-const thiefPanelPosition = (index: number, isThief: boolean) => css`
+const thiefPanelPosition = (color: PlayerRole) => css`
   position: absolute;
-  top: ${thiefPanelTopPosition(index, isThief)}em;
-  left: ${thiefPanelLeftPosition(index)}em;
-`
-
-const displayBottomPrince = css`
-  position: absolute;
-  left: 94em;
-  bottom: 0;
-`
-
-const displayTopPrince = css`
-  position: absolute;
-  left: 94em;
-  top: 4em;
+  left: ${playerPanelX(color)}em;
+  top: ${playerPanelY(color)}em;
 `
 
 export const getPlayersStartingWith = (game: GameView, playerId?: PlayerRole) => {
