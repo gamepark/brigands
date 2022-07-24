@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
+import {getDistrictsCanPlaceToken} from '@gamepark/brigands/Brigands'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getThieves} from '@gamepark/brigands/GameView'
 import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
@@ -77,10 +78,13 @@ export default function GameDisplay({game, audioLoader}: Props) {
               selectedTokenInHand={game.selectedTokenInHand}
               selectedPatrol={game.selectedPatrol}
               selectedHeadStart={game.selectedHeadStart}
+              districtsCanPlaceToken={player ? getDistrictsCanPlaceToken(player) : []}
               open={(district) => setDistrictPopUpClosed(district)}
         />
 
-        {game.players.map(player => <PlayerDisplay key={player.role} player={player} me={player.role === playerId}/>)}
+        <WeekCardsPanel event={game.event}
+                        eventDeck={game.eventDeck}
+                        city={game.city}/>
 
         <PrincePanel player={players.find(isPrinceState)!}
                      city={game.city}
@@ -88,11 +92,6 @@ export default function GameDisplay({game, audioLoader}: Props) {
                      partnersArrestedCount={game.phase === Phase.Solving ? getThieves(game).flatMap(thief => thief.partners.filter(partner => isPartner(partner) && partner.district === game.city[game.currentDistrict!].name)).length : undefined}
                      selectedPatrol={game.selectedPatrol}
         />
-
-
-        <WeekCardsPanel event={game.event}
-                        eventDeck={game.eventDeck}
-                        city={game.city}/>
 
         {isTavernPopUpDisplay(game.players.filter(isThief), playerId, game.phase, (game.currentDistrict !== undefined ? game.city[game.currentDistrict].name : undefined), game.players.find(isPrinceState)!) &&
         <TavernPopUp player={players.find(isThiefState)!}
@@ -103,30 +102,32 @@ export default function GameDisplay({game, audioLoader}: Props) {
         <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
         />}
 
-          {players.filter(isThief).map((p, index) =>
-            <ThiefPanel key={index}
-                        positionForPartners={index}
-                        css={thiefPanelPosition(p.role)}
-                        player={p}
-                        phase={game.phase}
-                        city={game.city}
-                        numberOfThieves={players.filter(isThief).length}
-                        districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
-                        thieves={getThieves(game)}
-                        displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
-                        partnersForCards={revealPartnersAnimation
-                           ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners
-                           : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
-                         }
-                        prince={game.players.find(isPrinceState)!}
-                        partnerSelected={game.selectedPartner?.partnerNumber}
-                        tokensInBankSelected={game.selectedTokensInBank}
-                        eventCard={game.event}
-                        deckSize={game.eventDeck}
-                        tokenInHandSelected={game.selectedTokenInHand}
-                        tutorial={game.tutorial}
-            />
-          )}
+        {players.filter(isThief).map((p, index) =>
+          <ThiefPanel key={index}
+                      positionForPartners={index}
+                      css={thiefPanelPosition(p.role)}
+                      player={p}
+                      phase={game.phase}
+                      city={game.city}
+                      numberOfThieves={players.filter(isThief).length}
+                      districtResolved={game.currentDistrict === undefined ? undefined : game.city[game.currentDistrict]}
+                      thieves={getThieves(game)}
+                      displayedThievesOrder={players.filter(isThief).map((p) => p.role)}
+                      partnersForCards={revealPartnersAnimation
+                        ? revealPartnersAnimation.move.partnersObject.find(obj => obj.role === p.role)!.partners
+                        : (game.phase === Phase.Planning && p.role === playerId && p.partners.every(isPartner)) === true ? p.partners : undefined
+                      }
+                      prince={game.players.find(isPrinceState)!}
+                      partnerSelected={game.selectedPartner?.partnerNumber}
+                      tokensInBankSelected={game.selectedTokensInBank}
+                      eventCard={game.event}
+                      deckSize={game.eventDeck}
+                      tokenInHandSelected={game.selectedTokenInHand}
+                      tutorial={game.tutorial}
+          />
+        )}
+
+        {game.players.map(player => <PlayerDisplay key={player.role} player={player} me={player.role === playerId} city={game.city} phase={game.phase}/>)}
 
         {tutorial && <TutorialPopup game={game} tutorial={tutorial}/>}
 

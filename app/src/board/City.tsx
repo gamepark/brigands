@@ -31,13 +31,14 @@ type Props = {
   selectedTokenInHand?: ThiefTokenInHand
   selectedPatrol?: PatrolInHand
   selectedHeadStart?: boolean
+  districtsCanPlaceToken: DistrictName[]
   open: (district: DistrictName) => void
 
 }
 
 const City: FC<Props> = ({
                            city, phase, prince, currentDistrict, partnersOfPlayerId, isPlayerReady, selectedPartner, selectedTokenInHand,
-                           selectedPatrol, selectedHeadStart, open
+                           selectedPatrol, selectedHeadStart, districtsCanPlaceToken, open
                          }) => {
 
   const play = usePlay<Move>()
@@ -84,6 +85,7 @@ const City: FC<Props> = ({
                       selectedPartner={selectedPartner}
                       selectedPatrol={selectedPatrol}
                       selectedHeadStart={selectedHeadStart}
+                      canPlaceToken={districtsCanPlaceToken.includes(district.name)}
                       onClick={() => playerId === PlayerRole.Prince
                         ? selectedPatrol === undefined && selectedHeadStart === undefined
                           ? open(district.name)

@@ -19,7 +19,7 @@ import {movePartner} from './moves/MovePartner'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
 import {placeMeeple, placeMeepleMove} from './moves/PlaceMeeple'
-import {placeToken} from './moves/PlaceToken'
+import {placeToken, placeTokenMove} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
 import {resolveStealToken} from './moves/ResolveStealToken'
 import {getRevealGoldsView, revealGolds} from './moves/RevealGolds'
@@ -36,6 +36,7 @@ import {PhaseRules} from './phases/PhaseRules'
 import Planning from './phases/Planning'
 import Solving from './phases/Solving'
 import PlayerState, {isPrinceState, isThief, isThiefState, PrinceState} from './PlayerState'
+import PlayerView from './PlayerView'
 import {getPartnersView} from './types/Partner'
 import PlayerRole from './types/PlayerRole'
 
@@ -107,7 +108,16 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       } else {
         moves.push(tellYouAreReadyMove(role))
       }
-      // TODO: place action token on district with a team and without a token
+      const teamsDistrictsWithoutToken = getDistrictsCanPlaceToken(player)
+      if (teamsDistrictsWithoutToken.length > 0) {
+        for (let token = 0; token < player.tokens.length; token++){
+          if (player.tokens[token] === null) {
+            for (const district of teamsDistrictsWithoutToken) {
+              moves.push(placeTokenMove(role, token, district))
+            }
+          }
+        }
+      }
       return moves
     }
     const phaseRules = this.getPhaseRules()!
@@ -289,8 +299,12 @@ function setupEventDeck(): number[] {
   return result.slice(0, 6)
 }
 
-export function canPlaceMeeple(player: PlayerState, district: DistrictName) {
+export function canPlaceMeeple(player: PlayerState | PlayerView, district: DistrictName) {
   return player.role === PlayerRole.Prince || district !== DistrictName.Jail // TODO: remove cards taken by Prince spy
 }
 
 export const MAX_ACTIONS = 6
+
+export function getDistrictsCanPlaceToken(player: PlayerState | PlayerView) {
+  return districtNames.filter(d => player.meeples.includes(d) && canPlaceMeeple(player, d) && !player.tokens.includes(d))
+}

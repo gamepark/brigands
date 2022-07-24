@@ -11,7 +11,7 @@ import ResolveStealToken, {isResolveStealToken} from '@gamepark/brigands/moves/R
 import {takeTokenMove} from '@gamepark/brigands/moves/TakeToken'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
-import Partner, {getPartnersView, isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
+import Partner, {isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
 import ThiefTokenInBank from '@gamepark/brigands/types/ThiefTokenInBank'
@@ -31,7 +31,6 @@ import {
   getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, playerPanelX, playerPanelY
 } from '../utils/styles'
 import AvatarPanel from './AvatarPanel'
-import DistrictCard from './DistrictCard'
 import PartnerComponent from './PartnerComponent'
 import {decomposeGold, getCoin} from './PrincePanel'
 
@@ -67,9 +66,6 @@ const ThiefPanel: FC<Props> = ({
   const animationBetGold = useAnimation<BetGold>(animation => isBetGold(animation.move))
   const animationGainGold = useAnimation<GainGold>(animation => isGainGold(animation.move))
   const animationResolveSteal = useAnimation<ResolveStealToken>(animation => isResolveStealToken(animation.move))
-
-  const partnersView = isThiefState(player) ? phase !== Phase.Solving ? getPartnersView(player.partners) : player.partners : player.partners
-  const cardsPlayed = partnersView.filter(isPartnerView).length === 0 ? 0 : Math.max(...partnersView.filter(isPartnerView).map(partner => partner.card)) + 1
 
   function isPartnerDraggable(phase: Phase | undefined, role: PlayerRole): boolean {
     return phase === Phase.Planning && role === playerId && !player.isReady
@@ -114,30 +110,11 @@ const ThiefPanel: FC<Props> = ({
           <PlayerTimer playerId={player.role} css={[timerStyle]}/>
         </div>
 
-        <div css={goldZonePosition}>
-
-          {isThiefState(player) && <div css={goldPanel}><p> {t('Ducats')} : {player.gold}</p></div>}
-
-        </div>
+        {isThiefState(player) && <div css={goldPanel}><p> {t('Ducats')} : {player.gold}</p></div>}
 
         {isThiefState(player) && phase === undefined &&
         <div><p css={scoreDivStyle}> {t('Score')} : {player.gold}</p>
         </div>}
-
-        {phase === Phase.Planning && <div css={cardsPanelPosition}>
-
-          {[...Array(cardsPlayed)].map((_, index) => <DistrictCard key={index}
-                                                                   color={player.role}
-                                                                   thief={player}
-                                                                   district={partnersForCards && getUniquePartnersDistrict(partnersForCards)[index]}
-                                                                   partners={partnersForCards}
-                                                                   selectedTokenInHand={tokenInHandSelected}
-                                                                   phase={phase}
-          />)}
-
-        </div>
-
-        }
 
         {animationGainGold && (animationGainGold.move.thief === player.role)
         && <div css={flexStyle}> {decomposeGold(animationGainGold.move.gold).map((coin, index) =>
@@ -166,7 +143,7 @@ const ThiefPanel: FC<Props> = ({
                             (partnerSelected === index && player.role === playerId && isSelectedStyle),
                             !district && isPartnerDraggable(phase, player.role) && glowingBrigand(getGlowingPlayerColor(player.role)),
                             district ?
-                              onCity(positionForPartners, index, city.findIndex(d => d.name === district), isEmphazing(player.role, index, thieves, phase, districtResolved)) :
+                              onCity(player.role, index, city.findIndex(d => d.name === district), isEmphazing(player.role, index, thieves, phase, districtResolved)) :
                               partnerHandPosition(player.role, index)
                           ]}
                           role={player.role}
@@ -276,16 +253,6 @@ const fadeKeyframes = keyframes`
     opacity: 0;
   }
 `
-
-function getUniquePartnersDistrict(partnersForCards: Partner[]): DistrictName[] {
-  const result: DistrictName[] = []
-  for (const elem of partnersForCards) {
-    if (elem.district) {
-      result.push(elem.district)
-    }
-  }
-  return [...new Set(result)].filter(d => d !== DistrictName.Jail)
-}
 
 export const glowingColoredKeyframes = (color: string) => keyframes`
   0% {
@@ -451,9 +418,9 @@ const validationButtonPosition = css`
   font-size: 3.5em;
 `
 
-const onCity = (positionForPartners: number, index: number, district: number, isEscaping: boolean) => css`
-  top: ${getThiefMeepleDistrictTop(positionForPartners, index, district)}em;
-  left: ${getThiefMeepleDistrictLeft(positionForPartners, index, district)}em;
+const onCity = (role: PlayerRole, index: number, district: number, isEscaping: boolean) => css`
+  top: ${getThiefMeepleDistrictTop(role, index, district)}em;
+  left: ${getThiefMeepleDistrictLeft(role, index, district)}em;
   ${isEscaping && `transform:translateZ(4em) scale(1.4,1.4);`};
   ${transitionPartner};
 `
@@ -465,37 +432,15 @@ const partnerHandPosition = (color: PlayerRole, meepleIndex: number) => css`
   ${transitionPartner};
 `
 
-const cardsPanelPosition = css`
-  position: relative;
-  transform-style: preserve-3d;
-  top: 0;
-  left: 5%;
-  width: 90%;
-  height: 50%;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-
-`
-
 const goldPanel = css`
-  height: 100%;
-  width: 60%;
+  position: absolute;
+  bottom: 1em;
 
   p {
     font-size: 2.5em;
     margin: 0.2em 0.5em;
     text-align: center;
   }
-`
-
-const goldZonePosition = css`
-  height: 15%;
-  width: 100%;
-  margin: 8em 0.2em 0.2em 0.2em;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
 `
 
 const scoreDivStyle = css`

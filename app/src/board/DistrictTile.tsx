@@ -4,6 +4,7 @@ import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import MoveType from '@gamepark/brigands/moves/MoveType'
 import {placeMeepleMove} from '@gamepark/brigands/moves/PlaceMeeple'
+import {placeTokenMove} from '@gamepark/brigands/moves/PlaceToken'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {PrinceState} from '@gamepark/brigands/PlayerState'
 import HeadStartToken from '@gamepark/brigands/types/HeadStartToken'
@@ -19,6 +20,7 @@ import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetS
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
 import Images from '../utils/Images'
+import {ACTION_TOKEN, ActionTokenItem, isActionTokenItem} from './DraggableActionToken'
 
 type Props = {
   district: District
@@ -29,12 +31,13 @@ type Props = {
   selectedPartner?: number
   selectedPatrol?: PatrolInHand
   selectedHeadStart?: boolean
+  canPlaceToken?: boolean
 
 } & HTMLAttributes<HTMLDivElement>
 
 const DistrictTile: FC<Props> = ({
                                    district, prince, phase, nbPartners, isPlayerReady, selectedPartner, selectedPatrol,
-                                   selectedHeadStart, ...props
+                                   selectedHeadStart, canPlaceToken = false, ...props
                                  }) => {
 
   const playerId = usePlayerId<PlayerRole>()
@@ -45,12 +48,14 @@ const DistrictTile: FC<Props> = ({
   const playResetSelectedPartner = usePlay<ResetSelectedPartner>()
 
   const [{canDrop, isOver}, dropRef] = useDrop({
-    accept: ['PartnerInHand', 'PatrolInHand', 'HeadStartToken'],
-    canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
+    accept: ['PartnerInHand', 'PatrolInHand', 'HeadStartToken', ACTION_TOKEN],
+    canDrop: (item: PartnerInHand | PatrolInHand | HeadStartToken | ActionTokenItem) => {
       if (isPatrolInHand(item)) {
-        return !prince.patrols.includes(district.name)
+        return true
       } else if (isPartnerInHand(item)) {
         return district.name !== DistrictName.Jail
+      } else if (isActionTokenItem(item)) {
+        return canPlaceToken
       } else {
         return prince.patrols.includes(district.name) && district.name !== DistrictName.Jail
       }
@@ -60,7 +65,7 @@ const DistrictTile: FC<Props> = ({
       canDrop: monitor.canDrop(),
       isOver: monitor.isOver()
     }),
-    drop: (item: PartnerInHand | PatrolInHand | HeadStartToken) => {
+    drop: (item: PartnerInHand | PatrolInHand | HeadStartToken | ActionTokenItem) => {
       if (isPatrolInHand(item)) {
         moveSound.play()
         return placeMeepleMove(playerId!, district.name, item.patrolNumber)
@@ -69,6 +74,8 @@ const DistrictTile: FC<Props> = ({
         playResetSelectedTokenInHand(resetSelectedTokenInHandMove(), {local: true})
         playResetSelectedPartner(resetSelectedPartnerMove(), {local: true})
         return placeMeepleMove(playerId!, district.name, item.partnerNumber)
+      } else if (isActionTokenItem(item)) {
+        return placeTokenMove(playerId!, item.token, district.name)
       } else {
         moveSound.play()
         return {type: MoveType.PlayHeadStart, district: district.name}
