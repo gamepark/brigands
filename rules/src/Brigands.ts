@@ -110,7 +110,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       }
       const teamsDistrictsWithoutToken = getDistrictsCanPlaceToken(player)
       if (teamsDistrictsWithoutToken.length > 0) {
-        for (let token = 0; token < player.tokens.length; token++){
+        for (let token = 0; token < player.tokens.length; token++) {
           if (player.tokens[token] === null) {
             for (const district of teamsDistrictsWithoutToken) {
               moves.push(placeTokenMove(role, token, district))
@@ -127,6 +127,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   getAutomaticMoves(): Move[] {
     if (this.state.phase === Phase.NewDay) {
       return [...this.state.players.filter(p => p.tokens.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
+    } else if (this.state.phase === Phase.Planning) {
+      if (this.state.players.every(player => player.isReady)) {
+        return [moveOnNextPhaseMove]
+      }
     }
     const phaseRules = this.getPhaseRules()
     if (!phaseRules) return []

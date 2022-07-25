@@ -1,3 +1,4 @@
+import {css, keyframes} from '@emotion/react'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 
 export const headerHeight = 7
@@ -73,3 +74,33 @@ export function getPrinceMeepleDistrictLeft(meepleIndex: number, districtIndex: 
 export const weekCardHeight = 18.6
 export const weekCardRatio = 180 / 270
 export const weekCardWidth = weekCardHeight * weekCardRatio
+
+export const slideKeyframes = keyframes`
+  0%, 80% {
+    transform: translate(-33%, 33%);
+    opacity: 0;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(33%, -33%);
+    opacity: 0;
+  }
+`
+
+export const shineEffect = css`
+  overflow: hidden;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    animation: ${slideKeyframes} 3s infinite;
+    z-index: 1;
+    background: linear-gradient(to top right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 50%, rgba(128, 186, 232, 0) 99%, rgba(125, 185, 232, 0) 100%);
+  }
+`

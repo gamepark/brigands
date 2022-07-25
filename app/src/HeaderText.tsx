@@ -3,14 +3,17 @@ import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getPrince, getThieves} from '@gamepark/brigands/GameView'
 import {EventArray} from '@gamepark/brigands/material/Events'
+import {tellYouAreReadyMove} from '@gamepark/brigands/moves/TellYouAreReady'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
 import {isPartner} from '@gamepark/brigands/types/Partner'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {ThiefView} from '@gamepark/brigands/types/Thief'
-import {Player as PlayerInfo, usePlayerId, usePlayers} from '@gamepark/react-client'
+import {Player as PlayerInfo, usePlay, usePlayerId, usePlayers} from '@gamepark/react-client'
 import {TFunction} from 'i18next'
-import {useTranslation} from 'react-i18next'
+import {Trans, useTranslation} from 'react-i18next'
+import HeaderButton from './HeaderButton'
+import {shineEffect} from './utils/styles'
 
 type Props = {
   loading: boolean
@@ -116,7 +119,9 @@ function HeaderGameOverText({game}: { game: GameView }) {
 
 function HeaderOnGoingGameText({game}: { game: GameView }) {
   const {t} = useTranslation()
+  const play = usePlay()
   const playerId = usePlayerId<PlayerRole>()
+  const player = game.players.find(p => p.role === playerId)
   const players = usePlayers<PlayerRole>()
 
   switch (game.phase) {
@@ -125,20 +130,22 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
     }
 
     case Phase.Planning: {
-      if (playerId === undefined || playerId === PlayerRole.Prince) {
-        return <> {t('planning.you.wait')} </>
-      } else {
-        const thief = getThieves(game).find(p => p.role === playerId)!
-        if (thief.isReady) {
-          if (getThieves(game).filter(p => !p.isReady).length === 1) {
-            return <> {t('planning.you.are.ready.wait.one.thief', {player: getPseudo(getThieves(game).find(p => !p.isReady)!.role, players, t)})} </>
-          } else {
-            return <> {t('planning.you.are.ready')} </>
-          }
-        } else if (thief.partners.every(part => isPartner(part) && part.district !== undefined)) {
-          return <> {t('planning.you.clic.ready')} </>
+      if (player && !player.isReady) {
+        if (player.meeples.includes(null)) {
+          return <>{t('planning.place.meeples')}</>
         } else {
-          return <> {t('planning.you.place.partners')} </>
+          return <Trans defaults="planning.validate" components={[
+            <HeaderButton css={shineEffect} onClick={() => play(tellYouAreReadyMove(player.role))} color={player.role}/>
+          ]}/>
+        }
+      } else {
+        const awaitedPlayers = game.players.filter(p => !p.isReady)
+        if (awaitedPlayers.length > 1) {
+          return <>{t('planning.wait')}</>
+        } else if (awaitedPlayers.length === 1) {
+          return <>{t('planning.wait.one', {player: getPseudo(awaitedPlayers[0].role, players, t)})}</>
+        } else {
+          return <>{t('planning.reveal')}</>
         }
       }
     }
