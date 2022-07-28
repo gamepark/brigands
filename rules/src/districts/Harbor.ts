@@ -1,55 +1,37 @@
 import {MAX_ACTIONS} from '../Brigands'
-import {EventArray} from '../material/Events'
+import {gainGoldMove} from '../moves/GainGold'
 import Move from '../moves/Move'
-import MoveType from '../moves/MoveType'
+import SpendTokens, {spendTokensMove} from '../moves/SpendTokens'
+import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
 import TakeToken, {takeTokenMove} from '../moves/TakeToken'
-import {ThiefState} from '../PlayerState'
-import PlayerRole from '../types/PlayerRole'
-import DistrictName from './DistrictName'
+import PlayerState from '../PlayerState'
 import {DistrictRules} from './DistrictRules'
 
 export default class Harbor extends DistrictRules {
-  isThiefActive(thief: ThiefState): boolean {
-    return (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2))) !== undefined) || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
-  }
-
-  getThiefLegalMoves(thief: ThiefState): Move[] {
-
-    const harborMoves: TakeToken[] = []
-    if (thief.partners.find(p => p.district === DistrictName.Harbor && (p.tokensTaken === undefined || p.tokensTaken < (EventArray[this.state.event].district === DistrictName.Harbor ? 3 : 2)))) {
-      if (thief.tokens.length < MAX_ACTIONS) {
-        harborMoves.push(takeTokenMove(thief.role))
+  getLegalMoves(player: PlayerState): Move[] {
+    const moves: Move[] = []
+    if (player.tokens.length < MAX_ACTIONS) {
+      moves.push(takeTokenMove(player.role))
+    }
+    for (let tokens = 1; tokens < player.tokens.length; tokens++) {
+      if (player.tokens.length > 0) {
+        moves.push(spendTokensMove(player.role, tokens))
       }
     }
-
-    // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
-
-    if (this.state.tutorial && harborMoves.length === 0) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
-    } else {
-      return harborMoves
-    }
+    return moves
   }
 
-  getAutomaticMove(): Move | void {
-    if (!this.getThieves().some(p => p.partners.some(part => part.district === DistrictName.Harbor))) {
-      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
-
-        // TO DO : Delete when we can control AutoMoves in Tutorial
-
-        return
-      } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
-      }
+  onTakeToken(move: TakeToken) {
+    const player = this.state.players.find(player => player.role === move.role)!
+    if (player.tokens.length < MAX_ACTIONS) {
+      this.state.nextMoves.push(takeTokenMove(player.role))
     }
-    const tokensToTake = this.isDistrictEvent() ? 3 : 2
-    const thiefWithPartnerDone = this.getThieves().find(thief => {
-      const partners = thief.partners.filter(part => part.district === DistrictName.Harbor)
-      if (partners.length === 0) return false
-      return partners.some(partner => partner.tokensTaken === tokensToTake) || thief.tokens.length === MAX_ACTIONS
-    })
-    if (thiefWithPartnerDone) {
-      return {type: MoveType.TakeBackPartner, thief: thiefWithPartnerDone.role, district: DistrictName.Harbor}
-    }
+    this.state.nextMoves.push(takeBackMeepleMove(player.role, player.meeples.indexOf(this.district.name)))
+  }
+
+  onSpendTokens(move: SpendTokens) {
+    const player = this.state.players.find(player => player.role === move.role)!
+    this.state.nextMoves.push(gainGoldMove(player.role, move.tokens * 3))
+    this.state.nextMoves.push(takeBackMeepleMove(player.role, player.meeples.indexOf(this.district.name)))
   }
 }

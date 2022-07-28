@@ -1,4 +1,5 @@
 import District from './districts/District'
+import Move from './moves/Move'
 import Phase from './phases/Phase'
 import PlayerState from './PlayerState'
 
@@ -8,7 +9,8 @@ type GameState = {
   phase?: Phase
   eventDeck: number[]
   event: number
-  currentDistrict?: number
+  nextMoves: Move[]
+  currentDistrict?: number // TODO: delete
   tutorial: boolean
 }
 

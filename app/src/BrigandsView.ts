@@ -18,6 +18,7 @@ import {revealGoldsInView} from '@gamepark/brigands/moves/RevealGolds'
 import {revealPartnersDistrictsInView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import {solvePartner} from '@gamepark/brigands/moves/SolvePartner'
 import {spareGoldOnTreasure} from '@gamepark/brigands/moves/SpareGoldOnTreasure'
+import {spendTokens} from '@gamepark/brigands/moves/SpendTokens'
 import {takeBackMeeple} from '@gamepark/brigands/moves/TakeBackMeeple'
 import {takeBackPartner} from '@gamepark/brigands/moves/TakeBackPartner'
 import {takeToken} from '@gamepark/brigands/moves/TakeToken'
@@ -58,6 +59,11 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return tellYouAreReady(this.state, move)
       case MoveType.TakeBackMeeple:
         return takeBackMeeple(this.state, move)
+      case MoveType.GainGold:
+        return gainGold(this.state, move)
+      case MoveType.SpendTokens:
+        return spendTokens(this.state, move)
+
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
       case MoveType.ThrowDice:
@@ -68,8 +74,6 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return spareGoldOnTreasure(this.state, move)
       case MoveType.SolvePartner:
         return solvePartner(this.state, move)
-      case MoveType.GainGold:
-        return gainGold(this.state, move)
       case MoveType.BetGold:
         return betGold(this.state, move)
       case MoveType.MoveOnDistrictResolved:

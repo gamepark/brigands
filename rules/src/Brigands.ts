@@ -35,6 +35,7 @@ import {getRevealGoldsView, revealGolds} from './moves/RevealGolds'
 import {getRevealPartnersDistrictView, revealPartnersDistricts} from './moves/RevealPartnersDistricts'
 import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
+import {spendTokens} from './moves/SpendTokens'
 import {takeBackMeeple, takeBackMeepleMove} from './moves/TakeBackMeeple'
 import {takeBackPartner} from './moves/TakeBackPartner'
 import {takeToken, takeTokenMove} from './moves/TakeToken'
@@ -61,6 +62,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         phase: Phase.NewDay,
         eventDeck: setupEventDeck(),
         event: -1,
+        nextMoves: [],
         currentDistrict: undefined,
         tutorial: false
       }
@@ -82,6 +84,9 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return !player.isReady
       case Phase.Solving:
         const district = getCurrentDistrict(this.state)
+        if (!player.action && player.tokens.includes(district)) {
+          return true
+        }
         return getDistrictRules(this.state, district).isTurnToPlay(player)
       default:
         return false
@@ -120,6 +125,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return moves
       case Phase.Solving:
         const district = getCurrentDistrict(this.state)
+        if (!player.meeples.includes(district)) {
+          return []
+        }
+        if (!player.action && player.tokens.includes(district)) {
+          return [] // TODO: choose action moves
+        }
         return getDistrictRules(this.state, district).getLegalMoves(player)
       default:
         return []
@@ -181,6 +192,10 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return tellYouAreReady(this.state, move)
       case MoveType.TakeBackMeeple:
         return takeBackMeeple(this.state, move)
+      case MoveType.GainGold:
+        return gainGold(this.state, move)
+      case MoveType.SpendTokens:
+        return spendTokens(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistricts(this.state)
       case MoveType.ThrowDice:
@@ -191,8 +206,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return spareGoldOnTreasure(this.state, move)
       case MoveType.SolvePartner:
         return solvePartner(this.state, move)
-      case MoveType.GainGold:
-        return gainGold(this.state, move)
       case MoveType.BetGold:
         return betGold(this.state, move)
       case MoveType.MoveOnDistrictResolved:
@@ -343,7 +356,7 @@ export function patrolInDistrict(state: GameState | GameView, district: District
   return player.meeples.includes(district)
 }
 
-function getDistrictRules(state: GameState, districtName: DistrictName) {
+export function getDistrictRules(state: GameState | GameView, districtName: DistrictName = getCurrentDistrict(state)) {
   const district = state.city.find(district => district.name === districtName)!
   switch (districtName) {
     case DistrictName.Jail:

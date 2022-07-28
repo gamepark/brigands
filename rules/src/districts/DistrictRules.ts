@@ -1,17 +1,21 @@
 import GameState from '../GameState'
+import GameView from '../GameView'
 import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
+import SpendTokens from '../moves/SpendTokens'
 import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
+import TakeToken from '../moves/TakeToken'
 import PlayerState, {isThiefState} from '../PlayerState'
+import PlayerView from '../PlayerView'
 import Event from '../types/Event'
 import District from './District'
 import DistrictName from './DistrictName'
 
 export abstract class DistrictRules {
-  state: GameState
+  state: GameState | GameView
   district: District
 
-  constructor(state: GameState, district: District) {
+  constructor(state: GameState | GameView, district: District) {
     this.state = state
     this.district = district
   }
@@ -33,19 +37,29 @@ export abstract class DistrictRules {
   }
 
   countMeeples() {
-    return this.state.players.reduce((sum, player) => sum + this.countPlayerMeeples(player), 0)
+    let meeples = 0
+    for (const player of this.state.players) {
+      meeples += this.countPlayerMeeples(player)
+    }
+    return meeples
   }
 
-  countPlayerMeeples(player: PlayerState) {
+  countPlayerMeeples(player: PlayerState | PlayerView) {
     return player.meeples.reduce((sum, meeple) => meeple === this.district.name ? sum + 1 : sum, 0)
   }
 
-  isTurnToPlay(_player: PlayerState): boolean {
-    return false
+  isTurnToPlay(player: PlayerState): boolean {
+    return player.meeples.includes(this.district.name)
   }
 
   getLegalMoves(_player: PlayerState): Move[] {
     return []
+  }
+
+  onTakeToken(_move: TakeToken) {
+  }
+
+  onSpendTokens(_move: SpendTokens) {
   }
 
   getThieves() {
@@ -55,9 +69,5 @@ export abstract class DistrictRules {
   isDistrictEvent() {
     const event: Event = EventArray[this.state.event]
     return event.district === this.district.name
-  }
-
-  getDistrictPartners() {
-    return this.getThieves().flatMap(thief => thief.partners.filter(partner => partner.district === this.district.name))
   }
 }

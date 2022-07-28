@@ -1,14 +1,7 @@
-import {rollDice} from '../material/Dice'
-import BetGold from '../moves/BetGold'
-import Move from '../moves/Move'
-import MoveType from '../moves/MoveType'
-import {ThiefState} from '../PlayerState'
-import PlayerRole from '../types/PlayerRole'
-import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Tavern extends DistrictRules {
-  isThiefActive(thief: ThiefState): boolean {
+  /*isThiefActive(thief: ThiefState): boolean {
     return (thief.partners.find(p => p.district === DistrictName.Tavern && p.goldForTavern === undefined) !== undefined)
       || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
   }
@@ -59,9 +52,10 @@ export default class Tavern extends DistrictRules {
         thief: thiefWithBet.role, district: DistrictName.Tavern
       }
     }
-  }
+  }*/
 }
 
+/*
 function betResult(goldBet:number, dice:number[]):number{
   const arrayOfTwos = dice.filter(face => face === 2)
   const arrayOfThrees = dice.filter(face => face === 3)
@@ -74,4 +68,4 @@ function betResult(goldBet:number, dice:number[]):number{
     return goldBet * 2
   } else return 0
 
-}
+}*/

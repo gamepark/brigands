@@ -1,12 +1,7 @@
-import Move from '../moves/Move'
-import MoveType from '../moves/MoveType'
-import {ThiefState} from '../PlayerState'
-import PlayerRole from '../types/PlayerRole'
-import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Palace extends DistrictRules {
-  getAutomaticMove(): Move | void {
+  /*getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
     if (partners.length === 0) {
       if (this.state.tutorial && this.state.eventDeck.length >= 4) {
@@ -50,5 +45,5 @@ export default class Palace extends DistrictRules {
     // TO DO : Delete isThiefActive when we can control AutoMoves in Tutorial
 
     return this.state.tutorial && thief.role === PlayerRole.YellowThief
-  }
+  }*/
 }

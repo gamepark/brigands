@@ -1,10 +1,8 @@
 import {MAX_ACTIONS} from '../Brigands'
-import {rollDice} from '../material/Dice'
 import Move from '../moves/Move'
 import MoveType from '../moves/MoveType'
 import TakeToken, {takeTokenMove} from '../moves/TakeToken'
-import {isPrinceState, ThiefState} from '../PlayerState'
-import {isPartner} from '../types/Partner'
+import {ThiefState} from '../PlayerState'
 import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
@@ -31,7 +29,7 @@ export default class Jail extends DistrictRules {
     }
   }
 
-  getAutomaticMove(): Move | void {
+  /*getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()
     const thievesOnJail = this.getThieves().filter(p => p.partners.some(part => isPartner(part) && part.district === DistrictName.Jail))
     const isTutorial = this.state.tutorial
@@ -83,5 +81,5 @@ export default class Jail extends DistrictRules {
         partnerNumber: thief.partners.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!
       }
     }
-  }
+  }*/
 }
