@@ -2,7 +2,7 @@ import GameState from '../GameState'
 import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
 import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
-import PlayerState, {isThiefState, ThiefState} from '../PlayerState'
+import PlayerState, {isThiefState} from '../PlayerState'
 import Event from '../types/Event'
 import District from './District'
 import DistrictName from './DistrictName'
@@ -40,15 +40,12 @@ export abstract class DistrictRules {
     return player.meeples.reduce((sum, meeple) => meeple === this.district.name ? sum + 1 : sum, 0)
   }
 
-  isThiefActive(_thief: ThiefState): boolean {
+  isTurnToPlay(_player: PlayerState): boolean {
     return false
   }
 
-  getThiefLegalMoves(_thief: ThiefState): Move[] {
+  getLegalMoves(_player: PlayerState): Move[] {
     return []
-  }
-
-  getAutomaticMove(): Move | void {
   }
 
   getThieves() {

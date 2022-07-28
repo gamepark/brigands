@@ -40,12 +40,8 @@ import {takeBackPartner} from './moves/TakeBackPartner'
 import {takeToken, takeTokenMove} from './moves/TakeToken'
 import {tellYouAreReady, tellYouAreReadyMove} from './moves/TellYouAreReady'
 import {throwDice} from './moves/ThrowDice'
-import NewDay from './phases/NewDay'
 import Phase from './phases/Phase'
-import {PhaseRules} from './phases/PhaseRules'
-import Planning from './phases/Planning'
-import Solving from './phases/Solving'
-import PlayerState, {isPrinceState, isThief, isThiefState} from './PlayerState'
+import PlayerState, {isPrinceState, isThiefState} from './PlayerState'
 import PlayerView from './PlayerView'
 import {getPartnersView} from './types/Partner'
 import PlayerRole from './types/PlayerRole'
@@ -79,59 +75,55 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.state.phase === undefined
   }
 
-  getPhaseRules(): PhaseRules | void {
-    switch (this.state.phase) {
-      case Phase.NewDay:
-        return new NewDay(this.state)
-      case Phase.Planning:
-        return new Planning(this.state)
-      case Phase.Solving:
-        return new Solving(this.state)
-    }
-  }
-
   isTurnToPlay(playerId: PlayerRole): boolean {
     const player = this.state.players.find(player => player.role === playerId)!
-    if (this.state.phase === Phase.Planning) {
-      return !player.isReady
+    switch (this.state.phase) {
+      case Phase.Planning:
+        return !player.isReady
+      case Phase.Solving:
+        const district = getCurrentDistrict(this.state)
+        return getDistrictRules(this.state, district).isTurnToPlay(player)
+      default:
+        return false
     }
-    const phaseRules = this.getPhaseRules()
-    if (!player || !phaseRules) return false
-    return isThief(player) ? phaseRules.isThiefActive(player) : phaseRules.isPrinceActive(player)
   }
 
   getLegalMoves(role: PlayerRole): Move[] {
     const player = this.state.players.find(player => player.role === role)!
-    if (this.state.phase === Phase.Planning) {
-      if (player.isReady) return []
-      const moves: Move[] = []
-      if (player.meeples.includes(null)) {
-        for (let meeple = 0; meeple < player.meeples.length; meeple++) {
-          if (!player.meeples[meeple]) {
-            for (const district of districtNames) {
-              if (canPlaceMeeple(player, district)) {
-                moves.push(placeMeepleMove(role, district, meeple))
+    switch (this.state.phase) {
+      case Phase.Planning:
+        if (player.isReady) return []
+        const moves: Move[] = []
+        if (player.meeples.includes(null)) {
+          for (let meeple = 0; meeple < player.meeples.length; meeple++) {
+            if (!player.meeples[meeple]) {
+              for (const district of districtNames) {
+                if (canPlaceMeeple(player, district)) {
+                  moves.push(placeMeepleMove(role, district, meeple))
+                }
+              }
+            }
+          }
+        } else {
+          moves.push(tellYouAreReadyMove(role))
+        }
+        const teamsDistrictsWithoutToken = getDistrictsCanPlaceToken(player)
+        if (teamsDistrictsWithoutToken.length > 0) {
+          for (let token = 0; token < player.tokens.length; token++) {
+            if (player.tokens[token] === null) {
+              for (const district of teamsDistrictsWithoutToken) {
+                moves.push(placeTokenMove(role, token, district))
               }
             }
           }
         }
-      } else {
-        moves.push(tellYouAreReadyMove(role))
-      }
-      const teamsDistrictsWithoutToken = getDistrictsCanPlaceToken(player)
-      if (teamsDistrictsWithoutToken.length > 0) {
-        for (let token = 0; token < player.tokens.length; token++) {
-          if (player.tokens[token] === null) {
-            for (const district of teamsDistrictsWithoutToken) {
-              moves.push(placeTokenMove(role, token, district))
-            }
-          }
-        }
-      }
-      return moves
+        return moves
+      case Phase.Solving:
+        const district = getCurrentDistrict(this.state)
+        return getDistrictRules(this.state, district).getLegalMoves(player)
+      default:
+        return []
     }
-    const phaseRules = this.getPhaseRules()!
-    return isThief(player) ? phaseRules.getThiefLegalMoves(player) : phaseRules.getPrinceLegalMoves(player)
   }
 
   getAutomaticMoves(): Move[] {
@@ -154,7 +146,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         if (patrolInDistrict(this.state, district)) {
           const moves: Move[] = []
           for (const player of this.state.players) {
-            for (let meeple = 0; meeple < player.meeples.length; meeple++){
+            for (let meeple = 0; meeple < player.meeples.length; meeple++) {
               const meepleLocation = player.meeples[meeple]
               if (meepleLocation === district) {
                 if (player.role !== PlayerRole.Prince && meeple < 3) {
