@@ -3,6 +3,7 @@ import PlayerView from './PlayerView'
 import PlayerRole from './types/PlayerRole'
 import Prince from './types/Prince'
 import Thief, {ThiefView} from './types/Thief'
+import TokenAction from './TokenAction'
 
 type PlayerState = PrinceState | ThiefState
 
@@ -12,6 +13,7 @@ type PlayerCommon = {
   role: PlayerRole
   meeples: (DistrictName | null)[]
   tokens: (DistrictName | null)[]
+  action?: TokenAction
   gold: number
   isReady: boolean
 }

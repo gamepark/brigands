@@ -10,13 +10,17 @@ import MoveView from './MoveView'
 
 type GainGold = {
   type: MoveType.GainGold
+  thief: PlayerRole // TODO: rename
   gold: number
-  thief: PlayerRole
-  district: DistrictName
-  noShare?: true
+  district: DistrictName // TODO: remove
+  noShare?: true // TODO: remove
 }
 
 export default GainGold
+
+export function gainGoldMove(thief: PlayerRole, gold: number): GainGold {
+  return {type: MoveType.GainGold, thief, gold, district: DistrictName.Jail}
+}
 
 export function gainGold(state: GameState | GameView, move: GainGold) {
 

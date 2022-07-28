@@ -14,13 +14,14 @@ import RevealGolds from './RevealGolds'
 import RevealPartnersDistricts from './RevealPartnersDistricts'
 import SolvePartner from './SolvePartner'
 import SpareGoldOnTreasure from './SpareGoldOnTreasure'
+import TakeBackMeeple from './TakeBackMeeple'
 import TakeBackPartner from './TakeBackPartner'
 import TakeToken from './TakeToken'
 import TellYouAreReady from './TellYouAreReady'
 import ThrowDice from './ThrowDice'
 
-type Move = DrawEvent | PlaceMeeple | PlaceToken | TellYouAreReady | MoveOnNextPhase | RevealPartnersDistricts
-  | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | TakeToken | ArrestPartners
+type Move = TakeToken | DrawEvent | MoveOnNextPhase | PlaceMeeple | PlaceToken | TellYouAreReady | TakeBackMeeple | RevealPartnersDistricts
+  | ThrowDice | GainGold | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | ArrestPartners
   | ResolveStealToken | MovePartner
   | JudgePrisoners | PlayHeadStart
   | RevealGolds

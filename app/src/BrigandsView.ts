@@ -18,6 +18,7 @@ import {revealGoldsInView} from '@gamepark/brigands/moves/RevealGolds'
 import {revealPartnersDistrictsInView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import {solvePartner} from '@gamepark/brigands/moves/SolvePartner'
 import {spareGoldOnTreasure} from '@gamepark/brigands/moves/SpareGoldOnTreasure'
+import {takeBackMeeple} from '@gamepark/brigands/moves/TakeBackMeeple'
 import {takeBackPartner} from '@gamepark/brigands/moves/TakeBackPartner'
 import {takeToken} from '@gamepark/brigands/moves/TakeToken'
 import {tellYouAreReady} from '@gamepark/brigands/moves/TellYouAreReady'
@@ -43,22 +44,24 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
 
   play(move: LocalMove): void {
     switch (move.type) {
+      case MoveType.TakeToken:
+        return takeToken(this.state, move)
       case MoveType.DrawEvent:
         return drawEventInView(this.state, move)
+      case MoveType.MoveOnNextPhase:
+        return moveOnNextPhase(this.state)
       case MoveType.PlaceMeeple:
         return placeMeeple(this.state, move)
       case MoveType.PlaceToken:
         return placeToken(this.state, move)
       case MoveType.TellYouAreReady:
         return tellYouAreReady(this.state, move)
-      case MoveType.MoveOnNextPhase:
-        return moveOnNextPhase(this.state)
+      case MoveType.TakeBackMeeple:
+        return takeBackMeeple(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
       case MoveType.ThrowDice:
         return throwDice(this.state, move)
-      case MoveType.TakeToken:
-        return takeToken(this.state, move)
       case MoveType.TakeBackPartner:
         return takeBackPartner(this.state, move)
       case MoveType.SpareGoldOnTreasure:
