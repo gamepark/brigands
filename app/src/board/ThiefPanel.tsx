@@ -26,7 +26,7 @@ import SetSelectedPartner, {ResetSelectedPartner, resetSelectedPartnerMove, setS
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import {ResetSelectedTokensInBank, resetSelectedTokensInBankMove} from '../localMoves/SetSelectedTokensInBank'
 import Button from '../utils/Button'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 import {
   getThiefMeepleDistrictLeft, getThiefMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, playerPanelX, playerPanelY
 } from '../utils/styles'

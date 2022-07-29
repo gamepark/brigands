@@ -10,7 +10,7 @@ import brigandsAnimations from './BrigandsAnimations'
 import BrigandsView from './BrigandsView'
 import translations from './translations.json'
 import BrigandsTutorial from './tutorial/Tutorial'
-import Images from './utils/Images'
+import Images from './images/Images'
 
 setupTranslation(translations)
 

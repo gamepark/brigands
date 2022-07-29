@@ -7,7 +7,7 @@ import MoveType from '@gamepark/brigands/moves/MoveType'
 import {ThiefState} from '@gamepark/brigands/PlayerState'
 import {usePlay} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 type Props = {
   player: ThiefState

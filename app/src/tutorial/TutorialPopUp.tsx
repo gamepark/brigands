@@ -13,7 +13,7 @@ import {FC, useEffect, useRef, useState} from 'react'
 import {Trans, useTranslation} from 'react-i18next'
 import Arrow from '../tutorial/tutorial-arrow-white.png'
 import Button from '../utils/Button'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 
 const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutorial}) => {
@@ -713,7 +713,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
         top: 25,
         left: 57.5
       },
-      image: Images.tokenStealYellow
+      //image: Images.tokenStealYellow
     }
   ],
   [
@@ -742,7 +742,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
         top: 15,
         left: 57
       },
-      image: Images.tokenMoveYellow
+      //image: Images.tokenMoveYellow
     }
   ],
   [
@@ -914,7 +914,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image: Images.tokenStealYellow
+      //image: Images.tokenStealYellow
     },
     {
       title: (t: TFunction) => t('title.place.steal.token'),
@@ -950,7 +950,7 @@ const tutorialDescription: TutorialStepDescription[][] = [
       boxTop: 50,
       boxLeft: 50,
       boxWidth: 60,
-      image: Images.tokenMoveYellow
+      //image: Images.tokenMoveYellow
     },
     {
       title: (t: TFunction) => t('title.place.move.token'),

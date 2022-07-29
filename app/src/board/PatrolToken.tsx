@@ -5,7 +5,7 @@ import PatrolInHand from '@gamepark/brigands/types/PatrolInHand'
 import {usePlay} from '@gamepark/react-client'
 import {Draggable} from '@gamepark/react-components'
 import {FC, HTMLAttributes} from 'react'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 type Props = {
   draggable?: boolean

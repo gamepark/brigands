@@ -6,7 +6,7 @@ import {SpeechBubbleDirection} from '@gamepark/react-client/dist/Avatar'
 import {Picture} from '@gamepark/react-components'
 import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 type Props = {
   playerInfo: Player<PlayerRole> | undefined

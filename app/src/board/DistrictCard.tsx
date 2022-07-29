@@ -18,7 +18,7 @@ import {useDrop} from 'react-dnd'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 
 type Props = {

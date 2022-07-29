@@ -6,7 +6,7 @@ import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Picture} from '@gamepark/react-components'
 import {PictureAttributes} from '@gamepark/react-components/dist/Picture/Picture'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 import {cityCenterLeft, cityCenterTop, playerPanelX, playerPanelY} from '../utils/styles'
 
 type Props = {

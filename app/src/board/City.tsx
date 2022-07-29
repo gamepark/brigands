@@ -12,12 +12,14 @@ import PatrolInHand from '@gamepark/brigands/types/PatrolInHand'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import ThiefTokenInHand from '@gamepark/brigands/types/ThiefTokenInHand'
 import {usePlay, usePlayerId, useSound} from '@gamepark/react-client'
+import {Picture} from '@gamepark/react-components'
 import {FC} from 'react'
+import Images from '../images/Images'
 import {ResetSelectedHeadStart, resetSelectedHeadStartMove} from '../localMoves/SetSelectedHeadStart'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
-import DistrictTile from './DistrictTile'
+import DistrictTile, {districtImageRatio, districtWidth} from './DistrictTile'
 import JailTile from './JailTile'
 
 type Props = {
@@ -73,10 +75,11 @@ const City: FC<Props> = ({
 
   return (
     <>
+      <Picture src={Images.districtStart} css={[districtSize, districtPosition]}/>
       <JailTile prince={prince} selectedPatrol={selectedPatrol} selectedHeadStart={selectedHeadStart}/>
       {city.slice(0, -1 /* TODO: remove Jail */).map((district, index) =>
         <DistrictTile key={district.name}
-                      css={[districtPosition(index), phase === Phase.Solving && currentDistrict !== index && reduceBrightness]}
+                      css={[districtPosition, districtRotation(index), phase === Phase.Solving && currentDistrict !== index && reduceBrightness]}
                       district={district}
                       phase={phase}
                       prince={prince}
@@ -101,10 +104,18 @@ const City: FC<Props> = ({
   )
 }
 
-const districtPosition = (index: number) => css`
+const districtSize = css`
+  width: ${districtWidth}em;
+  height: ${districtWidth * districtImageRatio}em;
+`
+
+const districtPosition = css`
   position: absolute;
   top: 68em;
   left: 32em;
+`
+
+const districtRotation = (index: number) => css`
   transform-origin: center -46%;
   transform: rotate(${(index + 1) * 45}deg);
 `

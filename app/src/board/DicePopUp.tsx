@@ -4,7 +4,7 @@ import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 
 type Props = {
   dice?: number[]

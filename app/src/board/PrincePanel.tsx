@@ -16,7 +16,7 @@ import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
 import SetSelectedPatrol, {setSelectedPatrolMove} from '../localMoves/SetSelectedPatrol'
 import Button from '../utils/Button'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 import {
   getPrinceMeepleDistrictLeft, getPrinceMeepleDistrictTop, meepleSize, playerPanelHeight, playerPanelWidth, playerPanelX, playerPanelY
 } from '../utils/styles'

@@ -9,7 +9,7 @@ import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
 import {FC} from 'react'
 import {useTranslation} from 'react-i18next'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 import {cityCenterLeft, weekCardHeight, weekCardWidth} from '../utils/styles'
 
 type Props = {

@@ -8,7 +8,7 @@ import HTML5ToTouch from 'react-dnd-multi-backend/dist/cjs/HTML5toTouch'
 import GameDisplay from './GameDisplay'
 import HeaderText from './HeaderText'
 import { AudioLoader } from './utils/AudioLoader'
-import Images from './utils/Images'
+import Images from './images/Images'
 import {SoundLoader} from './utils/SoundLoader'
 
 import GoldCoinSound from './sounds/gold1.mp3'

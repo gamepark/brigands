@@ -19,7 +19,7 @@ import {useTranslation} from 'react-i18next'
 import {ResetSelectedPartner, resetSelectedPartnerMove} from '../localMoves/SetSelectedPartner'
 import {ResetSelectedTokenInHand, resetSelectedTokenInHandMove} from '../localMoves/SetSelectedTokenInHand'
 import MoveTokenSound from '../sounds/moveToken.mp3'
-import Images from '../utils/Images'
+import Images from '../images/Images'
 import {ACTION_TOKEN, ActionTokenItem, isActionTokenItem} from './DraggableActionToken'
 
 type Props = {
@@ -140,8 +140,8 @@ const isOverStyle = css`
   background-color: rgba(255, 255, 255, 0.5);
 `
 
-const districtWidth = 31
-const districtImageRatio = 1653 / 1638
+export const districtWidth = 31
+export const districtImageRatio = 1653 / 1638
 
 const districtStyle = (image: string) => css`
   width: ${districtWidth}em;
