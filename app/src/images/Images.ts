@@ -13,13 +13,21 @@ import coin1 from './Coin1.png'
 import coin2 from './Coin2.png'
 import coin5 from './Coin5.png'
 
+import dayCardBack from './day-cards/day-card-back.jpg'
+import dayCardCityHall from './day-cards/day-card-city-hall.jpg'
+import dayCardConvoy from './day-cards/day-card-convoy.jpg'
+import dayCardHarbor from './day-cards/day-card-harbor.jpg'
+import dayCardMarket from './day-cards/day-card-market.jpg'
+import dayCardPalace from './day-cards/day-card-palace.jpg'
+import dayCardTavern from './day-cards/day-card-tavern.jpg'
+
 import dice2 from './Dice_2.jpg'
 import dice3 from './Dice_3.jpg'
 import dice4 from './Dice_4.jpg'
-
-import districtStart from './districts/district-start.png'
 import cityHall from './districts/city-hall.png'
 import convoy from './districts/convoy.png'
+
+import districtStart from './districts/district-start.png'
 import harbour from './districts/harbour.png'
 import jail from './districts/jail.png'
 import market from './districts/market.png'
@@ -48,29 +56,15 @@ import sealGreen from './SealGreen.png'
 import sealPurple from './SealPurple.png'
 import sealRed from './SealRed.png'
 import sealYellow from './SealYellow.png'
-
-import victoryToken from './VictoryToken.jpg'
-
-import weekCardBack from './WeekCardBack.jpg'
-import weekCardCityHall1 from './WeekCardCityHall1.jpg'
-import weekCardCityHall2 from './WeekCardCityHall2.jpg'
-import weekCardConvoy1 from './WeekCardConvoy1.jpg'
-import weekCardConvoy2 from './WeekCardConvoy2.jpg'
-import weekCardHarbor1 from './WeekCardHarbor1.jpg'
-import weekCardHarbor2 from './WeekCardHarbor2.jpg'
-import weekCardMarket1 from './WeekCardMarket1.jpg'
-import weekCardMarket2 from './WeekCardMarket2.jpg'
-import weekCardPalace1 from './WeekCardPalace1.jpg'
-import weekCardPalace2 from './WeekCardPalace2.jpg'
-import weekCardTavern1 from './WeekCardTavern1.jpg'
-import weekCardTavern2 from './WeekCardTavern2.jpg'
+import actionTokenBlue from './tokens/action-token-blue.jpg'
+import actionTokenGreen from './tokens/action-token-green.jpg'
+import actionTokenPurple from './tokens/action-token-purple.jpg'
+import actionTokenRed from './tokens/action-token-red.jpg'
 
 import actionTokenWhite from './tokens/action-token-white.jpg'
-import actionTokenGreen from './tokens/action-token-green.jpg'
-import actionTokenBlue from './tokens/action-token-blue.jpg'
-import actionTokenRed from './tokens/action-token-red.jpg'
-import actionTokenPurple from './tokens/action-token-purple.jpg'
 import actionTokenYellow from './tokens/action-token-yellow.jpg'
+
+import victoryToken from './VictoryToken.jpg'
 
 const Images = {
   cardBack, sealBlue, sealGreen, sealPurple, sealRed, sealYellow,
@@ -83,9 +77,7 @@ const Images = {
   dice2, dice3, dice4,
   partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
   actionTokenWhite, actionTokenBlue, actionTokenGreen, actionTokenPurple, actionTokenRed, actionTokenYellow,
-  weekCardBack,
-  weekCardCityHall1, weekCardCityHall2, weekCardHarbor1, weekCardHarbor2, weekCardMarket1, weekCardMarket2, weekCardPalace1, weekCardPalace2, weekCardTavern1,
-  weekCardTavern2, weekCardConvoy1, weekCardConvoy2,
+  dayCardBack, dayCardCityHall, dayCardHarbor, dayCardMarket, dayCardPalace, dayCardTavern, dayCardConvoy,
   background
 }
 

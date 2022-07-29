@@ -42,7 +42,7 @@ const WeekCardsPanel: FC<Props> = ({event, eventDeck, city}) => {
 
       {eventDeck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t('Last Turn')}</p></div>}
 
-      {eventDeck > 1 && [...Array(eventDeck - 1)].map((_, i) => <Picture key={i} alt={t('deck')} src={Images.weekCardBack}
+      {eventDeck > 1 && [...Array(eventDeck - 1)].map((_, i) => <Picture key={i} alt={t('deck')} src={Images.dayCardBack}
                                                                          css={[backCard, hiddenCardStyle, offsetDeck(i + 1), shadow]}/>)}
 
 
@@ -167,7 +167,7 @@ const hiddenCardPosition = css`
 `
 
 const hiddenCardStyle = css`
-  background-image: url(${Images.weekCardBack});
+  background-image: url(${Images.dayCardBack});
   background-size: contain;
   background-repeat: no-repeat;
   background-position: top;
@@ -178,29 +178,29 @@ const hiddenCardStyle = css`
 function getWeekCardImage(image: number): string {
   switch (image) {
     case 0 :
-      return Images.weekCardMarket1
+      return Images.dayCardMarket
     case 1 :
-      return Images.weekCardCityHall1
+      return Images.dayCardCityHall
     case 2 :
-      return Images.weekCardTavern1
+      return Images.dayCardTavern
     case 3 :
-      return Images.weekCardPalace1
+      return Images.dayCardPalace
     case 4 :
-      return Images.weekCardHarbor1
+      return Images.dayCardHarbor
     case 5 :
-      return Images.weekCardPalace2
+      return Images.dayCardPalace
     case 6 :
-      return Images.weekCardMarket2
+      return Images.dayCardMarket
     case 7 :
-      return Images.weekCardHarbor2
+      return Images.dayCardHarbor
     case 8 :
-      return Images.weekCardCityHall2
+      return Images.dayCardCityHall
     case 9 :
-      return Images.weekCardTavern2
+      return Images.dayCardTavern
     case 10 :
-      return Images.weekCardConvoy1
+      return Images.dayCardConvoy
     case 11 :
-      return Images.weekCardConvoy2
+      return Images.dayCardConvoy
     default :
       return 'error : no week Card founded'
   }
