@@ -1,16 +1,10 @@
-import {MAX_ACTIONS} from '../Brigands'
-import Move from '../moves/Move'
-import MoveType from '../moves/MoveType'
-import TakeToken, {takeTokenMove} from '../moves/TakeToken'
-import {ThiefState} from '../PlayerState'
-import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Jail extends DistrictRules {
+  district = DistrictName.Jail
 
-
-  isThiefActive(thief: ThiefState): boolean {
+  /*isThiefActive(thief: ThiefState): boolean {
     return (thief.tokens.length < MAX_ACTIONS && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined)
       || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
   }
@@ -27,7 +21,7 @@ export default class Jail extends DistrictRules {
     } else {
       return jailMoves
     }
-  }
+  }*/
 
   /*getAutomaticMove(): Move | void {
     const partners = this.getDistrictPartners()

@@ -1,6 +1,5 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
-import {EventArray} from '../material/Events'
 import {gainGoldMove} from '../moves/GainGold'
 import Move from '../moves/Move'
 import {ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
@@ -8,19 +7,16 @@ import SpendGold from '../moves/SpendGold'
 import SpendTokens from '../moves/SpendTokens'
 import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
 import TakeToken from '../moves/TakeToken'
-import PlayerState, {isThiefState} from '../PlayerState'
+import PlayerState from '../PlayerState'
 import PlayerView from '../PlayerView'
-import Event from '../types/Event'
-import District from './District'
 import DistrictName from './DistrictName'
 
 export abstract class DistrictRules {
   state: GameState | GameView
-  district: District
+  abstract district: DistrictName
 
-  constructor(state: GameState | GameView, district: District) {
+  constructor(state: GameState | GameView) {
     this.state = state
-    this.district = district
   }
 
   getAutomaticMoves(): Move[] {
@@ -48,11 +44,11 @@ export abstract class DistrictRules {
   }
 
   countPlayerMeeples(player: PlayerState | PlayerView) {
-    return player.meeples.reduce((sum, meeple) => meeple === this.district.name ? sum + 1 : sum, 0)
+    return player.meeples.reduce((sum, meeple) => meeple === this.district ? sum + 1 : sum, 0)
   }
 
   isTurnToPlay(player: PlayerState): boolean {
-    return player.meeples.includes(this.district.name)
+    return player.meeples.includes(this.district)
   }
 
   getLegalMoves(_player: PlayerState): Move[] {
@@ -82,14 +78,5 @@ export abstract class DistrictRules {
   }
 
   onThrowDices(_move: ThrowDicesRandomized) {
-  }
-
-  getThieves() {
-    return this.state.players.filter(isThiefState)
-  }
-
-  isDistrictEvent() {
-    const event: Event = EventArray[this.state.event]
-    return event.district === this.district.name
   }
 }

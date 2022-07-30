@@ -1,8 +1,11 @@
 import {gainGoldMove} from '../moves/GainGold'
 import Move from '../moves/Move'
+import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Market extends DistrictRules {
+  district = DistrictName.Market
+
   getAutomaticMoves(): Move[] {
     const moves: Move[] = []
     for (const player of this.state.players) {

@@ -361,25 +361,24 @@ export function patrolInDistrict(state: GameState | GameView, district: District
   return player.meeples.includes(district)
 }
 
-export function getDistrictRules(state: GameState | GameView, districtName: DistrictName = getCurrentDistrict(state)) {
-  const district = state.city.find(district => district.name === districtName)!
-  switch (districtName) {
+export function getDistrictRules(state: GameState | GameView, district: DistrictName = getCurrentDistrict(state)) {
+  switch (district) {
     case DistrictName.Jail:
-      return new Jail(state, district)
+      return new Jail(state)
     case DistrictName.Tavern:
-      return new Tavern(state, district)
+      return new Tavern(state)
     case DistrictName.Convoy:
-      return new Convoy(state, district)
+      return new Convoy(state)
     case DistrictName.Market:
-      return new Market(state, district)
+      return new Market(state)
     case DistrictName.Palace:
-      return new Palace(state, district)
+      return new Palace(state)
     case DistrictName.CityHall:
-      return new CityHall(state, district)
+      return new CityHall(state)
     case DistrictName.Harbor:
-      return new Harbor(state, district)
+      return new Harbor(state)
     case DistrictName.Treasure:
-      return new Treasure(state, district)
+      return new Treasure(state)
   }
 }
 
