@@ -1,14 +1,13 @@
 import {arrestEveryone} from '../Brigands'
 import Move from '../moves/Move'
 import {throwDicesMove, ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
-import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Convoy extends DistrictRules {
   getAutomaticMoves(): Move[] {
     const meeples = this.countMeeples()
     if (meeples <= 1) {
-      return arrestEveryone(this.state, DistrictName.Convoy)
+      return arrestEveryone(this.state, this.district.name)
     } else {
       return [throwDicesMove(1)]
     }
