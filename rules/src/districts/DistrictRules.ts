@@ -1,6 +1,7 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
 import {EventArray} from '../material/Events'
+import {gainGoldMove} from '../moves/GainGold'
 import Move from '../moves/Move'
 import {ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
 import SpendGold from '../moves/SpendGold'
@@ -56,6 +57,19 @@ export abstract class DistrictRules {
 
   getLegalMoves(_player: PlayerState): Move[] {
     return []
+  }
+
+  shareGold(gold: number): Move[] {
+    const moves: Move[] = []
+    const meeples = this.countMeeples()
+    const meepleShare = Math.floor(gold / meeples)
+    for (const player of this.state.players) {
+      const meeples = this.countPlayerMeeples(player)
+      if (meeples > 0) {
+        moves.push(gainGoldMove(player.role, meeples * meepleShare))
+      }
+    }
+    return moves
   }
 
   onTakeToken(_move: TakeToken) {

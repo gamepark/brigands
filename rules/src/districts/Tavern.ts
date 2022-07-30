@@ -8,7 +8,7 @@ import {DistrictRules} from './DistrictRules'
 
 export default class Tavern extends DistrictRules {
   getLegalMoves(player: PlayerState): Move[] {
-    const moves: Move[] = [throwDicesMove(player.role, 1)]
+    const moves: Move[] = [throwDicesMove(1, player.role)]
     if (player.gold >= 6) {
       moves.push(spendGoldMove(player.role, 6))
     }
@@ -16,12 +16,12 @@ export default class Tavern extends DistrictRules {
   }
 
   onThrowDices(move: ThrowDicesRandomized) {
-    const player = this.state.players.find(player => player.role === move.player)!
-    this.state.nextMoves.push(gainGoldMove(move.player, move.result.reduce((sum, dice) => sum + dice)))
+    const player = this.state.players.find(player => player.role === move.player!)!
+    this.state.nextMoves.push(gainGoldMove(move.player!, move.result.reduce((sum, dice) => sum + dice)))
     this.state.nextMoves.push(takeBackMeepleMove(player.role, player.meeples.indexOf(this.district.name)))
   }
 
   onSpendGold(move: SpendGold) {
-    this.state.nextMoves.push(throwDicesMove(move.player, 3))
+    this.state.nextMoves.push(throwDicesMove(3, move.player))
   }
 }

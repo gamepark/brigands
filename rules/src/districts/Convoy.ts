@@ -1,66 +1,23 @@
+import {arrestEveryone} from '../Brigands'
+import Move from '../moves/Move'
+import {throwDicesMove, ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
+import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Convoy extends DistrictRules {
-  /*getAutomaticMove(): Move | void {
-    const partners = this.getDistrictPartners()
-    if (partners.length === 0) {
-      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
-
-        // TO DO : Delete when we can control AutoMoves in Tutorial
-
-        return
-      } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
-      }
-    }
-    if (this.district.dice === undefined) {
-      if (partners.every(p => p.solvingDone === true)) {
-        return {
-          type: MoveType.TakeBackPartner,
-          thief: this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Convoy))!.role,
-          district: DistrictName.Convoy
-        }
-      } else {
-        if (partners.length < (this.state.players.length < 5 ? 2 : 3)) {
-          return {type: MoveType.ArrestPartners}
-        } else {
-          return {type: MoveType.ThrowDice, dice: rollDice(this.isDistrictEvent() ? 6 : 4), district: DistrictName.Convoy}
-        }
-      }
-    } else if (this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Convoy)).length === 1) {
-      return {
-        type: MoveType.GainGold, district: DistrictName.Convoy,
-        thief: this.getThieves().filter(t => t.partners.some(part => isPartner(part) && part.district === DistrictName.Convoy))[0].role,
-        gold: this.district.dice.reduce((acc, cv) => acc + cv),
-        noShare: true
-      }
-    } else if (partners.every(p => p.solvingDone === true)) {
-      return {
-        type: MoveType.SpareGoldOnTreasure, gold: this.district.dice.reduce((acc, cv) => acc + cv) % partners.length, district: DistrictName.Convoy
-      }
+  getAutomaticMoves(): Move[] {
+    const meeples = this.countMeeples()
+    if (meeples <= 1) {
+      return arrestEveryone(this.state, DistrictName.Convoy)
     } else {
-      return {
-        type: MoveType.GainGold, gold: Math.floor(this.district.dice.reduce((acc, cv) => acc + cv) / partners.length),
-        thief: this.getThieves().find(p => p.partners.filter(part => part.district === DistrictName.Convoy).some(part => part.solvingDone !== true))!.role,
-        district: DistrictName.Convoy
-      }
+      return [throwDicesMove(1)]
     }
   }
 
-  getThiefLegalMoves(): Move[] {
-
-    // TO DO : Delete getThiefLegalMoves when we can control AutoMoves in Tutorial
-
-    if (this.state.tutorial) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
-    } else return []
+  onThrowDices(move: ThrowDicesRandomized) {
+    const gold = 10 + move.result.reduce((sum, dice) => sum + dice)
+    const moves = this.shareGold(gold)
+    moves.push(...this.takeBackMeeplesMoves())
+    return moves
   }
-
-  isThiefActive(thief: ThiefState): boolean {
-
-    // TO DO : Delete isThiefActive when we can control AutoMoves in Tutorial
-
-    return this.state.tutorial && thief.role === PlayerRole.YellowThief
-  }*/
-
 }

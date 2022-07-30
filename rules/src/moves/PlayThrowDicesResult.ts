@@ -8,8 +8,8 @@ import MoveView from './MoveView'
 
 type ThrowDices = {
   type: MoveType.ThrowDices
-  player: PlayerRole
   dices: number
+  player?: PlayerRole
 }
 
 export default ThrowDices
@@ -18,8 +18,10 @@ export type ThrowDicesRandomized = ThrowDices & {
   result: number[]
 }
 
-export function throwDicesMove(player: PlayerRole, dices: number): ThrowDices {
-  return {type: MoveType.ThrowDices, player, dices}
+export function throwDicesMove(dices: number, player?: PlayerRole): ThrowDices {
+  const move: ThrowDices = {type: MoveType.ThrowDices, dices}
+  if (player) move.player = player
+  return move
 }
 
 export function randomizeThrowDices(move: ThrowDices): ThrowDicesRandomized {
