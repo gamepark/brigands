@@ -2,7 +2,6 @@
 import {getPlayerName} from '@gamepark/brigands/BrigandsOptions'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getPrince, getThieves} from '@gamepark/brigands/GameView'
-import {EventArray} from '@gamepark/brigands/material/Events'
 import {tellYouAreReadyMove} from '@gamepark/brigands/moves/TellYouAreReady'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isThiefState, ThiefState} from '@gamepark/brigands/PlayerState'
@@ -183,7 +182,7 @@ function HeaderOnGoingGameText({game}: { game: GameView }) {
         return <> {t('solving.arrest')} </>
       } else {
         const partnersOnDistrict = getThieves(game).flatMap(thief => thief.partners.filter(part => isPartner(part) && part.district === district.name))
-        const isEvent: boolean = EventArray[game.event].district === district.name
+        const isEvent: boolean = game.dayCards.includes(district.name)
         switch (district.name) {
           case DistrictName.Jail: {
 

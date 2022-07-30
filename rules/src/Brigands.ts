@@ -15,10 +15,9 @@ import Tavern from './districts/Tavern'
 import Treasure from './districts/Treasure'
 import GameState from './GameState'
 import GameView from './GameView'
-import {EventArray} from './material/Events'
 import {arrestPartners} from './moves/ArrestPartners'
 import {betGold} from './moves/BetGold'
-import {drawEvent, drawEventMove, getDrawEventView} from './moves/DrawEvent'
+import {drawDayCard, drawDayCardMove, getDrawEventView} from './moves/DrawDayCard'
 import {gainGold} from './moves/GainGold'
 import {judgePrisoners} from './moves/JudgePrisoners'
 import Move from './moves/Move'
@@ -63,8 +62,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         players: setupPlayers(arg.players),
         city: setupCity(),
         phase: Phase.NewDay,
-        eventDeck: setupEventDeck(),
-        event: -1,
+        deck: shuffle(districtNames),
+        dayCards: [],
         nextMoves: [],
         currentDistrict: undefined,
         tutorial: false
@@ -146,7 +145,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
     switch (this.state.phase) {
       case Phase.NewDay:
-        return [...this.state.players.filter(p => p.tokens.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
+        return [...this.state.players.filter(p => p.tokens.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawDayCardMove, moveOnNextPhaseMove]
       case Phase.Planning:
         return this.state.players.every(player => player.isReady) ? [moveOnNextPhaseMove] : []
       case Phase.Solving:
@@ -183,8 +182,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     switch (move.type) {
       case MoveType.TakeToken:
         return takeToken(this.state, move)
-      case MoveType.DrawEvent:
-        return drawEvent(this.state)
+      case MoveType.DrawDayCard:
+        return drawDayCard(this.state)
       case MoveType.MoveOnNextPhase:
         return moveOnNextPhase(this.state)
       case MoveType.PlaceMeeple:
@@ -233,7 +232,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   getView(playerId?: PlayerRole): GameView {
     return {
       ...this.state,
-      eventDeck: this.state.eventDeck.length,
+      deck: this.state.deck.length,
       players: this.state.players.map(player => {
         if (this.state.phase === undefined || isPrinceState(player) || player.role === playerId) {
           return player
@@ -255,7 +254,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
 
   getMoveView(move: MoveRandomized, _playerId?: PlayerRole): MoveView {
     switch (move.type) {
-      case MoveType.DrawEvent:
+      case MoveType.DrawDayCard:
         return getDrawEventView(this.state)
 
       case MoveType.RevealPartnersDistricts:
@@ -331,11 +330,6 @@ function setupCity(): District[] {
   districts.push(DistrictName.Jail)
   return districts.map(district => ({name: district, gold: district === DistrictName.Treasure ? 0 : undefined}))
 
-}
-
-function setupEventDeck(): number[] {
-  const result = shuffle(Array.from(EventArray.keys()))
-  return result.slice(0, 6)
 }
 
 export function canPlaceMeeple(player: PlayerState | PlayerView, district: DistrictName) {

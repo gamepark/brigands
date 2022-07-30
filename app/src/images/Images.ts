@@ -20,6 +20,7 @@ import dayCardHarbor from './day-cards/day-card-harbor.jpg'
 import dayCardMarket from './day-cards/day-card-market.jpg'
 import dayCardPalace from './day-cards/day-card-palace.jpg'
 import dayCardTavern from './day-cards/day-card-tavern.jpg'
+import dayCardTreasure from './day-cards/day-card-treasure.jpg'
 
 import dice2 from './Dice_2.jpg'
 import dice3 from './Dice_3.jpg'
@@ -77,7 +78,7 @@ const Images = {
   dice2, dice3, dice4,
   partnerBlue, partnerGreen, partnerPurple, partnerRed, partnerYellow,
   actionTokenWhite, actionTokenBlue, actionTokenGreen, actionTokenPurple, actionTokenRed, actionTokenYellow,
-  dayCardBack, dayCardCityHall, dayCardHarbor, dayCardMarket, dayCardPalace, dayCardTavern, dayCardConvoy,
+  dayCardBack, dayCardCityHall, dayCardHarbor, dayCardMarket, dayCardPalace, dayCardTavern, dayCardConvoy, dayCardTreasure,
   background
 }
 

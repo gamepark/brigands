@@ -1,6 +1,6 @@
 enum MoveType {
   TakeToken = 1,
-  DrawEvent,
+  DrawDayCard,
   MoveOnNextPhase,
   PlaceMeeple,
   PlaceToken,

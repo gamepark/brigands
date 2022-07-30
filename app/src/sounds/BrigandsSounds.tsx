@@ -1,5 +1,5 @@
 import ArrestPartners, {isArrestPartners} from '@gamepark/brigands/moves/ArrestPartners'
-import DrawEvent, {isDrawEvent} from '@gamepark/brigands/moves/DrawEvent'
+import DrawDayCard, {isDrawDayCard} from '@gamepark/brigands/moves/DrawDayCard'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
 import RevealPartnersDistricts, {isRevealPartnersDistrict} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import ThrowDices, {isThrowDice} from '@gamepark/brigands/moves/PlayThrowDicesResult'
@@ -23,7 +23,7 @@ type Props = {
 const BrigandsSounds: FC<Props> = ({audioLoader, phase}) => {
 
   const gainGoldAnimation = useAnimation<GainGold>(animation => isGainGold(animation.move))
-  const drawEventAnimation = useAnimation<DrawEvent>(animation => isDrawEvent(animation.move))
+  const drawEventAnimation = useAnimation<DrawDayCard>(animation => isDrawDayCard(animation.move))
   const revealCardsAnimation = useAnimation<RevealPartnersDistricts>(animation => isRevealPartnersDistrict(animation.move))
   const diceRollAnimation = useAnimation<ThrowDices>(animation => isThrowDice(animation.move))
   const arrestPartnersAnimation = useAnimation<ArrestPartners>(animation => isArrestPartners(animation.move))

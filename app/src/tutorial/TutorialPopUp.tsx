@@ -114,9 +114,9 @@ const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutori
 
   const resetTutorialDisplay = () => {
     if (game.phase !== undefined) {
-      if (game.eventDeck === 2) {
+      if (game.deck === 2) {
         setHideFifthTurnInfo(false)
-      } else if (game.eventDeck === 0) {
+      } else if (game.deck === 0) {
         setHideLastTurnInfo(false)
       } else {
         setTutorialIndex(0)
@@ -154,7 +154,7 @@ const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutori
   }, [actionsNumber, failures])
 
   useEffect(() => {
-    if (game.eventDeck <= 3) {
+    if (game.deck <= 3) {
       tutorial.setOpponentsPlayAutomatically(true)
     }
 
@@ -167,7 +167,7 @@ const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutori
     if (actionsNumber === 4 && actions && actions.length === 4) {
       tutorial.playNextMoves(3)
     }
-  }, [actionsNumber, game.eventDeck])
+  }, [actionsNumber, game.deck])
 
 
   const currentMessage = tutorialMessage(tutorialIndex)
@@ -206,7 +206,7 @@ const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutori
                  css={[arrowStyle(currentMessage.arrow.angle), displayPopup ? showArrowStyle(currentMessage.arrow.top, currentMessage.arrow.left) : hideArrowStyle]}/>
       }
 
-      {game.eventDeck === 1 && !hideFifthTurnInfo &&
+      {game.deck === 1 && !hideFifthTurnInfo &&
       <div css={[popupStyle, popupPosition(fifthTurnInfo)]}>
         <div css={closePopupStyle} onClick={() => setHideFifthTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
         <h2>{fifthTurnInfo.title(t)}</h2>
@@ -216,7 +216,7 @@ const TutorialPopup: FC<{ game: GameView, tutorial: Tutorial }> = ({game, tutori
       }
 
       {
-        game.eventDeck === 0 && !hideLastTurnInfo &&
+        game.deck === 0 && !hideLastTurnInfo &&
         <div css={[popupStyle, popupPosition(lastTurnInfo)]}>
           <div css={closePopupStyle} onClick={() => setHideLastTurnInfo(true)}><FontAwesomeIcon icon={faTimes}/></div>
           <h2>{lastTurnInfo.title(t)}</h2>

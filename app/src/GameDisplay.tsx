@@ -59,7 +59,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
       && !betAnimation && !gainGoldAnimation && !diceAnimation
   }
 
-  const [welcomePopUpClosed, setWelcomePopUpClosed] = useState(tutorial ? true : playerId === undefined || game.eventDeck < 5)
+  const [welcomePopUpClosed, setWelcomePopUpClosed] = useState(tutorial ? true : playerId === undefined || game.deck < 5)
   const showWelcomePopup = !welcomePopUpClosed
 
   const [districtPopUpClosed, setDistrictPopUpClosed] = useState<true | DistrictName>(true)
@@ -82,9 +82,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
               open={(district) => setDistrictPopUpClosed(district)}
         />
 
-        <WeekCardsPanel event={game.event}
-                        eventDeck={game.eventDeck}
-                        city={game.city}/>
+        <WeekCardsPanel deck={game.deck} dayCards={game.dayCards} city={game.city}/>
 
         <PrincePanel player={players.find(isPrinceState)!}
                      city={game.city}
@@ -120,8 +118,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
                       prince={game.players.find(isPrinceState)!}
                       partnerSelected={game.selectedPartner?.partnerNumber}
                       tokensInBankSelected={game.selectedTokensInBank}
-                      eventCard={game.event}
-                      deckSize={game.eventDeck}
+                      deckSize={game.deck}
                       tokenInHandSelected={game.selectedTokenInHand}
                       tutorial={game.tutorial}
           />

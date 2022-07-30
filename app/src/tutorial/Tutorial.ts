@@ -18,7 +18,7 @@ const tabCity: District[] = [
   {name: DistrictName.Jail}
 ]
 const tabPlayers = setupPlayers([{id: PlayerRole.YellowThief}, {id: PlayerRole.GreenThief}, {id: PlayerRole.Prince}])
-const deckTab: number[] = [6, 0, 1, 5, 8, 7]
+const deck: number[] = [DistrictName.Market, DistrictName.Tavern, DistrictName.Harbor, DistrictName.Palace, DistrictName.CityHall, DistrictName.Convoy]
 
 const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
 
@@ -26,8 +26,8 @@ const BrigandsTutorial: TutorialDescription<GameState, Move, PlayerRole> = {
     city: tabCity,
     players: tabPlayers,
     phase: Phase.NewDay,
-    eventDeck: deckTab,
-    event: -1,
+    deck,
+    dayCards: [],
     nextMoves: [],
     currentDistrict: undefined,
     tutorial: true

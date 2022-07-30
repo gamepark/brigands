@@ -47,7 +47,6 @@ type Props = {
   partnersForCards?: Partner[]
   partnerSelected?: number
   tokensInBankSelected?: ThiefTokenInBank[]
-  eventCard: number
   deckSize: number
   tokenInHandSelected?: ThiefTokenInHand
   tutorial?: boolean
@@ -56,7 +55,7 @@ type Props = {
 
 const ThiefPanel: FC<Props> = ({
                                  player, prince, phase, positionForPartners, city, numberOfThieves, districtResolved, thieves, partnersForCards,
-                                 displayedThievesOrder, partnerSelected, tokensInBankSelected, eventCard, deckSize, tokenInHandSelected, tutorial, ...props
+                                 displayedThievesOrder, partnerSelected, tokensInBankSelected, deckSize, tokenInHandSelected, tutorial, ...props
                                }) => {
 
   const playerId = usePlayerId<PlayerRole>()

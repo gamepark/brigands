@@ -6,8 +6,8 @@ import PatrolInHand from './types/PatrolInHand'
 import ThiefTokenInBank from './types/ThiefTokenInBank'
 import ThiefTokenInHand from './types/ThiefTokenInHand'
 
-type GameView = Omit<GameState, 'eventDeck' | 'players'> & {
-  eventDeck: number
+type GameView = Omit<GameState, 'deck' | 'players'> & {
+  deck: number
   players: PlayerView[]
   selectedPartner?: PartnerInHand
   selectedTokenInHand?: ThiefTokenInHand
@@ -27,5 +27,5 @@ export function getThieves(state: GameState | GameView) {
 }
 
 export function isGameView(state: GameState | GameView): state is GameView {
-  return typeof state.eventDeck === 'number'
+  return typeof state.deck === 'number'
 }

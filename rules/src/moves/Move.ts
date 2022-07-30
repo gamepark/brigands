@@ -1,6 +1,6 @@
 import ArrestPartners from './ArrestPartners'
 import BetGold from './BetGold'
-import DrawEvent from './DrawEvent'
+import DrawDayCard from './DrawDayCard'
 import GainGold from './GainGold'
 import JudgePrisoners from './JudgePrisoners'
 import MoveOnDistrictResolved from './MoveOnDistrictResolved'
@@ -22,7 +22,7 @@ import TakeToken from './TakeToken'
 import TellYouAreReady from './TellYouAreReady'
 import ThrowDices from './PlayThrowDicesResult'
 
-type Move = TakeToken | DrawEvent | MoveOnNextPhase | PlaceMeeple | PlaceToken | TellYouAreReady
+type Move = TakeToken | DrawDayCard | MoveOnNextPhase | PlaceMeeple | PlaceToken | TellYouAreReady
   | TakeBackMeeple | GainGold | SpendTokens | SpendGold | ThrowDices
 
   | RevealPartnersDistricts

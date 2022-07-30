@@ -10,7 +10,7 @@ export type BrigandsOptions = {
 }
 
 export function isGameOptions(arg: GameState | BrigandsOptions): arg is BrigandsOptions {
-  return typeof (arg as GameState).eventDeck === 'undefined'
+  return typeof (arg as GameState).deck === 'undefined'
 }
 
 export const BrigandsOptionsSpec: OptionsSpec<BrigandsOptions> = {

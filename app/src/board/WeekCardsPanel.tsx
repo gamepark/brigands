@@ -2,8 +2,7 @@
 import {css, keyframes} from '@emotion/react'
 import District from '@gamepark/brigands/districts/District'
 import DistrictName from '@gamepark/brigands/districts/DistrictName'
-import {EventArray} from '@gamepark/brigands/material/Events'
-import {DrawEventView, isDrawEvent} from '@gamepark/brigands/moves/DrawEvent'
+import {DrawDayCardView, isDrawDayCard} from '@gamepark/brigands/moves/DrawDayCard'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {Picture} from '@gamepark/react-components'
@@ -13,37 +12,37 @@ import Images from '../images/Images'
 import {cityCenterLeft, weekCardHeight, weekCardWidth} from '../utils/styles'
 
 type Props = {
-  event: number
-  eventDeck: number
+  deck: number
+  dayCards: DistrictName[]
   city: District[]
 }
 
-const WeekCardsPanel: FC<Props> = ({event, eventDeck, city}) => {
-  const animationDrawEvent = useAnimation<DrawEventView>(animation => isDrawEvent(animation.move))
+const WeekCardsPanel: FC<Props> = ({dayCards, deck, city}) => {
+  const animationDrawEvent = useAnimation<DrawDayCardView>(animation => isDrawDayCard(animation.move))
   const playerId = usePlayerId<PlayerRole>()
   const {t} = useTranslation()
   return (
     <>
-      <div css={[revealedCardPosition(getPositionOfDistrict(city, EventArray[event].district)),
-        revealedCardStyle(getWeekCardImage(event)),
+      <div css={[revealedCardPosition(getPositionOfDistrict(city, dayCards[0])),
+        revealedCardStyle(getWeekCardImage(dayCards[0])),
         shadow,
         animationDrawEvent && fadeOut(animationDrawEvent.duration)]}/>
       {animationDrawEvent ?
         <div
-          css={[hiddenCardPosition, drawEventAnimation(animationDrawEvent.duration, getPositionOfDistrict(city, EventArray[animationDrawEvent.move.event].district), playerId === undefined || playerId === PlayerRole.Prince)]}>
-          <div css={[frontCard, shadow, card, revealedCardStyle(getWeekCardImage(animationDrawEvent.move.event))]}/>
+          css={[hiddenCardPosition, drawEventAnimation(animationDrawEvent.duration, getPositionOfDistrict(city, animationDrawEvent.move.district), playerId === undefined || playerId === PlayerRole.Prince)]}>
+          <div css={[frontCard, shadow, card, revealedCardStyle(getWeekCardImage(animationDrawEvent.move.district))]}/>
           <div css={[backCard, shadow, card, hiddenCardStyle]}/>
         </div>
-        : eventDeck > 0 && <div css={[hiddenCardPosition, shadow]}>
+        : deck > 0 && <div css={[hiddenCardPosition, shadow]}>
         <div css={[frontCard, shadow, card]}/>
         <div css={[backCard, shadow, card, hiddenCardStyle]}/>
       </div>
       }
 
-      {eventDeck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t('Last Turn')}</p></div>}
+      {deck <= 1 && <div css={[hiddenCardPosition, lastTurnStyle]}><p>{t('Last Turn')}</p></div>}
 
-      {eventDeck > 1 && [...Array(eventDeck - 1)].map((_, i) => <Picture key={i} alt={t('deck')} src={Images.dayCardBack}
-                                                                         css={[backCard, hiddenCardStyle, offsetDeck(i + 1), shadow]}/>)}
+      {deck > 1 && [...Array(deck - 1)].map((_, i) => <Picture key={i} alt={t('deck')} src={Images.dayCardBack}
+                                                               css={[backCard, hiddenCardStyle, offsetDeck(i + 1), shadow]}/>)}
 
 
     </>
@@ -175,34 +174,24 @@ const hiddenCardStyle = css`
   border-radius: 15% / 10%;
 `
 
-function getWeekCardImage(image: number): string {
-  switch (image) {
-    case 0 :
+function getWeekCardImage(district: DistrictName): string {
+  switch (district) {
+    case DistrictName.Market:
       return Images.dayCardMarket
-    case 1 :
+    case DistrictName.CityHall:
       return Images.dayCardCityHall
-    case 2 :
-      return Images.dayCardTavern
-    case 3 :
-      return Images.dayCardPalace
-    case 4 :
+    case DistrictName.Harbor:
       return Images.dayCardHarbor
-    case 5 :
-      return Images.dayCardPalace
-    case 6 :
-      return Images.dayCardMarket
-    case 7 :
-      return Images.dayCardHarbor
-    case 8 :
-      return Images.dayCardCityHall
-    case 9 :
+    case DistrictName.Tavern:
       return Images.dayCardTavern
-    case 10 :
+    case DistrictName.Palace:
+      return Images.dayCardPalace
+    case DistrictName.Convoy:
       return Images.dayCardConvoy
-    case 11 :
-      return Images.dayCardConvoy
-    default :
-      return 'error : no week Card founded'
+    case DistrictName.Treasure:
+      return Images.dayCardTreasure
+    default:
+      return Images.dayCardBack
   }
 }
 

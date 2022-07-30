@@ -34,7 +34,7 @@ const brigandsAnimations: Animations<GameView, MoveView, PlayerRole> = {
       return resolveStealDurationUnit * stealResult.length
     } else if (move.type === MoveType.MovePartner) {
       return 0
-    } else if (move.type === MoveType.DrawEvent) {
+    } else if (move.type === MoveType.DrawDayCard) {
       return 6
     } else if (move.type === MoveType.JudgePrisoners) {
       return 2

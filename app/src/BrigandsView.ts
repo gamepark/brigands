@@ -2,7 +2,7 @@ import canUndo from '@gamepark/brigands/canUndo'
 import GameView from '@gamepark/brigands/GameView'
 import {arrestPartners} from '@gamepark/brigands/moves/ArrestPartners'
 import {betGold} from '@gamepark/brigands/moves/BetGold'
-import {drawEventInView} from '@gamepark/brigands/moves/DrawEvent'
+import {drawDayCardInView} from '@gamepark/brigands/moves/DrawDayCard'
 import {gainGold} from '@gamepark/brigands/moves/GainGold'
 import {judgePrisoners} from '@gamepark/brigands/moves/JudgePrisoners'
 import {moveOnDistrictResolved} from '@gamepark/brigands/moves/MoveOnDistrictResolved'
@@ -48,8 +48,8 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
     switch (move.type) {
       case MoveType.TakeToken:
         return takeToken(this.state, move)
-      case MoveType.DrawEvent:
-        return drawEventInView(this.state, move)
+      case MoveType.DrawDayCard:
+        return drawDayCardInView(this.state, move)
       case MoveType.MoveOnNextPhase:
         return moveOnNextPhase(this.state)
       case MoveType.PlaceMeeple:
