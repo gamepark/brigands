@@ -161,20 +161,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
           }
         }
         if (patrolInDistrict(this.state, district)) {
-          const moves: Move[] = []
-          for (const player of this.state.players) {
-            for (let meeple = 0; meeple < player.meeples.length; meeple++) {
-              const meepleLocation = player.meeples[meeple]
-              if (meepleLocation === district) {
-                if (player.role !== PlayerRole.Prince && meeple < 3) {
-                  moves.unshift(placeMeepleMove(player.role, DistrictName.Jail, meeple))
-                } else {
-                  moves.push(takeBackMeepleMove(player.role, meeple))
-                }
-              }
-            }
-          }
-          return moves
+          return arrestEveryone(this.state, district)
         }
         return getDistrictRules(this.state, district).getAutomaticMoves()
       default:
@@ -394,4 +381,21 @@ export function getDistrictRules(state: GameState | GameView, districtName: Dist
     case DistrictName.Treasure:
       return new Treasure(state, district)
   }
+}
+
+export function arrestEveryone(state: GameState | GameView, district: DistrictName) {
+  const moves: Move[] = []
+  for (const player of state.players) {
+    for (let meeple = 0; meeple < player.meeples.length; meeple++) {
+      const meepleLocation = player.meeples[meeple]
+      if (meepleLocation === district) {
+        if (player.role !== PlayerRole.Prince && meeple < 3) {
+          moves.unshift(placeMeepleMove(player.role, DistrictName.Jail, meeple))
+        } else {
+          moves.push(takeBackMeepleMove(player.role, meeple))
+        }
+      }
+    }
+  }
+  return moves
 }
