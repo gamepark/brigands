@@ -18,12 +18,13 @@ import {revealGoldsInView} from '@gamepark/brigands/moves/RevealGolds'
 import {revealPartnersDistrictsInView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
 import {solvePartner} from '@gamepark/brigands/moves/SolvePartner'
 import {spareGoldOnTreasure} from '@gamepark/brigands/moves/SpareGoldOnTreasure'
+import {spendGold} from '@gamepark/brigands/moves/SpendGold'
 import {spendTokens} from '@gamepark/brigands/moves/SpendTokens'
 import {takeBackMeeple} from '@gamepark/brigands/moves/TakeBackMeeple'
 import {takeBackPartner} from '@gamepark/brigands/moves/TakeBackPartner'
 import {takeToken} from '@gamepark/brigands/moves/TakeToken'
 import {tellYouAreReady} from '@gamepark/brigands/moves/TellYouAreReady'
-import {throwDice} from '@gamepark/brigands/moves/ThrowDice'
+import {throwDices} from '@gamepark/brigands/moves/PlayThrowDicesResult'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {Action, Game, Undo} from '@gamepark/rules-api'
 import SetSelectedHeadStart, {resetSelectedHeadStart, ResetSelectedHeadStart, setSelectedHeadStart} from './localMoves/SetSelectedHeadStart'
@@ -63,11 +64,13 @@ export default class BrigandsView implements Game<GameView, MoveView>, Undo<Game
         return gainGold(this.state, move)
       case MoveType.SpendTokens:
         return spendTokens(this.state, move)
+      case MoveType.SpendGold:
+        return spendGold(this.state, move)
+      case MoveType.ThrowDices:
+        return throwDices(this.state, move)
 
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistrictsInView(this.state, move)
-      case MoveType.ThrowDice:
-        return throwDice(this.state, move)
       case MoveType.TakeBackPartner:
         return takeBackPartner(this.state, move)
       case MoveType.SpareGoldOnTreasure:

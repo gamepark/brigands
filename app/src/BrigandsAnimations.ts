@@ -22,8 +22,8 @@ const brigandsAnimations: Animations<GameView, MoveView, PlayerRole> = {
       return 2
     } else if (move.type === MoveType.TakeBackPartner) {
       return 1
-    } else if (move.type === MoveType.ThrowDice) {
-      return move.dice.length === 0 ? 0 : 2
+    } else if (move.type === MoveType.ThrowDices) {
+      return 2
     } else if (move.type === MoveType.ResolveStealToken) {
       const stealResult: Steal[] = []
       move.steals.forEach(s => {

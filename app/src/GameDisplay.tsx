@@ -5,8 +5,8 @@ import DistrictName from '@gamepark/brigands/districts/DistrictName'
 import GameView, {getThieves} from '@gamepark/brigands/GameView'
 import BetGold, {isBetGold} from '@gamepark/brigands/moves/BetGold'
 import GainGold, {isGainGold} from '@gamepark/brigands/moves/GainGold'
+import {isThrowDice, ThrowDicesRandomized} from '@gamepark/brigands/moves/PlayThrowDicesResult'
 import {isRevealPartnersDistrict, RevealPartnersDistrictsView} from '@gamepark/brigands/moves/RevealPartnersDistricts'
-import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
 import Phase from '@gamepark/brigands/phases/Phase'
 import {isPrinceState, isThief, isThiefState, PrinceState, ThiefState} from '@gamepark/brigands/PlayerState'
 import Partner, {isPartner, isPartnerView} from '@gamepark/brigands/types/Partner'
@@ -39,7 +39,7 @@ export default function GameDisplay({game, audioLoader}: Props) {
   const tutorial = useTutorial()
 
   const betAnimation = useAnimation<BetGold>(animation => isBetGold(animation.move))
-  const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
+  const diceAnimation = useAnimation<ThrowDicesRandomized>(animation => isThrowDice(animation.move))
   const gainGoldAnimation = useAnimation<GainGold>(animation => isGainGold(animation.move))
   const revealPartnersAnimation = useAnimation<RevealPartnersDistrictsView>(animation => isRevealPartnersDistrict(animation.move))
 
@@ -98,8 +98,8 @@ export default function GameDisplay({game, audioLoader}: Props) {
         />
         }
 
-        {game.currentDistrict !== undefined && game.city[game.currentDistrict].name !== DistrictName.Treasure && (diceAnimation ? diceAnimation.move.dice.length !== 0 : (game.city[game.currentDistrict].dice !== undefined && game.city[game.currentDistrict].dice!.length !== 0)) &&
-        <DicePopUp dice={diceAnimation ? diceAnimation.move.dice : game.city[game.currentDistrict].dice}
+        {game.currentDistrict !== undefined && game.city[game.currentDistrict].name !== DistrictName.Treasure && diceAnimation &&
+        <DicePopUp dice={diceAnimation.move.result}
         />}
 
         {players.filter(isThief).map((p, index) =>

@@ -1,4 +1,4 @@
-import {Action, SecretInformation, SimultaneousGame, TimeLimit, Undo} from '@gamepark/rules-api'
+import {Action, RandomMove, SecretInformation, SimultaneousGame, TimeLimit, Undo} from '@gamepark/rules-api'
 import {shuffle} from 'lodash'
 import {actionTypes} from './ActionType'
 import {BrigandsOptions, BrigandsPlayerOptions, isGameOptions} from './BrigandsOptions'
@@ -25,22 +25,24 @@ import Move from './moves/Move'
 import {moveOnDistrictResolved} from './moves/MoveOnDistrictResolved'
 import {moveOnNextPhase, moveOnNextPhaseMove} from './moves/MoveOnNextPhase'
 import {movePartner} from './moves/MovePartner'
+import MoveRandomized from './moves/MoveRandomized'
 import MoveType from './moves/MoveType'
 import MoveView from './moves/MoveView'
 import {placeMeeple, placeMeepleMove} from './moves/PlaceMeeple'
 import {placeToken, placeTokenMove} from './moves/PlaceToken'
 import {playHeadStart} from './moves/PlayHeadStart'
+import {randomizeThrowDices, throwDices} from './moves/PlayThrowDicesResult'
 import {resolveStealToken} from './moves/ResolveStealToken'
 import {getRevealGoldsView, revealGolds} from './moves/RevealGolds'
 import {getRevealPartnersDistrictView, revealPartnersDistricts} from './moves/RevealPartnersDistricts'
 import {solvePartner} from './moves/SolvePartner'
 import {spareGoldOnTreasure} from './moves/SpareGoldOnTreasure'
+import {spendGold} from './moves/SpendGold'
 import {spendTokens} from './moves/SpendTokens'
 import {takeBackMeeple, takeBackMeepleMove} from './moves/TakeBackMeeple'
 import {takeBackPartner} from './moves/TakeBackPartner'
 import {takeToken, takeTokenMove} from './moves/TakeToken'
 import {tellYouAreReady, tellYouAreReadyMove} from './moves/TellYouAreReady'
-import {throwDice} from './moves/ThrowDice'
 import Phase from './phases/Phase'
 import PlayerState, {isPrinceState, isThiefState} from './PlayerState'
 import PlayerView from './PlayerView'
@@ -49,6 +51,7 @@ import PlayerRole from './types/PlayerRole'
 
 export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRole>
   implements SecretInformation<GameState, GameView, Move, MoveView, PlayerRole>,
+    RandomMove<GameState, Move, MoveRandomized>,
     Undo<GameState, Move, PlayerRole>,
     TimeLimit<GameState, Move, PlayerRole> {
 
@@ -138,6 +141,9 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
   }
 
   getAutomaticMoves(): Move[] {
+    if (this.state.nextMoves.length > 0) {
+      return [this.state.nextMoves[0]]
+    }
     switch (this.state.phase) {
       case Phase.NewDay:
         return [...this.state.players.filter(p => p.tokens.length < MAX_ACTIONS).map(p => takeTokenMove(p.role)), drawEventMove, moveOnNextPhaseMove]
@@ -176,7 +182,17 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
   }
 
-  play(move: Move): void {
+  randomize(move: Move): Move & MoveRandomized {
+    if (move.type === MoveType.ThrowDices) {
+      return randomizeThrowDices(move)
+    }
+    return move
+  }
+
+  play(move: MoveRandomized): void {
+    if (this.state.nextMoves.length && this.state.nextMoves[0].type === move.type) {
+      this.state.nextMoves.pop()
+    }
     switch (move.type) {
       case MoveType.TakeToken:
         return takeToken(this.state, move)
@@ -196,10 +212,12 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return gainGold(this.state, move)
       case MoveType.SpendTokens:
         return spendTokens(this.state, move)
+      case MoveType.SpendGold:
+        return spendGold(this.state, move)
+      case MoveType.ThrowDices:
+        return throwDices(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistricts(this.state)
-      case MoveType.ThrowDice:
-        return throwDice(this.state, move)
       case MoveType.TakeBackPartner:
         return takeBackPartner(this.state, move)
       case MoveType.SpareGoldOnTreasure:
@@ -233,7 +251,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         if (this.state.phase === undefined || isPrinceState(player) || player.role === playerId) {
           return player
         } else {
-          const {gold, partners, ...thiefView} = player
+          const {partners, ...thiefView} = player
           return {
             ...thiefView,
             partners: this.state.phase === Phase.Solving ? partners : getPartnersView(partners)
@@ -248,7 +266,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     return this.getView(playerId)
   }
 
-  getMoveView(move: Move, _playerId?: PlayerRole): MoveView {
+  getMoveView(move: MoveRandomized, _playerId?: PlayerRole): MoveView {
     switch (move.type) {
       case MoveType.DrawEvent:
         return getDrawEventView(this.state)
@@ -264,7 +282,11 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
     }
   }
 
-  canUndo(action: Action<Move, PlayerRole>, consecutiveActions: Action<Move, PlayerRole>[]): boolean {
+  getPlayerMoveView(move: MoveRandomized, playerId: PlayerRole): MoveView {
+    return this.getMoveView(move, playerId)
+  }
+
+  canUndo(action: Action<MoveRandomized, PlayerRole>, consecutiveActions: Action<MoveRandomized, PlayerRole>[]): boolean {
     return canUndo(action, consecutiveActions)
   }
 
@@ -277,10 +299,6 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
       default:
         return 0
     }
-  }
-
-  getPlayerMoveView(move: Move, playerId: PlayerRole): MoveView {
-    return this.getMoveView(move, playerId)
   }
 
   getThieves() {

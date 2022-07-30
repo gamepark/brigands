@@ -2,6 +2,8 @@ import GameState from '../GameState'
 import GameView from '../GameView'
 import {EventArray} from '../material/Events'
 import Move from '../moves/Move'
+import {ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
+import SpendGold from '../moves/SpendGold'
 import SpendTokens from '../moves/SpendTokens'
 import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
 import TakeToken from '../moves/TakeToken'
@@ -60,6 +62,12 @@ export abstract class DistrictRules {
   }
 
   onSpendTokens(_move: SpendTokens) {
+  }
+
+  onSpendGold(_move: SpendGold) {
+  }
+
+  onThrowDices(_move: ThrowDicesRandomized) {
   }
 
   getThieves() {

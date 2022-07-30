@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import {css, keyframes} from '@emotion/react'
-import ThrowDice, {isThrowDice} from '@gamepark/brigands/moves/ThrowDice'
+import ThrowDices, {isThrowDice} from '@gamepark/brigands/moves/PlayThrowDicesResult'
 import PlayerRole from '@gamepark/brigands/types/PlayerRole'
 import {useAnimation, usePlayerId} from '@gamepark/react-client'
 import {FC, HTMLAttributes} from 'react'
@@ -14,7 +14,7 @@ const DicePopUp: FC<Props> = ({dice, ...props}) => {
 
   const playerId = usePlayerId<PlayerRole>()
 
-  const diceAnimation = useAnimation<ThrowDice>(animation => isThrowDice(animation.move))
+  const diceAnimation = useAnimation<ThrowDices>(animation => isThrowDice(animation.move))
 
   return (
 

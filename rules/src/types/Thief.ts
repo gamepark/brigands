@@ -6,7 +6,7 @@ type Thief = {
   partners: Partner[]
 }
 
-export type ThiefView = Omit<ThiefState, 'gold' | 'partners'> & {
+export type ThiefView = Omit<ThiefState, 'partners'> & {
   partners: (PartnerView | Partner)[]
 }
 
