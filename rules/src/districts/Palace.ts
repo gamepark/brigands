@@ -13,10 +13,11 @@ export default class Palace extends DistrictRules {
     if (meeples >= 3) {
       moves.push(...arrestEveryone(this.state, this.district))
     } else {
+      const gainPerMeeple = this.hasDayCard() ? 8 : 5
       for (const player of this.state.players) {
         const playerMeeples = this.countPlayerMeeples(player)
         if (playerMeeples > 0) {
-          moves.push(gainGoldMove(player.role, playerMeeples * 5))
+          moves.push(gainGoldMove(player.role, playerMeeples * gainPerMeeple))
         }
       }
       moves.push(...this.takeBackMeeplesMoves())

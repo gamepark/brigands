@@ -55,6 +55,10 @@ export abstract class DistrictRules {
     return []
   }
 
+  hasDayCard() {
+    return this.state.dayCards.includes(this.district)
+  }
+
   shareGold(gold: number): Move[] {
     const moves: Move[] = []
     const meeples = this.countMeeples()

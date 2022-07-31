@@ -10,6 +10,19 @@ import {DistrictRules} from './DistrictRules'
 export default class Tavern extends DistrictRules {
   district = DistrictName.Tavern
 
+  getAutomaticMoves(): Move[] {
+    if (!this.hasDayCard()) return []
+    const moves: Move[] = []
+    for (const player of this.state.players) {
+      for (const meeple of player.meeples) {
+        if (meeple === this.district) {
+          moves.push(throwDicesMove(2, player.role))
+        }
+      }
+    }
+    return moves
+  }
+
   getLegalMoves(player: PlayerState): Move[] {
     const moves: Move[] = [throwDicesMove(1, player.role)]
     if (player.gold >= 6) {

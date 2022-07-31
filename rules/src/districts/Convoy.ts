@@ -12,7 +12,7 @@ export default class Convoy extends DistrictRules {
     if (meeples <= 1) {
       return arrestEveryone(this.state, this.district)
     } else {
-      return [throwDicesMove(1)]
+      return [throwDicesMove(this.hasDayCard() ? 2 : 1)]
     }
   }
 

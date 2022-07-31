@@ -12,7 +12,7 @@ export default class Treasure extends DistrictRules {
     if (players.length > 1) {
       return arrestEveryone(this.state, this.district)
     } else {
-      const moves: Move[] = [gainGoldMove(players[0].role, 10)]
+      const moves: Move[] = [gainGoldMove(players[0].role, this.hasDayCard() ? 15 : 10)]
       moves.push(...this.takeBackMeeplesMoves())
       return moves
     }

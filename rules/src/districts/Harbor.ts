@@ -28,6 +28,9 @@ export default class Harbor extends DistrictRules {
     const player = this.state.players.find(player => player.role === move.role)!
     if (player.tokens.length < MAX_ACTIONS) {
       this.state.nextMoves.push(takeTokenMove(player.role))
+      if (this.hasDayCard()) {
+        this.state.nextMoves.push(takeTokenMove(player.role))
+      }
     }
     this.state.nextMoves.push(takeBackMeepleMove(player.role, player.meeples.indexOf(this.district)))
   }
