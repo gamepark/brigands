@@ -160,7 +160,7 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
             // TODO: resolve action
           }
         }
-        if (patrolInDistrict(this.state, district)) {
+        if (district !== DistrictName.Jail && patrolInDistrict(this.state, district)) {
           return arrestEveryone(this.state, district)
         }
         return getDistrictRules(this.state, district).getAutomaticMoves()

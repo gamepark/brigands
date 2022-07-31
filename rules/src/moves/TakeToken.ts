@@ -7,7 +7,7 @@ import MoveType from './MoveType'
 
 type TakeToken = {
   type: MoveType.TakeToken
-  role: PlayerRole
+  role: PlayerRole // TODO: rename into player
 }
 
 export default TakeToken

@@ -6,13 +6,13 @@ import MoveType from './MoveType'
 
 type SpendTokens = {
   type: MoveType.SpendTokens
-  role: PlayerRole
+  role: PlayerRole // TODO: rename into player
   tokens: number
 }
 
 export default SpendTokens
 
-export function spendTokensMove(role: PlayerRole, tokens: number): SpendTokens {
+export function spendTokensMove(role: PlayerRole, tokens: number = 1): SpendTokens {
   return {type: MoveType.SpendTokens, role, tokens}
 }
 

@@ -1,9 +1,9 @@
 import DistrictName from './districts/DistrictName'
 import PlayerView from './PlayerView'
+import TokenAction from './TokenAction'
 import PlayerRole from './types/PlayerRole'
 import Prince from './types/Prince'
 import Thief, {ThiefView} from './types/Thief'
-import TokenAction from './TokenAction'
 
 type PlayerState = PrinceState | ThiefState
 
@@ -14,6 +14,7 @@ type PlayerCommon = {
   meeples: (DistrictName | null)[]
   tokens: (DistrictName | null)[]
   action?: TokenAction
+  meeplesStayingInJail?: number
   gold: number
   isReady: boolean
 }

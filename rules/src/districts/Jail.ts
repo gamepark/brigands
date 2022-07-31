@@ -1,79 +1,57 @@
+import {MAX_ACTIONS, patrolInDistrict} from '../Brigands'
+import Move from '../moves/Move'
+import SpendTokens, {spendTokensMove} from '../moves/SpendTokens'
+import TakeToken, {takeTokenMove} from '../moves/TakeToken'
+import PlayerState from '../PlayerState'
+import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 import {DistrictRules} from './DistrictRules'
 
 export default class Jail extends DistrictRules {
   district = DistrictName.Jail
 
-  /*isThiefActive(thief: ThiefState): boolean {
-    return (thief.tokens.length < MAX_ACTIONS && thief.partners.find(p => p.district === DistrictName.Jail && p.tokensTaken === 0) !== undefined)
-      || (this.state.tutorial && thief.role === PlayerRole.YellowThief)
+  getAutomaticMoves(): Move[] {
+    if (patrolInDistrict(this.state, this.district)) {
+      return [takeTokenMove(PlayerRole.Prince)]
+    }
+    if (this.allMeeplesSolved()) {
+      // TODO: Next phase + clean meeplesStayingInJail or end of game
+    }
+    return []
   }
 
-  getThiefLegalMoves(thief: ThiefState): Move[] {
-    const jailMoves: TakeToken[] = []
-    if (thief.partners.find(p => p.district === DistrictName.Jail && (p.tokensTaken === 0))) {
-      if (thief.tokens.length < MAX_ACTIONS) {
-        jailMoves.push(takeTokenMove(thief.role))
+  allMeeplesSolved() {
+    for (const player of this.state.players) {
+      if (this.countPlayerMeeples(player) > (player.meeplesStayingInJail ?? 0)) {
+        return false
       }
     }
-    if (this.state.tutorial && jailMoves.length === 0) {
-      return [{type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}]
-    } else {
-      return jailMoves
-    }
-  }*/
+    return true
+  }
 
-  /*getAutomaticMove(): Move | void {
-    const partners = this.getDistrictPartners()
-    const thievesOnJail = this.getThieves().filter(p => p.partners.some(part => isPartner(part) && part.district === DistrictName.Jail))
-    const isTutorial = this.state.tutorial
-
-    if (this.state.players.find(isPrinceState)!.patrols.some(pat => pat === DistrictName.Jail)) {
-      return {type: MoveType.JudgePrisoners}
-    }
-
-    if (thievesOnJail.every(p => p.partners.every(part => part.district !== DistrictName.Jail || part.solvingDone === true && (part.tokensTaken === 1 || p.tokens.length === MAX_ACTIONS)))) {
-      if (this.state.tutorial && this.state.eventDeck.length >= 4) {
-
-        // TO DO : Delete when we can control AutoMoves in Tutorial
-
-        return
-      } else {
-        return {type: MoveType.MoveOnDistrictResolved, districtResolved: this.state.currentDistrict!}
-      }
-    }
-    if (partners.every(p => p.solvingDone === true)) {
-      return // Partner made a 2 or 3 and must take a token
-    }
-    if (this.district.dice === undefined) {
-
-      // --- --- TO DO : Delete parts linked to Tutorial when scripting random will be implemented --- ---
-
-      if (!isTutorial || this.state.eventDeck.length !== 5) {
-        return {type: MoveType.ThrowDice, dice: rollDice(1), district: DistrictName.Jail}
-      } else {
-        return partners.length === 2 ? {type: MoveType.ThrowDice, dice: [4], district: DistrictName.Jail} : {
-          type: MoveType.ThrowDice, dice: [3], district: DistrictName.Jail
+  getLegalMoves(player: PlayerState): Move[] {
+    const moves: Move[] = []
+    if (!patrolInDistrict(this.state, this.district)) {
+      if (!player.meeplesStayingInJail || this.countPlayerMeeples(player) > player.meeplesStayingInJail) {
+        if (player.tokens.length > 0) {
+          moves.push(spendTokensMove(player.role))
+        }
+        if (player.tokens.length < MAX_ACTIONS) {
+          moves.push(takeTokenMove(player.role))
         }
       }
-
-      // --- --- END TO DO --- --- 
-
+    } else if (player.role === PlayerRole.Prince) {
+      return [] // TODO: upgrade spy or judgment
     }
-    const thief = this.getThieves().find(p => p.partners.some(part => part.district === DistrictName.Jail && part.solvingDone !== true))!
-    if (this.district.dice[0] === 4) {
-      return {
-        type: MoveType.TakeBackPartner,
-        thief: thief.role,
-        district: DistrictName.Jail
-      }
-    } else {
-      // Jailed Partners have to take a token
-      return {
-        type: MoveType.SolvePartner,
-        thief: thief.role,
-        partnerNumber: thief.partners.findIndex(part => part.district === DistrictName.Jail && part.solvingDone !== true)!
-      }
-    }
-  }*/
+    return moves
+  }
+
+  onSpendTokens(move: SpendTokens) {
+    return this.takeBackMeeple(move.role)
+  }
+
+  onTakeToken(move: TakeToken) {
+    const player = this.state.players.find(player => player.role === move.role)!
+    player.meeplesStayingInJail = (player.meeplesStayingInJail ?? 0) + 1
+  }
 }
