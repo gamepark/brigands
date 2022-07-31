@@ -1,5 +1,6 @@
 import GameState from '../GameState'
 import GameView from '../GameView'
+import {discardDayCardMove} from '../moves/DiscardDayCard'
 import {gainGoldMove} from '../moves/GainGold'
 import Move from '../moves/Move'
 import {ThrowDicesRandomized} from '../moves/PlayThrowDicesResult'
@@ -9,6 +10,7 @@ import {takeBackMeepleMove} from '../moves/TakeBackMeeple'
 import TakeToken from '../moves/TakeToken'
 import PlayerState from '../PlayerState'
 import PlayerView from '../PlayerView'
+import PlayerRole from '../types/PlayerRole'
 import DistrictName from './DistrictName'
 
 export abstract class DistrictRules {
@@ -32,7 +34,18 @@ export abstract class DistrictRules {
         }
       }
     }
+    if (this.hasDayCard()) {
+      moves.push(discardDayCardMove(this.district))
+    }
     return moves
+  }
+
+  takeBackMeeple(playerId: PlayerRole) {
+    const player = this.state.players.find(player => player.role === playerId)!
+    this.state.nextMoves.push(takeBackMeepleMove(player.role, player.meeples.indexOf(this.district)))
+    if (this.hasDayCard() && this.countMeeples() === 1) {
+      this.state.nextMoves.push(discardDayCardMove(this.district))
+    }
   }
 
   countMeeples() {

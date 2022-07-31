@@ -10,6 +10,7 @@ enum MoveType {
   SpendTokens,
   SpendGold,
   ThrowDices,
+  DiscardDayCard,
 
   RevealPartnersDistricts,
   ResolveStealToken,

@@ -1,5 +1,6 @@
 import ArrestPartners from './ArrestPartners'
 import BetGold from './BetGold'
+import DiscardDayCard from './DiscardDayCard'
 import DrawDayCard from './DrawDayCard'
 import GainGold from './GainGold'
 import JudgePrisoners from './JudgePrisoners'
@@ -23,7 +24,7 @@ import TellYouAreReady from './TellYouAreReady'
 import ThrowDices from './PlayThrowDicesResult'
 
 type Move = TakeToken | DrawDayCard | MoveOnNextPhase | PlaceMeeple | PlaceToken | TellYouAreReady
-  | TakeBackMeeple | GainGold | SpendTokens | SpendGold | ThrowDices
+  | TakeBackMeeple | GainGold | SpendTokens | SpendGold | ThrowDices | DiscardDayCard
 
   | RevealPartnersDistricts
   | TakeBackPartner | SpareGoldOnTreasure | MoveOnDistrictResolved | SolvePartner | BetGold | ArrestPartners

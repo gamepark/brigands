@@ -17,6 +17,7 @@ import GameState from './GameState'
 import GameView from './GameView'
 import {arrestPartners} from './moves/ArrestPartners'
 import {betGold} from './moves/BetGold'
+import {discardDayCard} from './moves/DiscardDayCard'
 import {drawDayCard, drawDayCardMove, getDrawEventView} from './moves/DrawDayCard'
 import {gainGold} from './moves/GainGold'
 import {judgePrisoners} from './moves/JudgePrisoners'
@@ -202,6 +203,8 @@ export default class Brigands extends SimultaneousGame<GameState, Move, PlayerRo
         return spendGold(this.state, move)
       case MoveType.ThrowDices:
         return throwDices(this.state, move)
+      case MoveType.DiscardDayCard:
+        return discardDayCard(this.state, move)
       case MoveType.RevealPartnersDistricts:
         return revealPartnersDistricts(this.state)
       case MoveType.TakeBackPartner:
